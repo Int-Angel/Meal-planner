@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_week);
     }
 
-    private void setBottomNavigationListener(){
+    private void setBottomNavigationListener() {
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -51,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void changeFragment(MenuItem item){
+    private void changeFragment(MenuItem item) {
         Fragment fragment;
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_week:
                 fragment = weekFragment;
                 break;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        fragmentManager.beginTransaction().replace(R.id.flContainer,fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
 }
