@@ -193,7 +193,7 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 | updatedAt | DateTime | date when recipe is last updated (default field) |
 
 
-**Model: Shooping list**
+**Model: Shopping list**
 | Property  | Type            | Description                                       |
 | --------- | --------------- | ------------------------------------------------- |
 | objectId  | String          | unique recipe identifier (default field)         |
