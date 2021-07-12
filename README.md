@@ -6,10 +6,10 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 
 - **Category:** Food & Drink
 - **Mobile:** Mobile first experience
-- **Story:** Allows you to create a week meal plan, create your own recepies, get a shopping list, copy other people plan or recepies
+- **Story:** Allows you to create a week meal plan, create your own recipes, get a shopping list, copy other people plan or recipes
 - **Market:** Anyone who wants to organize their meals.
 - **Habit:** Users are constantly using the app to follow the recipe or to see the shopping list, each week the user will need to create a meal plan, this meal plan can be changed at anytime
-- **Scope:** V1 would allow users to create recepies and add them to the week, V2 would allow users to see other people's plan, copy other people's plan or recepies.
+- **Scope:** V1 would allow users to create recipes and add them to the week, V2 would allow users to see other people's plan, copy other people's plan or recipes.
 
 ## Product Spec
 
@@ -19,19 +19,19 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 
 * User can create an account
 * User can login and logout
-* User can create recepies
-* User can add recepies for each day of the week
-    * User can search for recepies with a search bar
+* User can create recipes
+* User can add recipes for each day of the week
+    * User can search for recipes with a search bar
 * User can see the shooping list of the week
     * User can add more things to the shoopíng list
 * User can search for other user
 * User can see other user profile
     * User can see week plan
-    * User can see the other user personal recepies
-* User can copy recepies from other user
+    * User can see the other user personal recipes
+* User can copy recipes from other user
 * User can copy other person's meal plan
-* User can see recepies from a database and add these recepies to his recepies
-* User can filter the search of recepies by:
+* User can see recipes from a database and add these recipes to his recipes
+* User can filter the search of recipes by:
     * ...
 
 **Optional Nice-to-have Stories**
@@ -42,8 +42,8 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 * User can save week plans to be able to use them later
 * User can choose to have a private profile, which is not visible for anyone else
 * User can click on a random generator button that will create a random week plan with random food.
-* User can orginize recepies with tags
-    * User can search recepies with tags
+* User can orginize recipes with tags
+    * User can search recipes with tags
 
 
 ### 2. Screen Archetypes
@@ -53,10 +53,10 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 * Registration screen
    * User can create an account
 * Week screen
-    * User can add recepies for each day of the week
-        * User can search for recepies with a search bar
-* Recepies screen
-    * User can create recepies
+    * User can add recipes for each day of the week
+        * User can search for recipes with a search bar
+* recipes screen
+    * User can create recipes
 * Shooping list screen
     * User can see the shooping list of the week
 * Social screen
@@ -65,8 +65,8 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 * Profile screen
     * User can see other user profile
         * User can see week plan
-        * User can see the other user personal recepies
-    * User can copy recepies from other user
+        * User can see the other user personal recipes
+    * User can copy recipes from other user
     * User can copy other person's meal plan
 
 
@@ -75,7 +75,7 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 **Tab Navigation** (Tab to Screen)
 
 * your week/shooping list
-* your recepies
+* your recipes
 * search other users 
 * Profile screen
 
@@ -86,16 +86,16 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
    * your week screen
 * Your week screen
    * shooping list
-   * recepie details screen
-   * saved recepies screen
-* Saved recepies screen
-    * recepie details screen
-    * Online recepies screen
-        * recepie details screen
+   * recipe details screen
+   * saved recipes screen
+* Saved recipes screen
+    * recipe details screen
+    * Online recipes screen
+        * recipe details screen
 * Social screen
     * User profile screen
         * User's week plan screen
-        * User's saved recepies screen
+        * User's saved recipes screen
 * Profile screen
 
 ## Wireframes
@@ -151,57 +151,57 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 | email     | String   | user email                                                               |
 | password  | String   | user password                                                            |
 
-**Model: Saved Recepie**
+**Model: Saved recipe**
 | Property     | Type            | Description                                       |
 | ------------ | --------------- | ------------------------------------------------- |
-| objectId     | String          | unique recepie identifier (default field)         |
-| createdAt    | DateTime        | date when recepie is created (default field)      |
-| user         | Pointer to User | user that saved this recepie                      |
-| title        | String          | title of the recepie                              |
+| objectId     | String          | unique recipe identifier (default field)         |
+| createdAt    | DateTime        | date when recipe is created (default field)      |
+| user         | Pointer to User | user that saved this recipe                      |
+| title        | String          | title of the recipe                              |
 | imageUrl     | String          | url of the recipe image                           |
 | dishType     | String          | The dish type a recipe belongs to                 |
 | mealType     | String          | The type of meal a recipe belongs to              |
 | cuisineType  | String          | The type of cuisine of the recipe                 |
 | totalTime    | String          | approximate time to cook the recipe               |
-| calories     | String          | calories of the recepie                           |
-| recepieUrl   | String          | Url to the original site of the recepie           |
-| instructions | String          | instructions too cook the recepie                 |
+| calories     | String          | calories of the recipe                           |
+| recipeUrl   | String          | Url to the original site of the recipe           |
+| instructions | String          | instructions too cook the recipe                 |
 | ingredients  | Array           | list of ingredients                               |
-| updatedAt    | DateTime        | date when recepie is last updated (default field) |
+| updatedAt    | DateTime        | date when recipe is last updated (default field) |
 
 *Note: the online recipes will be obtained from Edamam API, when the user saves these recipes we add them to this table.*
-*Note 2: Edamam API doesn't have instructions, the user should add the instructions manually, but it gives you the original url for the recepie*
+*Note 2: Edamam API doesn't have instructions, the user should add the instructions manually, but it gives you the original url for the recipe*
 
 **Model: Week**
 | Property  | Type               | Description                                       |
 | --------- | ------------------ | ------------------------------------------------- |
-| objectId  | String             | unique recepie identifier (default field)         |
-| createdAt | DateTime           | date when recepie is created (default field)      |
+| objectId  | String             | unique recipe identifier (default field)         |
+| createdAt | DateTime           | date when recipe is created (default field)      |
 | day       | String             | day of the week                                   |
-| user      | Pointer to User    | user that added this recepie to his week          |
-| recepie   | Pointer to Recepie | Recepie added to this day of the week             |
-| quantity  | Integer            | number of recepies                                |
-| updatedAt | DateTime           | date when recepie is last updated (default field) |
+| user      | Pointer to User    | user that added this recipe to his week          |
+| recipe   | Pointer to recipe | recipe added to this day of the week             |
+| quantity  | Integer            | number of recipes                                |
+| updatedAt | DateTime           | date when recipe is last updated (default field) |
 
 **Model: Item**
 | Property  | Type     | Description                                       |
 | --------- | -------- | ------------------------------------------------- |
-| objectId  | String   | unique recepie identifier (default field)         |
-| createdAt | DateTime | date when recepie is created (default field)      |
+| objectId  | String   | unique recipe identifier (default field)         |
+| createdAt | DateTime | date when recipe is created (default field)      |
 | name      | String   | name of the product                               |
 | amount    | String   | amount of the product                             |
-| updatedAt | DateTime | date when recepie is last updated (default field) |
+| updatedAt | DateTime | date when recipe is last updated (default field) |
 
 
 **Model: Shooping list**
 | Property  | Type            | Description                                       |
 | --------- | --------------- | ------------------------------------------------- |
-| objectId  | String          | unique recepie identifier (default field)         |
-| createdAt | DateTime        | date when recepie is created (default field)      |
+| objectId  | String          | unique recipe identifier (default field)         |
+| createdAt | DateTime        | date when recipe is created (default field)      |
 | user      | Pointer to User | user that owns this list                          |
 | item      | Pointer to Item | Item to buy                                       |
 | checked   | Boolean         | Did you already buy the item?                     |
-| updatedAt | DateTime        | date when recepie is last updated (default field) |
+| updatedAt | DateTime        | date when recipe is last updated (default field) |
 
 
 
@@ -220,14 +220,14 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 * Week screen
     * (Read/GET) Query user week plan
     * (Create/POST) Add new recipes to the user's plan
-    * (Update/PUT) Update the number of recepies
-    * (Delete) Delete recepies from the user's plan
-* Recepies screen
-    * (Read/GET) Query all user's saved recepies
-    * (Read/GET)(API) Query recepies from Edamam's API
+    * (Update/PUT) Update the number of recipes
+    * (Delete) Delete recipes from the user's plan
+* recipes screen
+    * (Read/GET) Query all user's saved recipes
+    * (Read/GET)(API) Query recipes from Edamam's API
     * (Creat/POST) Save new racepies from Edemam library
-    * (Update/PUT) User can edit his saved recepies
-    * (Delete) Delete recepies from saved recepies
+    * (Update/PUT) User can edit his saved recipes
+    * (Delete) Delete recipes from saved recipes
 * Shooping list screen
     * (Read/GET) Query all user shooping list
     * (Creat/POST) Add new items to the shooping list
@@ -236,9 +236,9 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 * Social screen
     * (Read/GET) Query users
     * (Read/GET) Query user's week plan
-    * (Read/GET) Query user's saved recepies
+    * (Read/GET) Query user's saved recipes
     * (Update/PUT) User can copy other user's plan
-    * (Creat/POST) User can copy other user's saved recepies
+    * (Creat/POST) User can copy other user's saved recipes
 * Profile screen
     * (Read/GET) Query username and public profile option
     * (Update/PUT) Update public profile option
@@ -247,9 +247,9 @@ Add recipes for each day of the week, get a shopping list to buy, share your wee
 ## Ideas
 
 * Use Hunter API to verify emails: https://hunter.io/api
-* Use Youtube API to reproduce recepies videos: https://developers.google.com/youtube/
-* Use kiwilimon API to get recepies or other API like edamam
+* Use Youtube API to reproduce recipes videos: https://developers.google.com/youtube/
+* Use kiwilimon API to get recipes or other API like edamam
 * Add a button to each ingredient to search the ingredient in a store like walmart, and redirect the user to google with the search
 * Use stores APIS to get the price for the products in the shooping list
-* Filter recepies
+* Filter recipes
 * recommend recipes 
