@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:cardElevation="5dp"
+        app:cardCornerRadius="5dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvRecipeTitleItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="10dp"
+
+                android:textStyle="bold"
+                android:textSize="20sp"
+
+                android:text="Chiken Tikka Masala Recipe"
+                />
+
+            <TextView
+                android:id="@+id/tvCaloriesItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="100dp"
+                android:layout_marginBottom="10dp"
+
+                android:textStyle="normal"
+                android:textSize="12sp"
+                android:background="@drawable/rounded_darker"
+                android:padding="7dp"
+                android:gravity="center"
+
+                android:text="235 cal"
+                />
+
+            <TextView
+                android:id="@+id/tvCuisineTypeItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignBottom="@+id/tvCaloriesItem"
+                android:layout_toEndOf="@+id/tvCaloriesItem"
+                android:layout_marginStart="10dp"
+
+                android:textStyle="normal"
+                android:textSize="12sp"
+                android:background="@drawable/rounded_darker"
+                android:padding="7dp"
+                android:gravity="center"
+
+                android:text="indian"
+                />
+
+            <TextView
+                android:id="@+id/tvMealTypeItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignBottom="@+id/tvCaloriesItem"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@+id/tvCuisineTypeItem"
+                android:layout_marginStart="10dp"
+
+                android:gravity="center"
+                android:textStyle="normal"
+                android:textSize="12sp"
+                android:background="@drawable/rounded_darker"
+                android:padding="7dp"
+
+                android:text="lunch/dinner"
+                />
+
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/ivRecipeImageItem"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+
+        android:elevation="6dp"
+
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageButton
+        android:id="@+id/ibtnSaveRecipeItem"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="9dp"
+        android:layout_marginTop="55dp"
+
+        android:elevation="9dp"
+
+        android:background="@drawable/rounded_button"
+        app:srcCompat="@drawable/ic_round_add_24" />
+
+
+</RelativeLayout>

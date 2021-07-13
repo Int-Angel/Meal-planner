@@ -2,59 +2,44 @@ package com.example.mealplanner.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.mealplanner.R;
+import com.example.mealplanner.adapters.OnlineRecipeAdapter;
+import com.example.mealplanner.models.OnlineRecipe;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OnlineRecipesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Headers;
+
+
 public class OnlineRecipesFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private final static String TAG = "OnlineRecipes";
+    public static final String CHICKEN_RECIPES_URL = "https://api.edamam.com/api/recipes/v2?type=public&q=chiken&app_id=74ae975a&app_key=7ab0ed179d7a780e86361ffc79d73528";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView rvRecipes;
+    private List<OnlineRecipe> onlineRecipes;
+    private OnlineRecipeAdapter adapter;
+    private AsyncHttpClient client;
 
     public OnlineRecipesFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OnlineRecipesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static OnlineRecipesFragment newInstance(String param1, String param2) {
-        OnlineRecipesFragment fragment = new OnlineRecipesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -62,5 +47,42 @@ public class OnlineRecipesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_online_recipes, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        onlineRecipes = new ArrayList<>();
+        client = new AsyncHttpClient();
+        adapter = new OnlineRecipeAdapter(getContext(), onlineRecipes);
+
+        rvRecipes = view.findViewById(R.id.rvRecipes);
+        rvRecipes.setAdapter(adapter);
+        rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        getRecipes();
+    }
+
+    private void getRecipes() {
+        client.get(CHICKEN_RECIPES_URL, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Headers headers, JSON json) {
+                Log.i(TAG, "onSuccess");
+
+                try {
+                    JSONArray results = json.jsonObject.getJSONArray("hits");
+                    onlineRecipes.addAll(OnlineRecipe.fromJsonArray(results));
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    Log.e(TAG, "Issue creating recipes", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Headers headers, String s, Throwable throwable) {
+                Log.e(TAG, "onFailure", throwable);
+            }
+        });
     }
 }
