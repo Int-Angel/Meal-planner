@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.mealplanner.fragments.RecipeDetailsFragment;
 import com.example.mealplanner.fragments.OnlineRecipesFragment;
@@ -22,7 +24,8 @@ import com.example.mealplanner.models.IRecipe;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity implements OnlineRecipesFragment.OnlineRecipesFragmentListener, SavedRecipesFragment.SavedRecipesFragmentListener {
+public class MainActivity extends AppCompatActivity implements OnlineRecipesFragment.OnlineRecipesFragmentListener,
+        SavedRecipesFragment.SavedRecipesFragmentListener, RecipeDetailsFragment.RecipeDetailsFragmentListener {
 
     enum FragmentSelection {
         WEEK, SHOPPING_LIST, SAVED_RECIPES, ONLINE_RECIPES, SOCIAL, PROFILE;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
     private RelativeLayout weekFragmentHeader;
 
     private FragmentSelection activeFragment;
+    private FragmentSelection lastActiveFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,9 +119,10 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
     }
 
     private void changeFragment(FragmentSelection fragmentSelected) {
-        if (activeFragment == fragmentSelected) return;
+        //if (activeFragment == fragmentSelected) return;
 
         Fragment fragment;
+        lastActiveFragment = activeFragment;
         activeFragment = fragmentSelected;
 
         switch (fragmentSelected) {
@@ -158,10 +163,23 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
     }
 
     private void openRecipeDetailsFragment(IRecipe recipe) {
+        lastActiveFragment = activeFragment;
+
         recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe);
         weekFragmentHeader.setVisibility(View.GONE);
         recipeFragmentHeader.setVisibility(View.GONE);
+
         fragmentManager.beginTransaction().replace(R.id.flContainer, recipeDetailsFragment).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (lastActiveFragment != null) {
+            changeFragment(lastActiveFragment);
+            lastActiveFragment = null;
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -173,5 +191,12 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
     public void openSavedRecipeDetailsFragment(IRecipe recipe) {
         openRecipeDetailsFragment(recipe);
     }
-  
+
+    @Override
+    public void backButtonPressed() {
+        Log.i(TAG, "BACK");
+        Toast.makeText(MainActivity.this, "BACK", Toast.LENGTH_SHORT).show(); // Not showing
+        onBackPressed();
+    }
+
 }

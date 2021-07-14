@@ -1,5 +1,6 @@
 package com.example.mealplanner.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,10 +35,15 @@ import java.util.List;
 
 public class RecipeDetailsFragment extends Fragment {
 
+    public interface RecipeDetailsFragmentListener{
+        void backButtonPressed();
+    }
+
     private static final String TAG = "RecipeDetails";
     private static final String RECIPE = "recipe";
 
     private IRecipe recipe;
+    private RecipeDetailsFragmentListener listener;
 
     private TextView tvTitle;
     private ImageButton ibtnBackOnlineDetails;
@@ -100,7 +106,7 @@ public class RecipeDetailsFragment extends Fragment {
         ibtnGoToOriginalUrl = view.findViewById(R.id.ibtnGoToOriginalUrl);
 
         bind();
-        changeColors();
+        //changeColors();
         setupOnClickListeners();
     }
 
@@ -147,7 +153,7 @@ public class RecipeDetailsFragment extends Fragment {
         ibtnBackOnlineDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                listener.backButtonPressed();
             }
         });
 
@@ -230,5 +236,22 @@ public class RecipeDetailsFragment extends Fragment {
                 }
             }
         });*/
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RecipeDetailsFragmentListener) {
+            listener = (RecipeDetailsFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement Fragment new task Listener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }
