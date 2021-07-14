@@ -1,5 +1,6 @@
 package com.example.mealplanner.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,10 @@ import okhttp3.Headers;
 
 public class OnlineRecipesFragment extends Fragment {
 
+    public interface OnlineRecipesFragmentListener{
+        void openOnlineRecipeDetailsListener(OnlineRecipe recipe);
+    }
+
     private final static String TAG = "OnlineRecipes";
     public static final String CHICKEN_RECIPES_URL = "https://api.edamam.com/api/recipes/v2?type=public&q=chiken&app_id=74ae975a&app_key=7ab0ed179d7a780e86361ffc79d73528";
 
@@ -37,6 +42,8 @@ public class OnlineRecipesFragment extends Fragment {
     private List<OnlineRecipe> onlineRecipes;
     private OnlineRecipeAdapter adapter;
     private AsyncHttpClient client;
+
+    private OnlineRecipesFragmentListener listener;
 
     public OnlineRecipesFragment() {
         // Required empty public constructor
@@ -55,7 +62,12 @@ public class OnlineRecipesFragment extends Fragment {
 
         onlineRecipes = new ArrayList<>();
         client = new AsyncHttpClient();
-        adapter = new OnlineRecipeAdapter(getContext(), onlineRecipes);
+        adapter = new OnlineRecipeAdapter(getContext(), onlineRecipes, new OnlineRecipeAdapter.OnlineRecipeAdapterListener() {
+            @Override
+            public void openDetails(OnlineRecipe recipe) {
+                listener.openOnlineRecipeDetailsListener(recipe);
+            }
+        });
 
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
@@ -84,5 +96,22 @@ public class OnlineRecipesFragment extends Fragment {
                 Log.e(TAG, "onFailure", throwable);
             }
         });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnlineRecipesFragmentListener) {
+            listener = (OnlineRecipesFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement Fragment new task Listener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

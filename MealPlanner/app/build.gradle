@@ -58,4 +58,5 @@ dependencies {
     annotationProcessor 'org.parceler:parceler:1.1.12'
 
     implementation 'com.codepath.libraries:asynchttpclient:2.0.0'
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
 }

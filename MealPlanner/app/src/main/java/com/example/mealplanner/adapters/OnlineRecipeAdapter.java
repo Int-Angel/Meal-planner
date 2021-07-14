@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,12 +22,18 @@ import java.util.List;
 
 public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapter.ViewHolder> {
 
+    public interface OnlineRecipeAdapterListener{
+        void openDetails(OnlineRecipe recipe);
+    }
+
     private Context context;
     private List<OnlineRecipe> recipes;
+    private OnlineRecipeAdapterListener listener;
 
-    public OnlineRecipeAdapter(Context context, List<OnlineRecipe> recipes) {
+    public OnlineRecipeAdapter(Context context, List<OnlineRecipe> recipes, OnlineRecipeAdapterListener listener) {
         this.context = context;
         this.recipes = recipes;
+        this.listener = listener;
     }
 
     @NonNull
@@ -46,7 +53,9 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
         return recipes.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private OnlineRecipe bindedRecipe;
 
         private ImageView ivRecipeImageItem;
         private ImageButton ibtnSaveRecipeItem;
@@ -54,6 +63,7 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
         private TextView tvCaloriesItem;
         private TextView tvCuisineTypeItem;
         private TextView tvMealTypeItem;
+        private CardView cvItemContainer;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,9 +74,14 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
             tvCaloriesItem = itemView.findViewById(R.id.tvCaloriesItem);
             tvCuisineTypeItem = itemView.findViewById(R.id.tvCuisineTypeItem);
             tvMealTypeItem = itemView.findViewById(R.id.tvMealTypeItem);
+            cvItemContainer = itemView.findViewById(R.id.cvItemContainer);
+
+            ivRecipeImageItem.setOnClickListener(this);
+            cvItemContainer.setOnClickListener(this);
         }
 
         public void bind(OnlineRecipe recipe) {
+            bindedRecipe = recipe;
 
             Glide.with(context)
                     .load(recipe.getImageUrl())
@@ -85,6 +100,15 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
                 tvMealTypeItem.setVisibility(View.GONE);
             else
                 tvMealTypeItem.setText(recipe.getMealType());
+        }
+
+        private void openDetails(){
+            listener.openDetails(bindedRecipe);
+        }
+
+        @Override
+        public void onClick(View v) {
+            openDetails();
         }
     }
 }

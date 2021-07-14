@@ -11,16 +11,18 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 
+import com.example.mealplanner.fragments.OnlineRecipeDetailsFragment;
 import com.example.mealplanner.fragments.OnlineRecipesFragment;
 import com.example.mealplanner.fragments.ProfileFragment;
 import com.example.mealplanner.fragments.SavedRecipesFragment;
 import com.example.mealplanner.fragments.ShoppingListFragment;
 import com.example.mealplanner.fragments.SocialFragment;
 import com.example.mealplanner.fragments.WeekFragment;
+import com.example.mealplanner.models.OnlineRecipe;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnlineRecipesFragment.OnlineRecipesFragmentListener {
 
     enum FragmentSelection {
         WEEK, SHOPPING_LIST, SAVED_RECIPES, ONLINE_RECIPES, SOCIAL, PROFILE;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private final OnlineRecipesFragment onlineRecipesFragment = new OnlineRecipesFragment();
     private final SocialFragment socialFragment = new SocialFragment();
     private final ProfileFragment profileFragment = new ProfileFragment();
+    private OnlineRecipeDetailsFragment onlineRecipeDetailsFragment;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -153,4 +156,15 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
+    private void openOnlineRecipeDetailsFragment(OnlineRecipe recipe){
+        onlineRecipeDetailsFragment = OnlineRecipeDetailsFragment.newInstance(recipe);
+        weekFragmentHeader.setVisibility(View.GONE);
+        recipeFragmentHeader.setVisibility(View.GONE);
+        fragmentManager.beginTransaction().replace(R.id.flContainer,onlineRecipeDetailsFragment).commit();
+    }
+
+    @Override
+    public void openOnlineRecipeDetailsListener(OnlineRecipe recipe) {
+        openOnlineRecipeDetailsFragment(recipe);
+    }
 }
