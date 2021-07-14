@@ -15,7 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mealplanner.R;
-import com.example.mealplanner.adapters.SavedRecipeAdapter;
+import com.example.mealplanner.adapters.RecipeAdapter;
+import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.Recipe;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -31,12 +32,12 @@ public class SavedRecipesFragment extends Fragment {
     private final static String TAG = "SavedRecipes";
 
     public interface SavedRecipesFragmentListener{
-        void openSavedRecipesFragment(Recipe recipe);
+        void openSavedRecipeDetailsFragment(IRecipe recipe);
     }
 
     private RecyclerView rvRecipes;
-    private List<Recipe> recipes;
-    private SavedRecipeAdapter adapter;
+    private List<IRecipe> recipes;
+    private RecipeAdapter adapter;
 
     private SavedRecipesFragmentListener listener;
 
@@ -56,10 +57,10 @@ public class SavedRecipesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recipes = new ArrayList<>();
-        adapter = new SavedRecipeAdapter(getContext(), recipes, new SavedRecipeAdapter.SavedRecipeAdapterListener() {
+        adapter = new RecipeAdapter(getContext(), recipes, new RecipeAdapter.RecipeAdapterListener() {
             @Override
-            public void openDetails(Recipe recipe) {
-                listener.openSavedRecipesFragment(recipe);
+            public void openDetails(IRecipe recipe) {
+                listener.openSavedRecipeDetailsFragment(recipe);
             }
         });
         rvRecipes = view.findViewById(R.id.rvRecipes);

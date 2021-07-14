@@ -2,7 +2,6 @@ package com.example.mealplanner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -12,17 +11,14 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 
-import com.example.mealplanner.fragments.OnlineRecipeDetailsFragment;
+import com.example.mealplanner.fragments.RecipeDetailsFragment;
 import com.example.mealplanner.fragments.OnlineRecipesFragment;
 import com.example.mealplanner.fragments.ProfileFragment;
-import com.example.mealplanner.fragments.SavedRecipeDetailsFragment;
 import com.example.mealplanner.fragments.SavedRecipesFragment;
 import com.example.mealplanner.fragments.ShoppingListFragment;
 import com.example.mealplanner.fragments.SocialFragment;
 import com.example.mealplanner.fragments.WeekFragment;
-import com.example.mealplanner.models.OnlineRecipe;
-import com.example.mealplanner.models.Recipe;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.example.mealplanner.models.IRecipe;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -41,8 +37,7 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
     private final OnlineRecipesFragment onlineRecipesFragment = new OnlineRecipesFragment();
     private final SocialFragment socialFragment = new SocialFragment();
     private final ProfileFragment profileFragment = new ProfileFragment();
-    private OnlineRecipeDetailsFragment onlineRecipeDetailsFragment;
-    private SavedRecipeDetailsFragment savedRecipeDetailsFragment;
+    private RecipeDetailsFragment recipeDetailsFragment;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -79,21 +74,21 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
 
     public void onRadioButtonClickedRecipes(View view) {
         boolean checked = ((RadioButton) view).isChecked();
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.rbSavedRecipes:
                 if (checked)
                     changeFragment(FragmentSelection.SAVED_RECIPES);
-                    break;
+                break;
             case R.id.rbOnlineRecipes:
                 if (checked)
                     changeFragment(FragmentSelection.ONLINE_RECIPES);
-                    break;
+                break;
         }
     }
 
     public void onRadioButtonClickedWeek(View view) {
         boolean checked = ((RadioButton) view).isChecked();
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.rbWeek:
                 if (checked)
                     changeFragment(FragmentSelection.WEEK);
@@ -111,8 +106,8 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
                 return FragmentSelection.WEEK;
             case R.id.action_recipes:
                 return FragmentSelection.SAVED_RECIPES;
-                //case R.id.action_social:
-                //return FragmentSelection.SOCIAL;
+            //case R.id.action_social:
+            //return FragmentSelection.SOCIAL;
             case R.id.action_profile:
             default:
                 return FragmentSelection.PROFILE;
@@ -120,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
     }
 
     private void changeFragment(FragmentSelection fragmentSelected) {
-        if(activeFragment == fragmentSelected) return;
+        if (activeFragment == fragmentSelected) return;
 
         Fragment fragment;
         activeFragment = fragmentSelected;
@@ -162,27 +157,21 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
-    private void openOnlineRecipeDetailsFragment(OnlineRecipe recipe){
-        onlineRecipeDetailsFragment = OnlineRecipeDetailsFragment.newInstance(recipe);
+    private void openRecipeDetailsFragment(IRecipe recipe) {
+        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe);
         weekFragmentHeader.setVisibility(View.GONE);
         recipeFragmentHeader.setVisibility(View.GONE);
-        fragmentManager.beginTransaction().replace(R.id.flContainer,onlineRecipeDetailsFragment).commit();
-    }
-
-    private void openSavedRecipeDetailsFragment(Recipe recipe){
-        savedRecipeDetailsFragment = SavedRecipeDetailsFragment.newInstance(recipe);
-        weekFragmentHeader.setVisibility(View.GONE);
-        recipeFragmentHeader.setVisibility(View.GONE);
-        fragmentManager.beginTransaction().replace(R.id.flContainer,savedRecipeDetailsFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.flContainer, recipeDetailsFragment).commit();
     }
 
     @Override
-    public void openOnlineRecipeDetailsListener(OnlineRecipe recipe) {
-        openOnlineRecipeDetailsFragment(recipe);
+    public void openOnlineRecipeDetailsListener(IRecipe recipe) {
+        openRecipeDetailsFragment(recipe);
     }
 
     @Override
-    public void openSavedRecipesFragment(Recipe recipe) {
-        openSavedRecipeDetailsFragment(recipe);
+    public void openSavedRecipeDetailsFragment(IRecipe recipe) {
+        openRecipeDetailsFragment(recipe);
     }
+  
 }

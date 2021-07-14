@@ -1,6 +1,7 @@
 package com.example.mealplanner.adapters;
 
 import android.content.Context;
+import android.service.autofill.SaveCallback;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,27 +18,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
+import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 
-
+import java.text.ParseException;
 import java.util.List;
 
-public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.ViewHolder> {
+
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
     private static final String TAG = "RecipeAdapter";
 
-    public interface SavedRecipeAdapterListener{
-        void openDetails(Recipe recipe);
+    public interface RecipeAdapterListener {
+        void openDetails(IRecipe recipe);
     }
 
     private Context context;
-    private List<Recipe> recipes;
-    private SavedRecipeAdapterListener listener;
+    private List<IRecipe> recipes;
+    private RecipeAdapterListener listener;
 
-    public SavedRecipeAdapter(Context context, List<Recipe> recipes, SavedRecipeAdapterListener listener){
+    public RecipeAdapter(Context context, List<IRecipe> recipes, RecipeAdapterListener listener) {
         this.context = context;
         this.recipes = recipes;
         this.listener = listener;
@@ -46,7 +47,7 @@ public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View recipeView = LayoutInflater.from(context).inflate(R.layout.item_saved_recipe, parent, false);
+        View recipeView = LayoutInflater.from(context).inflate(R.layout.item_recipe, parent, false);
         return new ViewHolder(recipeView);
     }
 
@@ -62,9 +63,10 @@ public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private Recipe bindedRecipe;
+        private IRecipe bindedRecipe;
 
         private ImageView ivRecipeImageItem;
+        private ImageButton ibtnSaveRecipeItem;
         private TextView tvRecipeTitleItem;
         private TextView tvCaloriesItem;
         private TextView tvCuisineTypeItem;
@@ -75,6 +77,7 @@ public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.
             super(itemView);
 
             ivRecipeImageItem = itemView.findViewById(R.id.ivRecipeImageItem);
+            ibtnSaveRecipeItem = itemView.findViewById(R.id.ibtnSaveRecipeItem);
             tvRecipeTitleItem = itemView.findViewById(R.id.tvRecipeTitleItem);
             tvCaloriesItem = itemView.findViewById(R.id.tvCaloriesItem);
             tvCuisineTypeItem = itemView.findViewById(R.id.tvCuisineTypeItem);
@@ -83,10 +86,22 @@ public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.
 
             ivRecipeImageItem.setOnClickListener(this);
             cvItemContainer.setOnClickListener(this);
+            ibtnSaveRecipeItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    copyRecipe();
+                }
+            });
         }
 
-        public void bind(Recipe recipe) {
+        public void bind(IRecipe recipe) {
             bindedRecipe = recipe;
+
+            if(recipe instanceof OnlineRecipe){
+                ibtnSaveRecipeItem.setVisibility(View.VISIBLE);
+            }else{
+                ibtnSaveRecipeItem.setVisibility(View.GONE);
+            }
 
             Glide.with(context)
                     .load(recipe.getImageUrl())
@@ -94,7 +109,7 @@ public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.
                     .into(ivRecipeImageItem);
 
             tvRecipeTitleItem.setText(recipe.getTitle());
-            tvCaloriesItem.setText(recipe.getCaloriesText());
+            tvCaloriesItem.setText(recipe.getCalories());
 
             if(recipe.getCuisineType().equals(""))
                 tvCuisineTypeItem.setVisibility(View.GONE);
@@ -107,6 +122,22 @@ public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.
                 tvMealTypeItem.setText(recipe.getMealType());
         }
 
+        private void copyRecipe(){
+            Recipe recipe = Recipe.createRecipe((OnlineRecipe) bindedRecipe);
+
+            recipe.saveInBackground(new com.parse.SaveCallback() {
+                @Override
+                public void done(com.parse.ParseException e) {
+                    if(e!= null){
+                        Log.e(TAG,"Error while saving recipe!",e);
+                        Toast.makeText(context,"Error while saving recipe!",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Log.i(TAG,"Recipe saved!");
+                    Toast.makeText(context,"Recipe saved!",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         private void openDetails(){
             listener.openDetails(bindedRecipe);
@@ -117,5 +148,4 @@ public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.
             openDetails();
         }
     }
-
 }

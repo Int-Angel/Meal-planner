@@ -17,7 +17,8 @@ import android.view.ViewGroup;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.mealplanner.R;
-import com.example.mealplanner.adapters.OnlineRecipeAdapter;
+import com.example.mealplanner.adapters.RecipeAdapter;
+import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
 
 import org.json.JSONArray;
@@ -32,15 +33,15 @@ import okhttp3.Headers;
 public class OnlineRecipesFragment extends Fragment {
 
     public interface OnlineRecipesFragmentListener{
-        void openOnlineRecipeDetailsListener(OnlineRecipe recipe);
+        void openOnlineRecipeDetailsListener(IRecipe recipe);
     }
 
     private final static String TAG = "OnlineRecipes";
     public static final String CHICKEN_RECIPES_URL = "https://api.edamam.com/api/recipes/v2?type=public&q=chiken&app_id=74ae975a&app_key=7ab0ed179d7a780e86361ffc79d73528";
 
     private RecyclerView rvRecipes;
-    private List<OnlineRecipe> onlineRecipes;
-    private OnlineRecipeAdapter adapter;
+    private List<IRecipe> onlineRecipes;
+    private RecipeAdapter adapter;
     private AsyncHttpClient client;
 
     private OnlineRecipesFragmentListener listener;
@@ -62,9 +63,9 @@ public class OnlineRecipesFragment extends Fragment {
 
         onlineRecipes = new ArrayList<>();
         client = new AsyncHttpClient();
-        adapter = new OnlineRecipeAdapter(getContext(), onlineRecipes, new OnlineRecipeAdapter.OnlineRecipeAdapterListener() {
+        adapter = new RecipeAdapter(getContext(), onlineRecipes, new RecipeAdapter.RecipeAdapterListener() {
             @Override
-            public void openDetails(OnlineRecipe recipe) {
+            public void openDetails(IRecipe recipe) {
                 listener.openOnlineRecipeDetailsListener(recipe);
             }
         });

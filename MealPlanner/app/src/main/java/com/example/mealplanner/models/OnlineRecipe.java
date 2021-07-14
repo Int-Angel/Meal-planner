@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Parcel
-public class OnlineRecipe {
+public class OnlineRecipe implements IRecipe{
 
     private String title;
     private String imageUrl;

@@ -1,6 +1,7 @@
 package com.example.mealplanner.models;
 
 import android.provider.CallLog;
+import android.util.Log;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ParseClassName("Recipe")
-public class Recipe extends ParseObject {
+public class Recipe extends ParseObject implements IRecipe {
 
     public final static String KEY_USER = "user";
     public final static String KEY_TITLE = "title";
@@ -101,12 +102,13 @@ public class Recipe extends ParseObject {
         put(KEY_TOTAL_TIME, totalTime);
     }
 
-    public float getCalories() {
+    @Override
+    public float getCaloriesNumber() {
         return getLong(KEY_CALORIES);
     }
 
-    public String getCaloriesText() {
-        float caloriesNumber = getCalories();
+    public String getCalories() {
+        float caloriesNumber = getCaloriesNumber();
         String calories;
 
         if (caloriesNumber / 1000f >= 1f) {
@@ -145,12 +147,16 @@ public class Recipe extends ParseObject {
         put(KEY_INGREDIENTS, ingredients);
     }
 
-    public List<String> getIngredients() throws JSONException {
+    public List<String> getIngredients() {
         JSONArray ingredients = getIngredientsJSONArray();
         List<String> listIngredients = new ArrayList<>();
 
         for (int i = 0; i < ingredients.length(); i++) {
-            listIngredients.add(ingredients.getString(i));
+            try {
+                listIngredients.add(ingredients.getString(i));
+            } catch (JSONException e) {
+                Log.e("RecipeClass", "Error while getting ingredients", e);
+            }
         }
 
         return listIngredients;
