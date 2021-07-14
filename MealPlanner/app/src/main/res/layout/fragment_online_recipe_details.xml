@@ -14,13 +14,14 @@
         android:layout_height="match_parent">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cvDetails"
             android:layout_width="match_parent"
             android:layout_height="300dp"
 
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
 
-            app:cardBackgroundColor="@android:color/holo_blue_light"
+            app:cardBackgroundColor="@color/blue_1"
             app:cardCornerRadius="0dp"
             app:cardElevation="5dp"
             >
@@ -230,7 +231,7 @@
             android:layout_marginTop="20dp"
 
             android:text="Ingredients: "
-            android:textColor="@android:color/holo_blue_light"
+            android:textColor="@color/blue_1"
 
             android:textSize="30sp"
             android:textStyle="bold" />

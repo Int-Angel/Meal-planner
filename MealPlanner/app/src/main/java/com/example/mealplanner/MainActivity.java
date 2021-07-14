@@ -2,6 +2,7 @@ package com.example.mealplanner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -19,6 +20,7 @@ import com.example.mealplanner.fragments.ShoppingListFragment;
 import com.example.mealplanner.fragments.SocialFragment;
 import com.example.mealplanner.fragments.WeekFragment;
 import com.example.mealplanner.models.OnlineRecipe;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         setBottomNavigationListener();
         bottomNavigationView.setSelectedItemId(R.id.action_week);
         activeFragment = FragmentSelection.WEEK;
+
     }
 
     private void setBottomNavigationListener() {

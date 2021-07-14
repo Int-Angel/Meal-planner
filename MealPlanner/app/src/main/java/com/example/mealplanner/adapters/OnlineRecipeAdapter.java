@@ -78,6 +78,12 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
 
             ivRecipeImageItem.setOnClickListener(this);
             cvItemContainer.setOnClickListener(this);
+            ibtnSaveRecipeItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    copyRecipe();
+                }
+            });
         }
 
         public void bind(OnlineRecipe recipe) {
@@ -100,6 +106,10 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
                 tvMealTypeItem.setVisibility(View.GONE);
             else
                 tvMealTypeItem.setText(recipe.getMealType());
+        }
+
+        private void copyRecipe(){
+
         }
 
         private void openDetails(){
