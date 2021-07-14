@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.SavedRecipeDetailsFragment"
+    android:elevation="20dp"
+    android:clickable="true">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvDetails"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+
+            app:cardBackgroundColor="@color/blue_1"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="5dp"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="130dp"
+                    android:layout_marginTop="60dp"
+
+                    android:rotation="0"
+                    android:rotationX="0"
+                    android:rotationY="0"
+
+                    android:text="Chiken Tikka Masala Recipe"
+                    android:textAlignment="viewStart"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="35sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/ibtnBackOnlineDetails"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_margin="10dp"
+
+                    android:src="@drawable/ic_round_arrow_back_24"
+                    android:background="@android:color/transparent"
+                    app:tint="@color/white" />
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/ivRecipeImageOnlineDetails"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+
+            android:elevation="7dp"
+
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="65dp"
+            android:layout_marginTop="180dp"
+
+            tools:src="@tools:sample/avatars" />
+
+        <ImageButton
+            android:id="@+id/ibtnSaveRecipeDetails"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+
+            android:layout_alignTop="@+id/ivRecipeImageOnlineDetails"
+            android:layout_toEndOf="@+id/ivRecipeImageOnlineDetails"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+
+            android:elevation="9dp"
+
+            android:background="@drawable/rounded_button"
+            app:srcCompat="@drawable/ic_round_favorite_24" />
+
+        <ImageButton
+            android:id="@+id/ibtnGoToOriginalUrl"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+
+            android:layout_below="@+id/ibtnSaveRecipeDetails"
+            android:layout_toEndOf="@+id/ivRecipeImageOnlineDetails"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+
+            android:elevation="9dp"
+
+            android:background="@drawable/rounded_button"
+            app:srcCompat="@drawable/ic_round_link_24" />
+
+        <LinearLayout
+            android:id="@+id/llMealDetailsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/ivRecipeImageOnlineDetails"
+            android:layout_marginStart="65dp"
+            android:layout_marginTop="10dp"
+
+            >
+
+            <TextView
+                android:id="@+id/tvDishTypeDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:textStyle="normal"
+                android:textSize="12sp"
+                android:background="@drawable/rounded_darker"
+                android:padding="7dp"
+                android:gravity="center"
+
+                android:textColor="@android:color/black"
+
+                android:text="main course"
+                />
+
+            <TextView
+                android:id="@+id/tvCuisineTypeDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:textStyle="normal"
+                android:textSize="12sp"
+                android:background="@drawable/rounded_darker"
+                android:padding="7dp"
+                android:gravity="center"
+
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/black"
+
+                android:text="indian"
+                />
+
+            <TextView
+                android:id="@+id/tvMealTypeDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:gravity="center"
+                android:textStyle="normal"
+                android:textSize="12sp"
+                android:background="@drawable/rounded_darker"
+                android:padding="7dp"
+
+                android:layout_marginStart="10dp"
+                android:textColor="@android:color/black"
+
+                android:text="lunch/dinner"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llCaloriesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/llMealDetailsContainer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/tvCaloriesTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Calories: "
+                android:textColor="@android:color/black"
+
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCaloriesDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="235 kcal"
+                android:textColor="@android:color/black"
+
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llTimeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/llCaloriesContainer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/tvTimeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Time: "
+                android:textColor="@android:color/black"
+
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTimeDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="60 min"
+                android:textColor="@android:color/black"
+
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvIngredientsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/llTimeContainer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="20dp"
+
+            android:text="Ingredients: "
+            android:textColor="@color/blue_1"
+
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvIngredients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/tvIngredientsTitle"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="65dp"
+            android:text="235 kcal"
+            android:textColor="@android:color/black"
+
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</ScrollView>

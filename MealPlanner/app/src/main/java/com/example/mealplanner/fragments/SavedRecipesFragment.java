@@ -1,5 +1,6 @@
 package com.example.mealplanner.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,8 +21,6 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +29,15 @@ public class SavedRecipesFragment extends Fragment {
 
     private final static String TAG = "SavedRecipes";
 
+    public interface SavedRecipesFragmentListener{
+        void openSavedRecipesFragment(Recipe recipe);
+    }
+
     private RecyclerView rvRecipes;
     private List<Recipe> recipes;
     private SavedRecipeAdapter adapter;
+
+    private SavedRecipesFragmentListener listener;
 
     public SavedRecipesFragment() {
         // Required empty public constructor
@@ -46,11 +51,16 @@ public class SavedRecipesFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         recipes = new ArrayList<>();
-        adapter = new SavedRecipeAdapter(getContext(), recipes);
+        adapter = new SavedRecipeAdapter(getContext(), recipes, new SavedRecipeAdapter.SavedRecipeAdapterListener() {
+            @Override
+            public void openDetails(Recipe recipe) {
+                listener.openSavedRecipesFragment(recipe);
+            }
+        });
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -73,5 +83,22 @@ public class SavedRecipesFragment extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SavedRecipesFragmentListener) {
+            listener = (SavedRecipesFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement Fragment new task Listener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

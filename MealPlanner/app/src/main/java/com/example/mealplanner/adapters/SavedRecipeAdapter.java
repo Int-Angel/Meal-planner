@@ -29,13 +29,18 @@ public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.
 
     private static final String TAG = "RecipeAdapter";
 
+    public interface SavedRecipeAdapterListener{
+        void openDetails(Recipe recipe);
+    }
+
     private Context context;
     private List<Recipe> recipes;
-    //private OnlineRecipeAdapter.OnlineRecipeAdapterListener listener;
+    private SavedRecipeAdapterListener listener;
 
-    public SavedRecipeAdapter(Context context, List<Recipe> recipes){
+    public SavedRecipeAdapter(Context context, List<Recipe> recipes, SavedRecipeAdapterListener listener){
         this.context = context;
         this.recipes = recipes;
+        this.listener = listener;
     }
 
     @NonNull
@@ -104,7 +109,7 @@ public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.
 
 
         private void openDetails(){
-            //listener.openDetails(bindedRecipe);
+            listener.openDetails(bindedRecipe);
         }
 
         @Override
