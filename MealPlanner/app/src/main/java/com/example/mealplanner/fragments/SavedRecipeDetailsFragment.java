@@ -1,5 +1,7 @@
 package com.example.mealplanner.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -118,6 +120,8 @@ public class SavedRecipeDetailsFragment extends Fragment {
         tvCaloriesDetails.setText(recipe.getCaloriesText());
         tvTimeDetails.setText(recipe.getTotalTime() + " min");
 
+        ibtnSaveRecipeDetails.setSelected(true);
+
         Glide.with(getContext())
                 .load(recipe.getImageUrl())
                 .transform(new RoundedCorners(600))
@@ -155,8 +159,15 @@ public class SavedRecipeDetailsFragment extends Fragment {
         ibtnGoToOriginalUrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                goToUrl(recipe.getRecipeUrl());
             }
         });
+    }
+
+    private void goToUrl(String url){
+        if (!url.startsWith("http://") && !url.startsWith("https://"))
+            url = "http://" + url;
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
     }
 }

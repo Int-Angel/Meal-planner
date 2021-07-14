@@ -20,6 +20,7 @@ import com.example.mealplanner.models.Recipe;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +71,8 @@ public class SavedRecipesFragment extends Fragment {
 
     private void querySavedRecipes() {
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
+
+        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
 
         query.findInBackground(new FindCallback<Recipe>() {
             @Override

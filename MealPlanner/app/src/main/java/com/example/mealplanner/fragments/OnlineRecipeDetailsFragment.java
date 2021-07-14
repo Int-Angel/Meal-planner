@@ -1,7 +1,9 @@
 package com.example.mealplanner.fragments;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -159,9 +161,16 @@ public class OnlineRecipeDetailsFragment extends Fragment {
         ibtnGoToOriginalUrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                goToUrl(recipe.getRecipeUrl());
             }
         });
+    }
+
+    private void goToUrl(String url){
+        if (!url.startsWith("http://") && !url.startsWith("https://"))
+            url = "http://" + url;
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
     }
 
     private void copyRecipe() {

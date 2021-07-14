@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
                 return FragmentSelection.WEEK;
             case R.id.action_recipes:
                 return FragmentSelection.SAVED_RECIPES;
-            case R.id.action_social:
-                return FragmentSelection.SOCIAL;
+                //case R.id.action_social:
+                //return FragmentSelection.SOCIAL;
             case R.id.action_profile:
             default:
                 return FragmentSelection.PROFILE;

@@ -93,8 +93,8 @@
 
             android:elevation="9dp"
 
-            android:background="@drawable/rounded_button"
-            app:srcCompat="@drawable/ic_round_favorite_24" />
+            android:background="@drawable/rounded_button_selector"
+            app:srcCompat="@drawable/heart_button" />
 
         <ImageButton
             android:id="@+id/ibtnGoToOriginalUrl"
@@ -108,8 +108,8 @@
 
             android:elevation="9dp"
 
-            android:background="@drawable/rounded_button"
-            app:srcCompat="@drawable/ic_round_link_24" />
+            android:background="@drawable/rounded_button_selector"
+            app:srcCompat="@drawable/link_button" />
 
         <LinearLayout
             android:id="@+id/llMealDetailsContainer"
