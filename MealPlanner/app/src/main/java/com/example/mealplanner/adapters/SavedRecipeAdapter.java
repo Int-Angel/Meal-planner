@@ -22,31 +22,26 @@ import com.example.mealplanner.models.Recipe;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
+
 import java.util.List;
 
+public class SavedRecipeAdapter extends RecyclerView.Adapter<SavedRecipeAdapter.ViewHolder> {
 
-public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapter.ViewHolder> {
-
-    private static final String TAG = "OnlineRecipeAdapter";
-
-    public interface OnlineRecipeAdapterListener{
-        void openDetails(OnlineRecipe recipe);
-    }
+    private static final String TAG = "RecipeAdapter";
 
     private Context context;
-    private List<OnlineRecipe> recipes;
-    private OnlineRecipeAdapterListener listener;
+    private List<Recipe> recipes;
+    //private OnlineRecipeAdapter.OnlineRecipeAdapterListener listener;
 
-    public OnlineRecipeAdapter(Context context, List<OnlineRecipe> recipes, OnlineRecipeAdapterListener listener) {
+    public SavedRecipeAdapter(Context context, List<Recipe> recipes){
         this.context = context;
         this.recipes = recipes;
-        this.listener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View recipeView = LayoutInflater.from(context).inflate(R.layout.item_recipe, parent, false);
+        View recipeView = LayoutInflater.from(context).inflate(R.layout.item_saved_recipe, parent, false);
         return new ViewHolder(recipeView);
     }
 
@@ -62,10 +57,9 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private OnlineRecipe bindedRecipe;
+        private Recipe bindedRecipe;
 
         private ImageView ivRecipeImageItem;
-        private ImageButton ibtnSaveRecipeItem;
         private TextView tvRecipeTitleItem;
         private TextView tvCaloriesItem;
         private TextView tvCuisineTypeItem;
@@ -76,7 +70,6 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
             super(itemView);
 
             ivRecipeImageItem = itemView.findViewById(R.id.ivRecipeImageItem);
-            ibtnSaveRecipeItem = itemView.findViewById(R.id.ibtnSaveRecipeItem);
             tvRecipeTitleItem = itemView.findViewById(R.id.tvRecipeTitleItem);
             tvCaloriesItem = itemView.findViewById(R.id.tvCaloriesItem);
             tvCuisineTypeItem = itemView.findViewById(R.id.tvCuisineTypeItem);
@@ -85,15 +78,9 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
 
             ivRecipeImageItem.setOnClickListener(this);
             cvItemContainer.setOnClickListener(this);
-            ibtnSaveRecipeItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    copyRecipe();
-                }
-            });
         }
 
-        public void bind(OnlineRecipe recipe) {
+        public void bind(Recipe recipe) {
             bindedRecipe = recipe;
 
             Glide.with(context)
@@ -102,7 +89,7 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
                     .into(ivRecipeImageItem);
 
             tvRecipeTitleItem.setText(recipe.getTitle());
-            tvCaloriesItem.setText(recipe.getCalories());
+            tvCaloriesItem.setText(recipe.getCaloriesText());
 
             if(recipe.getCuisineType().equals(""))
                 tvCuisineTypeItem.setVisibility(View.GONE);
@@ -115,27 +102,9 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
                 tvMealTypeItem.setText(recipe.getMealType());
         }
 
-        private void copyRecipe(){
-
-            Recipe recipe = Recipe.createRecipe(bindedRecipe);
-
-            recipe.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if(e!= null){
-                        Log.e(TAG,"Error while saving recipe!",e);
-                        Toast.makeText(context,"Error while saving recipe!",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    Log.i(TAG,"Recipe saved!");
-                    Toast.makeText(context,"Recipe saved!",Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        }
 
         private void openDetails(){
-            listener.openDetails(bindedRecipe);
+            //listener.openDetails(bindedRecipe);
         }
 
         @Override
@@ -143,4 +112,5 @@ public class OnlineRecipeAdapter extends RecyclerView.Adapter<OnlineRecipeAdapte
             openDetails();
         }
     }
+
 }

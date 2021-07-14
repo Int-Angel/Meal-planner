@@ -10,12 +10,14 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.palette.graphics.Palette;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -23,6 +25,9 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.mealplanner.R;
 import com.example.mealplanner.models.OnlineRecipe;
+import com.example.mealplanner.models.Recipe;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
@@ -31,6 +36,7 @@ import java.util.List;
 
 public class OnlineRecipeDetailsFragment extends Fragment {
 
+    private static final String TAG = "OnlineRecipeDetails";
     private static final String RECIPE = "recipe";
 
     private OnlineRecipe recipe;
@@ -38,6 +44,7 @@ public class OnlineRecipeDetailsFragment extends Fragment {
     private TextView tvTitle;
     private ImageButton ibtnBackOnlineDetails;
     private ImageButton ibtnSaveRecipeDetails;
+    private ImageButton ibtnGoToOriginalUrl;
     private ImageView ivRecipeImageOnlineDetails;
     private TextView tvDishTypeDetails;
     private TextView tvCuisineTypeDetails;
@@ -81,8 +88,8 @@ public class OnlineRecipeDetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         tvTitle = view.findViewById(R.id.tvTitle);
-        ibtnBackOnlineDetails = view.findViewById(R.id.ibtnBackOnlineDetails); //TODO: create OnclickListener
-        ibtnSaveRecipeDetails = view.findViewById(R.id.ibtnSaveRecipeDetails); //TODO: create OnclickListener
+        ibtnBackOnlineDetails = view.findViewById(R.id.ibtnBackOnlineDetails);
+        ibtnSaveRecipeDetails = view.findViewById(R.id.ibtnSaveRecipeDetails);
         ivRecipeImageOnlineDetails = view.findViewById(R.id.ivRecipeImageOnlineDetails);
         tvDishTypeDetails = view.findViewById(R.id.tvDishTypeDetails);
         tvCuisineTypeDetails = view.findViewById(R.id.tvCuisineTypeDetails);
@@ -92,25 +99,27 @@ public class OnlineRecipeDetailsFragment extends Fragment {
         tvIngredients = view.findViewById(R.id.tvIngredients);
         cvDetails = view.findViewById(R.id.cvDetails);
         tvIngredientsTitle = view.findViewById(R.id.tvIngredientsTitle);
+        ibtnGoToOriginalUrl = view.findViewById(R.id.ibtnGoToOriginalUrl);
 
         bind();
         changeColors();
+        setupOnClickListeners();
     }
 
     private void bind() {
         tvTitle.setText(recipe.getTitle());
 
-        if(recipe.getDishType().equals(""))
+        if (recipe.getDishType().equals(""))
             tvDishTypeDetails.setVisibility(View.GONE);
         else
             tvDishTypeDetails.setText(recipe.getDishType());
 
-        if(recipe.getCuisineType().equals(""))
+        if (recipe.getCuisineType().equals(""))
             tvCuisineTypeDetails.setVisibility(View.GONE);
         else
             tvCuisineTypeDetails.setText(recipe.getCuisineType());
 
-        if(recipe.getMealType().equals(""))
+        if (recipe.getMealType().equals(""))
             tvMealTypeDetails.setVisibility(View.GONE);
         else
             tvMealTypeDetails.setText(recipe.getMealType());
@@ -132,7 +141,47 @@ public class OnlineRecipeDetailsFragment extends Fragment {
         tvIngredients.setText(tempIngredients.toString());
     }
 
-    private void changeColors(){
+    private void setupOnClickListeners() {
+        ibtnBackOnlineDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        ibtnSaveRecipeDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyRecipe();
+            }
+        });
+
+        ibtnGoToOriginalUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    private void copyRecipe() {
+        Recipe recipe = Recipe.createRecipe(this.recipe);
+
+        recipe.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e!= null){
+                    Log.e(TAG,"Error while saving recipe!",e);
+                    Toast.makeText(getContext(),"Error while saving recipe!",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Log.i(TAG,"Recipe saved!");
+                Toast.makeText(getContext(),"Recipe saved!",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void changeColors() {
 
         /*CustomTarget<Bitmap> target = new CustomTarget<Bitmap>() {
             @Override

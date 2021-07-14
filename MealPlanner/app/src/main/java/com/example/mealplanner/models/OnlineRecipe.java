@@ -21,6 +21,7 @@ public class OnlineRecipe {
     private String totalTime;
     private String calories;
     private String recipeUrl;
+    private float caloriesNumber;
     private List<String> ingredients;
 
     public OnlineRecipe() {
@@ -34,12 +35,12 @@ public class OnlineRecipe {
         totalTime = recipe.getString("totalTime");
 
         calories = recipe.getString("calories");
-        float cal = Float.parseFloat(calories);
+        caloriesNumber = Float.parseFloat(calories);
 
-        if(cal/1000f >= 1f){
-            calories = String.format("%.1f",cal/1000f) + " kcal";
+        if(caloriesNumber/1000f >= 1f){
+            calories = String.format("%.1f",caloriesNumber/1000f) + " kcal";
         }else {
-            calories = String.format("%.1f",cal) + " cal";
+            calories = String.format("%.1f",caloriesNumber) + " cal";
         }
 
         ingredients = new ArrayList<>();
@@ -119,6 +120,10 @@ public class OnlineRecipe {
 
     public List<String> getIngredients() {
         return ingredients;
+    }
+
+    public float getCaloriesNumber(){
+        return caloriesNumber;
     }
 
     public static List<OnlineRecipe> fromJsonArray(JSONArray jsonArray) throws JSONException {

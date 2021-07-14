@@ -40,10 +40,14 @@
                     android:layout_marginStart="130dp"
                     android:layout_marginTop="60dp"
 
+                    android:rotation="0"
+                    android:rotationX="0"
+                    android:rotationY="0"
+
                     android:text="Chiken Tikka Masala Recipe"
                     android:textAlignment="viewStart"
+                    android:textAllCaps="false"
                     android:textColor="@android:color/white"
-
                     android:textSize="35sp"
                     android:textStyle="bold" />
 
@@ -85,12 +89,27 @@
             android:layout_alignTop="@+id/ivRecipeImageOnlineDetails"
             android:layout_toEndOf="@+id/ivRecipeImageOnlineDetails"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="5dp"
 
             android:elevation="9dp"
 
             android:background="@drawable/rounded_button"
             app:srcCompat="@drawable/ic_round_favorite_24" />
+
+        <ImageButton
+            android:id="@+id/ibtnGoToOriginalUrl"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+
+            android:layout_below="@+id/ibtnSaveRecipeDetails"
+            android:layout_toEndOf="@+id/ivRecipeImageOnlineDetails"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+
+            android:elevation="9dp"
+
+            android:background="@drawable/rounded_button"
+            app:srcCompat="@drawable/ic_round_link_24" />
 
         <LinearLayout
             android:id="@+id/llMealDetailsContainer"
