@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.mealplanner.R;
+import com.example.mealplanner.SavedRecipesManager;
 import com.example.mealplanner.adapters.RecipeAdapter;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
@@ -25,15 +26,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.Headers;
 
 
 public class OnlineRecipesFragment extends Fragment {
 
-    public interface OnlineRecipesFragmentListener{
-        void openOnlineRecipeDetailsListener(IRecipe recipe);
+    public interface OnlineRecipesFragmentListener {
+        void openOnlineRecipeDetailsListener(IRecipe recipe, int index);
     }
 
     private final static String TAG = "OnlineRecipes";
@@ -41,6 +44,7 @@ public class OnlineRecipesFragment extends Fragment {
 
     private RecyclerView rvRecipes;
     private List<IRecipe> onlineRecipes;
+    private Set<String> savedRecipesUri;
     private RecipeAdapter adapter;
     private AsyncHttpClient client;
 
@@ -65,8 +69,8 @@ public class OnlineRecipesFragment extends Fragment {
         client = new AsyncHttpClient();
         adapter = new RecipeAdapter(getContext(), onlineRecipes, new RecipeAdapter.RecipeAdapterListener() {
             @Override
-            public void openDetails(IRecipe recipe) {
-                listener.openOnlineRecipeDetailsListener(recipe);
+            public void openDetails(IRecipe recipe, int index) {
+                listener.openOnlineRecipeDetailsListener(recipe,index);
             }
         });
 
@@ -74,6 +78,8 @@ public class OnlineRecipesFragment extends Fragment {
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        savedRecipesUri = new HashSet<>();
+        savedRecipesUri = SavedRecipesManager.getUriSet();
         getRecipes();
     }
 
@@ -86,7 +92,7 @@ public class OnlineRecipesFragment extends Fragment {
                 try {
                     JSONArray results = json.jsonObject.getJSONArray("hits");
                     onlineRecipes.addAll(OnlineRecipe.fromJsonArray(results));
-                    adapter.notifyDataSetChanged();
+                    checkIfRecipesAreAlreadySaved();
                 } catch (JSONException e) {
                     Log.e(TAG, "Issue creating recipes", e);
                 }
@@ -97,6 +103,17 @@ public class OnlineRecipesFragment extends Fragment {
                 Log.e(TAG, "onFailure", throwable);
             }
         });
+    }
+
+    private void checkIfRecipesAreAlreadySaved() {
+        for (String s:savedRecipesUri){
+            Log.i("Check",s);
+        }
+        for (int i = 0; i < onlineRecipes.size(); i++) {
+            String uri = onlineRecipes.get(i).getUri();
+            ((OnlineRecipe) onlineRecipes.get(i)).setSaved(savedRecipesUri.contains(uri));
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override

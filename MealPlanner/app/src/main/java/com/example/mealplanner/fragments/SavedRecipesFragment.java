@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mealplanner.R;
+import com.example.mealplanner.SavedRecipesManager;
 import com.example.mealplanner.adapters.RecipeAdapter;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.Recipe;
@@ -32,7 +33,7 @@ public class SavedRecipesFragment extends Fragment {
     private final static String TAG = "SavedRecipes";
 
     public interface SavedRecipesFragmentListener{
-        void openSavedRecipeDetailsFragment(IRecipe recipe);
+        void openSavedRecipeDetailsFragment(IRecipe recipe, int index);
     }
 
     private RecyclerView rvRecipes;
@@ -59,34 +60,21 @@ public class SavedRecipesFragment extends Fragment {
         recipes = new ArrayList<>();
         adapter = new RecipeAdapter(getContext(), recipes, new RecipeAdapter.RecipeAdapterListener() {
             @Override
-            public void openDetails(IRecipe recipe) {
-                listener.openSavedRecipeDetailsFragment(recipe);
+            public void openDetails(IRecipe recipe, int index) {
+                listener.openSavedRecipeDetailsFragment(recipe, index);
             }
         });
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        querySavedRecipes();
+        updateRecipeList();
     }
 
-    private void querySavedRecipes() {
-        ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
-
-        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
-
-        query.findInBackground(new FindCallback<Recipe>() {
-            @Override
-            public void done(List<Recipe> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Fail getting recipes", e);
-                    return;
-                }
-                recipes.addAll(objects);
-                adapter.notifyDataSetChanged();
-            }
-        });
-
+    public void updateRecipeList(){
+        recipes.clear();
+        recipes.addAll(SavedRecipesManager.getRecipes());
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -104,5 +92,6 @@ public class SavedRecipesFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         listener = null;
+        Log.i(TAG,"onDetach");
     }
 }

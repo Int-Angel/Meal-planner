@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Parcel
-public class OnlineRecipe implements IRecipe{
+public class OnlineRecipe implements IRecipe {
 
     private String title;
     private String imageUrl;
@@ -23,6 +23,8 @@ public class OnlineRecipe implements IRecipe{
     private String recipeUrl;
     private float caloriesNumber;
     private List<String> ingredients;
+    private String uri;
+    private boolean isSaved;
 
     public OnlineRecipe() {
     }
@@ -33,14 +35,15 @@ public class OnlineRecipe implements IRecipe{
         imageUrl = recipe.getString("image");
         recipeUrl = recipe.getString("url");
         totalTime = recipe.getString("totalTime");
+        uri = recipe.getString("uri");
 
         calories = recipe.getString("calories");
         caloriesNumber = Float.parseFloat(calories);
 
-        if(caloriesNumber/1000f >= 1f){
-            calories = String.format("%.1f",caloriesNumber/1000f) + " kcal";
-        }else {
-            calories = String.format("%.1f",caloriesNumber) + " cal";
+        if (caloriesNumber / 1000f >= 1f) {
+            calories = String.format("%.1f", caloriesNumber / 1000f) + " kcal";
+        } else {
+            calories = String.format("%.1f", caloriesNumber) + " cal";
         }
 
         ingredients = new ArrayList<>();
@@ -64,23 +67,23 @@ public class OnlineRecipe implements IRecipe{
             cuisineType = "";
         }
 
-        try{
+        try {
             JSONArray mealTypeArray = recipe.getJSONArray("mealType");
             if (mealTypeArray.length() != 0)
                 mealType = mealTypeArray.getString(0);
             else
                 mealType = "";
-        }catch (JSONException e){
+        } catch (JSONException e) {
             mealType = "";
         }
 
-        try{
+        try {
             JSONArray dishTypeArray = recipe.getJSONArray("dishType");
             if (dishTypeArray.length() != 0)
                 dishType = dishTypeArray.getString(0);
             else
                 dishType = "";
-        }catch (JSONException e){
+        } catch (JSONException e) {
             dishType = "";
         }
 
@@ -122,8 +125,20 @@ public class OnlineRecipe implements IRecipe{
         return ingredients;
     }
 
-    public float getCaloriesNumber(){
+    public float getCaloriesNumber() {
         return caloriesNumber;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public boolean isSaved() {
+        return isSaved;
+    }
+
+    public void setSaved(boolean saved) {
+        isSaved = saved;
     }
 
     public static List<OnlineRecipe> fromJsonArray(JSONArray jsonArray) throws JSONException {

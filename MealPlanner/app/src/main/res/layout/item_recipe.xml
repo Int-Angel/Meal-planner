@@ -128,8 +128,8 @@
 
         android:elevation="9dp"
 
-        android:background="@drawable/rounded_button"
-        app:srcCompat="@drawable/ic_round_favorite_24" />
+        android:background="@drawable/rounded_button_selector"
+        app:srcCompat="@drawable/heart_button" />
 
 
 </RelativeLayout>

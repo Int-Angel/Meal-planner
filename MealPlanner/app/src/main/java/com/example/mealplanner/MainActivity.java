@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         bottomNavigationView.setSelectedItemId(R.id.action_week);
         activeFragment = FragmentSelection.WEEK;
 
+        SavedRecipesManager.querySavedRecipes();
     }
 
     private void setBottomNavigationListener() {
@@ -165,10 +166,10 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
-    private void openRecipeDetailsFragment(IRecipe recipe) {
+    private void openRecipeDetailsFragment(IRecipe recipe, int index) {
         lastActiveFragment = activeFragment;
 
-        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe);
+        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, index);
         weekFragmentHeader.setVisibility(View.GONE);
         recipeFragmentHeader.setVisibility(View.GONE);
 
@@ -186,13 +187,13 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
     }
 
     @Override
-    public void openOnlineRecipeDetailsListener(IRecipe recipe) {
-        openRecipeDetailsFragment(recipe);
+    public void openOnlineRecipeDetailsListener(IRecipe recipe, int index) {
+        openRecipeDetailsFragment(recipe, index);
     }
 
     @Override
-    public void openSavedRecipeDetailsFragment(IRecipe recipe) {
-        openRecipeDetailsFragment(recipe);
+    public void openSavedRecipeDetailsFragment(IRecipe recipe, int index) {
+        openRecipeDetailsFragment(recipe, index);
     }
 
     @Override
@@ -200,6 +201,11 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         Log.i(TAG, "BACK");
         Toast.makeText(MainActivity.this, "BACK", Toast.LENGTH_SHORT).show(); // Not showing
         onBackPressed();
+    }
+
+    @Override
+    public void updateRecipeList() {
+        savedRecipesFragment.updateRecipeList();
     }
 
 }

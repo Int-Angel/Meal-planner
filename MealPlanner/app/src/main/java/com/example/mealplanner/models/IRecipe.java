@@ -23,4 +23,7 @@ public interface IRecipe {
     public List<String> getIngredients();
 
     public float getCaloriesNumber();
+
+    public String getUri();
+
 }

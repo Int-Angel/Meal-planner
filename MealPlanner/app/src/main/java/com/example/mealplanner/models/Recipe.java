@@ -27,6 +27,7 @@ public class Recipe extends ParseObject implements IRecipe {
     public final static String KEY_RECIPE_URL = "recipeUrl";
     public final static String KEY_INSTRUCTIONS = "instructions";
     public final static String KEY_INGREDIENTS = "ingredients";
+    public final static String KEY_URI = "uri";
 
     public static Recipe createRecipe(OnlineRecipe onlineRecipe) {
         Recipe recipe = new Recipe();
@@ -42,6 +43,7 @@ public class Recipe extends ParseObject implements IRecipe {
         recipe.setRecipeUrl(onlineRecipe.getRecipeUrl());
         recipe.setInstructions("Copy instructions from link");
         recipe.setIngredients(onlineRecipe.getIngredients());
+        recipe.setUri(onlineRecipe.getUri());
 
         return recipe;
     }
@@ -165,5 +167,13 @@ public class Recipe extends ParseObject implements IRecipe {
     public void setIngredients(List<String> ingredients) {
         JSONArray ingredientsJSONArray = new JSONArray(ingredients);
         setIngredients(ingredientsJSONArray);
+    }
+
+    public String getUri(){
+        return getString(KEY_URI);
+    }
+
+    public void setUri(String uri){
+        put(KEY_URI, uri);
     }
 }

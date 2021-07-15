@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
+import com.example.mealplanner.SavedRecipesManager;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
@@ -31,7 +32,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private static final String TAG = "RecipeAdapter";
 
     public interface RecipeAdapterListener {
-        void openDetails(IRecipe recipe);
+        void openDetails(IRecipe recipe, int index);
     }
 
     private Context context;
@@ -97,9 +98,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         public void bind(IRecipe recipe) {
             bindedRecipe = recipe;
 
-            if(recipe instanceof OnlineRecipe){
+            if (recipe instanceof OnlineRecipe) {
                 ibtnSaveRecipeItem.setVisibility(View.VISIBLE);
-            }else{
+                ibtnSaveRecipeItem.setSelected(((OnlineRecipe) recipe).isSaved());
+            } else {
                 ibtnSaveRecipeItem.setVisibility(View.GONE);
             }
 
@@ -111,36 +113,31 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             tvRecipeTitleItem.setText(recipe.getTitle());
             tvCaloriesItem.setText(recipe.getCalories());
 
-            if(recipe.getCuisineType().equals(""))
+            if (recipe.getCuisineType().equals(""))
                 tvCuisineTypeItem.setVisibility(View.GONE);
             else
                 tvCuisineTypeItem.setText(recipe.getCuisineType());
 
-            if(recipe.getMealType().equals(""))
+            if (recipe.getMealType().equals(""))
                 tvMealTypeItem.setVisibility(View.GONE);
             else
                 tvMealTypeItem.setText(recipe.getMealType());
         }
 
-        private void copyRecipe(){
-            Recipe recipe = Recipe.createRecipe((OnlineRecipe) bindedRecipe);
-
-            recipe.saveInBackground(new com.parse.SaveCallback() {
-                @Override
-                public void done(com.parse.ParseException e) {
-                    if(e!= null){
-                        Log.e(TAG,"Error while saving recipe!",e);
-                        Toast.makeText(context,"Error while saving recipe!",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    Log.i(TAG,"Recipe saved!");
-                    Toast.makeText(context,"Recipe saved!",Toast.LENGTH_SHORT).show();
-                }
-            });
+        private void copyRecipe() {
+            if(!((OnlineRecipe)bindedRecipe).isSaved()){
+                SavedRecipesManager.saveRecipe((OnlineRecipe) bindedRecipe);
+                ibtnSaveRecipeItem.setSelected(true);
+                ((OnlineRecipe)bindedRecipe).setSaved(true);
+            }else{
+                SavedRecipesManager.unSaveRecipeByUri(bindedRecipe.getUri());
+                ibtnSaveRecipeItem.setSelected(false);
+                ((OnlineRecipe)bindedRecipe).setSaved(false);
+            }
         }
 
-        private void openDetails(){
-            listener.openDetails(bindedRecipe);
+        private void openDetails() {
+            listener.openDetails(bindedRecipe, getAdapterPosition());
         }
 
         @Override

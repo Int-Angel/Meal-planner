@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
+import com.example.mealplanner.SavedRecipesManager;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
@@ -35,15 +36,19 @@ import java.util.List;
 
 public class RecipeDetailsFragment extends Fragment {
 
-    public interface RecipeDetailsFragmentListener{
+    public interface RecipeDetailsFragmentListener {
         void backButtonPressed();
+        void updateRecipeList();
     }
 
     private static final String TAG = "RecipeDetails";
     private static final String RECIPE = "recipe";
+    private static final String INDEX = "index";
 
     private IRecipe recipe;
+    private int index;
     private RecipeDetailsFragmentListener listener;
+    private boolean originalSavedState;
 
     private TextView tvTitle;
     private ImageButton ibtnBackOnlineDetails;
@@ -64,10 +69,11 @@ public class RecipeDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static RecipeDetailsFragment newInstance(IRecipe recipe) {
+    public static RecipeDetailsFragment newInstance(IRecipe recipe, int index) {
         RecipeDetailsFragment fragment = new RecipeDetailsFragment();
         Bundle args = new Bundle();
         args.putParcelable(RECIPE, Parcels.wrap(recipe));
+        args.putInt(INDEX, index);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,6 +83,7 @@ public class RecipeDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             recipe = Parcels.unwrap(getArguments().getParcelable(RECIPE));
+            index = getArguments().getInt(INDEX);
         }
     }
 
@@ -112,8 +119,13 @@ public class RecipeDetailsFragment extends Fragment {
 
     private void bind() {
 
-        if(recipe instanceof Recipe)
+        if (recipe instanceof Recipe)
             ibtnSaveRecipeDetails.setSelected(true);
+        else {
+            ibtnSaveRecipeDetails.setSelected(((OnlineRecipe) recipe).isSaved());
+        }
+
+        originalSavedState = ibtnSaveRecipeDetails.isSelected();
 
         tvTitle.setText(recipe.getTitle());
 
@@ -172,7 +184,7 @@ public class RecipeDetailsFragment extends Fragment {
         });
     }
 
-    private void goToUrl(String url){
+    private void goToUrl(String url) {
         if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://" + url;
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -180,22 +192,27 @@ public class RecipeDetailsFragment extends Fragment {
     }
 
     private void copyRecipe() {
-        if(this.recipe instanceof OnlineRecipe){
-            Recipe recipe = Recipe.createRecipe((OnlineRecipe) this.recipe);
-
-            recipe.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if(e!= null){
-                        Log.e(TAG,"Error while saving recipe!",e);
-                        Toast.makeText(getContext(),"Error while saving recipe!",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    Log.i(TAG,"Recipe saved!");
-                    Toast.makeText(getContext(),"Recipe saved!",Toast.LENGTH_SHORT).show();
-                }
-            });
+        if (this.recipe instanceof OnlineRecipe) {
+            saveOnlineRecipe();
+        } else {
+            saveSavedRecipe();
         }
+    }
+
+    private void saveOnlineRecipe() {
+        if (!((OnlineRecipe) recipe).isSaved()) {
+            SavedRecipesManager.saveRecipe((OnlineRecipe) recipe);
+            ibtnSaveRecipeDetails.setSelected(true);
+            ((OnlineRecipe) recipe).setSaved(true);
+        } else {
+            SavedRecipesManager.unSaveRecipeByUri(recipe.getUri());
+            ibtnSaveRecipeDetails.setSelected(false);
+            ((OnlineRecipe) recipe).setSaved(false);
+        }
+    }
+
+    private void saveSavedRecipe() {
+        ibtnSaveRecipeDetails.setSelected(!ibtnSaveRecipeDetails.isSelected());
     }
 
     private void changeColors() {
@@ -238,6 +255,16 @@ public class RecipeDetailsFragment extends Fragment {
         });*/
     }
 
+    private void removeSavedRecipe() {
+        if (recipe instanceof Recipe) {
+            if (!ibtnSaveRecipeDetails.isSelected()) {
+                //SavedRecipesManager.unSaveRecipeByUri(recipe.getUri());
+                SavedRecipesManager.unSaveRecipe(index);
+                listener.updateRecipeList();
+            }
+        }
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -252,6 +279,7 @@ public class RecipeDetailsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        removeSavedRecipe();
         listener = null;
     }
 }
