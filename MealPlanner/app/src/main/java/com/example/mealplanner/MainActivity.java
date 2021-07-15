@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
 
     private RelativeLayout recipeFragmentHeader;
     private RelativeLayout weekFragmentHeader;
+    private RadioButton weekRadioButton;
+    private RadioButton savedRecipesRadioButton;
 
     private FragmentSelection activeFragment;
     private FragmentSelection lastActiveFragment;
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         weekFragmentHeader = findViewById(R.id.weekFragmentHeader);
         recipeFragmentHeader = findViewById(R.id.recipeFragmentHeader);
         recipeFragmentHeader.setVisibility(View.GONE);
+
+        weekRadioButton = findViewById(R.id.rbWeek);
+        savedRecipesRadioButton = findViewById(R.id.rbSavedRecipes);
 
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         setBottomNavigationListener();
@@ -107,11 +112,9 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
     private FragmentSelection getFragmentSelectionFromMenu(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_week:
-                return FragmentSelection.WEEK;
+                return weekRadioButton.isChecked() ? FragmentSelection.WEEK : FragmentSelection.SHOPPING_LIST;
             case R.id.action_recipes:
-                return FragmentSelection.SAVED_RECIPES;
-            //case R.id.action_social:
-            //return FragmentSelection.SOCIAL;
+                return savedRecipesRadioButton.isChecked() ? FragmentSelection.SAVED_RECIPES : FragmentSelection.ONLINE_RECIPES;
             case R.id.action_profile:
             default:
                 return FragmentSelection.PROFILE;
