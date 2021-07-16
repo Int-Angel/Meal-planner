@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
@@ -37,6 +39,8 @@ public class SavedRecipesFragment extends Fragment {
     }
 
     private RecyclerView rvRecipes;
+    private ProgressBar progressBar;
+    private TextView tvNoSavedRecipes;
     private List<IRecipe> recipes;
     private RecipeAdapter adapter;
 
@@ -64,6 +68,10 @@ public class SavedRecipesFragment extends Fragment {
                 listener.openSavedRecipeDetailsFragment(recipe, index);
             }
         });
+
+        tvNoSavedRecipes = view.findViewById(R.id.tvNoSavedRecipes);
+        progressBar = view.findViewById(R.id.progress_circular);
+
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -74,6 +82,14 @@ public class SavedRecipesFragment extends Fragment {
     public void updateRecipeList(){
         recipes.clear();
         recipes.addAll(SavedRecipesManager.getRecipes());
+        progressBar.setVisibility(View.GONE);
+
+        if(recipes.size() == 0){
+            tvNoSavedRecipes.setVisibility(View.VISIBLE);
+        }else{
+            tvNoSavedRecipes.setVisibility(View.GONE);
+        }
+
         adapter.notifyDataSetChanged();
     }
 

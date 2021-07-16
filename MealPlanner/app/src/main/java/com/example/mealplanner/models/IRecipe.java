@@ -24,4 +24,9 @@ public interface IRecipe {
 
     public String getId();
 
+    public String getSummary();
+
+    public List<String> getInstructions();
+
+    public List<String> getIngredientsImagesUrl();
 }

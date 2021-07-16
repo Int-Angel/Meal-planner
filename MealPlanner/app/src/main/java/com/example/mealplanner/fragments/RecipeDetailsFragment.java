@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
+import com.example.mealplanner.adapters.IngredientsImagesAdapter;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
@@ -48,7 +51,7 @@ public class RecipeDetailsFragment extends Fragment {
     private IRecipe recipe;
     private int index;
     private RecipeDetailsFragmentListener listener;
-    private boolean originalSavedState;
+    private IngredientsImagesAdapter adapter;
 
     private TextView tvTitle;
     private ImageButton ibtnBackOnlineDetails;
@@ -63,6 +66,7 @@ public class RecipeDetailsFragment extends Fragment {
     private TextView tvIngredients;
     private CardView cvDetails;
     private TextView tvIngredientsTitle;
+    private RecyclerView rvIngredientsImages;
 
 
     public RecipeDetailsFragment() {
@@ -111,9 +115,13 @@ public class RecipeDetailsFragment extends Fragment {
         cvDetails = view.findViewById(R.id.cvDetails);
         tvIngredientsTitle = view.findViewById(R.id.tvIngredientsTitle);
         ibtnGoToOriginalUrl = view.findViewById(R.id.ibtnGoToOriginalUrl);
+        rvIngredientsImages = view.findViewById(R.id.rvIngredientsImages);
+
+        adapter = new IngredientsImagesAdapter(getContext(), recipe.getIngredients(), recipe.getIngredientsImagesUrl());
+        rvIngredientsImages.setAdapter(adapter);
+        rvIngredientsImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         bind();
-        //changeColors();
         setupOnClickListeners();
     }
 
@@ -124,8 +132,6 @@ public class RecipeDetailsFragment extends Fragment {
         else {
             ibtnSaveRecipeDetails.setSelected(((OnlineRecipe) recipe).isSaved());
         }
-
-        originalSavedState = ibtnSaveRecipeDetails.isSelected();
 
         tvTitle.setText(recipe.getTitle());
 
@@ -144,13 +150,13 @@ public class RecipeDetailsFragment extends Fragment {
 
         Glide.with(getContext())
                 .load(recipe.getImageUrl())
-                .transform(new RoundedCorners(600))
+                .transform(new RoundedCorners(1000))
                 .into(ivRecipeImageOnlineDetails);
 
         StringBuilder tempIngredients = new StringBuilder();
         List<String> ingredientsList = recipe.getIngredients();
         for (int i = 0; i < ingredientsList.size(); i++) {
-            tempIngredients.append(ingredientsList.get(i)).append("\n");
+            tempIngredients.append("• " + ingredientsList.get(i)).append("\n");
         }
 
         tvIngredients.setText(tempIngredients.toString());
@@ -208,46 +214,6 @@ public class RecipeDetailsFragment extends Fragment {
 
     private void saveSavedRecipe() {
         ibtnSaveRecipeDetails.setSelected(!ibtnSaveRecipeDetails.isSelected());
-    }
-
-    private void changeColors() {
-
-        /*CustomTarget<Bitmap> target = new CustomTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                // TODO 1. Instruct Glide to load the bitmap into the `holder.ivProfile` profile image view
-
-                Glide.with(getContext())
-                        .load(recipe.getImageUrl())
-                        .transform(new RoundedCorners(600))
-                        .into(ivRecipeImageOnlineDetails);
-
-                // TODO 2. Use generate() method from the Palette API to get the vibrant color from the bitmap
-                // Set the result as the background color for `holder.vPalette` view containing the contact's name.
-            }
-
-            @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-                // can leave empty
-            }
-        };
-
-        // Instruct Glide to load the bitmap into the asynchronous target defined above
-        Glide.with(getContext()).asBitmap().load(recipe.getImageUrl()).centerCrop().into(target);
-
-        Palette.from(bitmap).maximumColorCount(16).generate(new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
-                // Get the "vibrant" color swatch based on the bitmap
-                Palette.Swatch vibrant = palette.getVibrantSwatch();
-                if (vibrant != null) {
-                    // Set the background color of a layout based on the vibrant color
-                    containerView.setBackgroundColor(vibrant.getRgb());
-                    // Update the title TextView with the proper text color
-                    titleView.setTextColor(vibrant.getTitleTextColor());
-                }
-            }
-        });*/
     }
 
     private void removeSavedRecipe() {

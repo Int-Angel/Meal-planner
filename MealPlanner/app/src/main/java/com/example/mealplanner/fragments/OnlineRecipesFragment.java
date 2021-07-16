@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
@@ -43,6 +44,7 @@ public class OnlineRecipesFragment extends Fragment {
     public static final String BASE_RECIPES_URL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=728721c3da7543769d5413b35ac70cd7&addRecipeInformation=true&addRecipeNutrition=true&instructionsRequired=true&fillIngredients=true";
 
     private RecyclerView rvRecipes;
+    private ProgressBar progressBar;
     private List<IRecipe> onlineRecipes;
     private Set<String> savedRecipesUri;
     private RecipeAdapter adapter;
@@ -73,6 +75,8 @@ public class OnlineRecipesFragment extends Fragment {
                 listener.openOnlineRecipeDetailsListener(recipe, index);
             }
         });
+
+        progressBar = view.findViewById(R.id.progress_circular);
 
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
@@ -113,6 +117,7 @@ public class OnlineRecipesFragment extends Fragment {
             String uri = onlineRecipes.get(i).getId();
             ((OnlineRecipe) onlineRecipes.get(i)).setSaved(savedRecipesUri.contains(uri));
         }
+        progressBar.setVisibility(View.GONE);
         adapter.notifyDataSetChanged();
     }
 

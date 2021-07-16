@@ -30,10 +30,11 @@ public class OnlineRecipe implements IRecipe {
     private String recipeUrl;
     private float caloriesNumber;
     private List<String> ingredients;
+    private List<String> ingredientsImagesUrl;
     private String id;
     private boolean isSaved;
     private String summary;
-    private String instructions;
+    private List<String> instructions;
 
 
     public OnlineRecipe() {
@@ -47,7 +48,6 @@ public class OnlineRecipe implements IRecipe {
         recipeUrl = jsonObject.getString("sourceUrl");
         totalTime = jsonObject.getString("readyInMinutes");
         summary = jsonObject.getString("summary");
-        //instructions = jsonObject.getString("instructions");
 
         JSONObject nutrition = jsonObject.getJSONObject("nutrition");
 
@@ -77,59 +77,103 @@ public class OnlineRecipe implements IRecipe {
         }
 
         getIngredientsFromJson(jsonObject);
+        getInstructionsFromJson(jsonObject);
     }
 
-    private void getIngredientsFromJson(JSONObject jsonObject){
-        // TODO get all ingredients data
+    private void getIngredientsFromJson(JSONObject jsonObject) {
         ingredients = new ArrayList<>();
+        ingredientsImagesUrl = new ArrayList<>();
         try {
             JSONArray ingredientsArray = jsonObject.getJSONArray("extendedIngredients");
             for (int i = 0; i < ingredientsArray.length(); i++) {
                 ingredients.add(ingredientsArray.getJSONObject(i).getString("original"));
+
+                String image = ingredientsArray.getJSONObject(i).getString("image");
+                String imageUrl = "https://spoonacular.com/cdn/ingredients_250x250/";
+                ingredientsImagesUrl.add(imageUrl + image);
             }
         } catch (JSONException e) {
             //no ingredients list
         }
     }
 
+    private void getInstructionsFromJson(JSONObject jsonObject) {
+        instructions = new ArrayList<>();
+        try {
+            JSONArray analyzedInstructions = jsonObject.getJSONArray("analyzedInstructions");
+            JSONArray steps = analyzedInstructions.getJSONObject(0).getJSONArray("steps");
+
+            for (int i = 0; i < steps.length(); i++) {
+                instructions.add(steps.getJSONObject(i).getString("step"));
+            }
+        } catch (JSONException e) {
+            //no instructions
+        }
+    }
+
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public String getImageUrl() {
         return imageUrl;
     }
 
+    @Override
     public String getDishType() {
         return dishType;
     }
 
+    @Override
     public String getCuisineType() {
         return cuisineType;
     }
 
+    @Override
     public String getTotalTime() {
         return totalTime;
     }
 
+    @Override
     public String getCalories() {
         return calories;
     }
 
+    @Override
     public String getRecipeUrl() {
         return recipeUrl;
     }
 
+    @Override
     public List<String> getIngredients() {
         return ingredients;
     }
 
+    @Override
     public float getCaloriesNumber() {
         return caloriesNumber;
     }
 
+    @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public String getSummary() {
+        return summary;
+    }
+
+    @Override
+    public List<String> getInstructions() {
+        return instructions;
+    }
+
+    @Override
+    public List<String> getIngredientsImagesUrl() {
+        return ingredientsImagesUrl;
     }
 
     public boolean isSaved() {

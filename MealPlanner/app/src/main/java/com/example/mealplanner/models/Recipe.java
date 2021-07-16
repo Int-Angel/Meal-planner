@@ -27,6 +27,8 @@ public class Recipe extends ParseObject implements IRecipe {
     public final static String KEY_INSTRUCTIONS = "instructions";
     public final static String KEY_INGREDIENTS = "ingredients";
     public final static String KEY_ID = "idRecipe";
+    public final static String KEY_SUMMARY = "summary";
+    public final static String KEY_INGREDIENTS_IMAGES_URL = "ingredientsImagesUrl";
 
     public static Recipe createRecipe(OnlineRecipe onlineRecipe) {
         Recipe recipe = new Recipe();
@@ -39,9 +41,11 @@ public class Recipe extends ParseObject implements IRecipe {
         recipe.setTotalTime(onlineRecipe.getTotalTime());
         recipe.setCalories(onlineRecipe.getCaloriesNumber());
         recipe.setRecipeUrl(onlineRecipe.getRecipeUrl());
-        recipe.setInstructions("Copy instructions from link");
         recipe.setIngredients(onlineRecipe.getIngredients());
         recipe.setId(onlineRecipe.getId());
+        recipe.setInstructions(onlineRecipe.getInstructions());
+        recipe.setIngredientsImagesUrl(onlineRecipe.getIngredientsImagesUrl());
+        recipe.setSummary(onlineRecipe.getSummary());
 
         return recipe;
     }
@@ -54,6 +58,7 @@ public class Recipe extends ParseObject implements IRecipe {
         put(KEY_USER, user);
     }
 
+    @Override
     public String getTitle() {
         return getString(KEY_TITLE);
     }
@@ -62,6 +67,7 @@ public class Recipe extends ParseObject implements IRecipe {
         put(KEY_TITLE, tile);
     }
 
+    @Override
     public String getImageUrl() {
         return getString(KEY_IMAGE_URL);
     }
@@ -70,6 +76,7 @@ public class Recipe extends ParseObject implements IRecipe {
         put(KEY_IMAGE_URL, imageUrl);
     }
 
+    @Override
     public String getDishType() {
         return getString(KEY_DISH_TYPE);
     }
@@ -78,6 +85,7 @@ public class Recipe extends ParseObject implements IRecipe {
         put(KEY_DISH_TYPE, dishType);
     }
 
+    @Override
     public String getCuisineType() {
         return getString(KEY_CUISINE_TYPE);
     }
@@ -86,6 +94,7 @@ public class Recipe extends ParseObject implements IRecipe {
         put(KEY_CUISINE_TYPE, cuisineType);
     }
 
+    @Override
     public String getTotalTime() {
         return getString(KEY_TOTAL_TIME);
     }
@@ -99,6 +108,7 @@ public class Recipe extends ParseObject implements IRecipe {
         return getLong(KEY_CALORIES);
     }
 
+    @Override
     public String getCalories() {
         float caloriesNumber = getCaloriesNumber();
         String calories;
@@ -115,6 +125,7 @@ public class Recipe extends ParseObject implements IRecipe {
         put(KEY_CALORIES, calories);
     }
 
+    @Override
     public String getRecipeUrl() {
         return getString(KEY_RECIPE_URL);
     }
@@ -123,22 +134,40 @@ public class Recipe extends ParseObject implements IRecipe {
         put(KEY_RECIPE_URL, recipeUrl);
     }
 
-    public String getInstructions() {
-        return getString(KEY_INSTRUCTIONS);
+    public JSONArray getInstructionsJSONArray() {
+        return getJSONArray(KEY_INSTRUCTIONS);
     }
 
-    public void setInstructions(String instructions) {
+    @Override
+    public List<String> getInstructions() {
+        JSONArray instructions = getInstructionsJSONArray();
+        List<String> listInstructions = new ArrayList<>();
+
+        for (int i = 0; i < instructions.length(); i++) {
+            try {
+                listInstructions.add(instructions.getString(i));
+            } catch (JSONException e) {
+                Log.e("RecipeClass", "Error while getting instructions", e);
+            }
+        }
+
+        return listInstructions;
+    }
+
+    public void setInstructions(JSONArray instructions) {
         put(KEY_INSTRUCTIONS, instructions);
+    }
+
+    public void setInstructions(List<String> instructions) {
+        JSONArray instructionsJSONArray = new JSONArray(instructions);
+        setInstructions(instructionsJSONArray);
     }
 
     public JSONArray getIngredientsJSONArray() {
         return getJSONArray(KEY_INGREDIENTS);
     }
 
-    public void setIngredients(JSONArray ingredients) {
-        put(KEY_INGREDIENTS, ingredients);
-    }
-
+    @Override
     public List<String> getIngredients() {
         JSONArray ingredients = getIngredientsJSONArray();
         List<String> listIngredients = new ArrayList<>();
@@ -154,16 +183,59 @@ public class Recipe extends ParseObject implements IRecipe {
         return listIngredients;
     }
 
+    public void setIngredients(JSONArray ingredients) {
+        put(KEY_INGREDIENTS, ingredients);
+    }
+
     public void setIngredients(List<String> ingredients) {
         JSONArray ingredientsJSONArray = new JSONArray(ingredients);
         setIngredients(ingredientsJSONArray);
     }
 
-    public String getId(){
+    public JSONArray getIngredientsImagesUrlJSONArray() {
+        return getJSONArray(KEY_INGREDIENTS_IMAGES_URL);
+    }
+
+    @Override
+    public List<String> getIngredientsImagesUrl() {
+        JSONArray ingredientsImagesUrl = getIngredientsImagesUrlJSONArray();
+        List<String> listIngredientsImagesUrl = new ArrayList<>();
+
+        for (int i = 0; i < ingredientsImagesUrl.length(); i++) {
+            try {
+                listIngredientsImagesUrl.add(ingredientsImagesUrl.getString(i));
+            } catch (JSONException e) {
+                Log.e("RecipeClass", "Error while getting ingredients images url", e);
+            }
+        }
+
+        return listIngredientsImagesUrl;
+    }
+
+    public void setIngredientsImagesUrl(JSONArray ingredientsImagesUrlJSONArray){
+        put(KEY_INGREDIENTS_IMAGES_URL, ingredientsImagesUrlJSONArray);
+    }
+
+    public void setIngredientsImagesUrl(List<String> ingredientsImagesUrl){
+        JSONArray jsonArray = new JSONArray(ingredientsImagesUrl);
+        setIngredientsImagesUrl(jsonArray);
+    }
+
+    @Override
+    public String getId() {
         return getString(KEY_ID);
     }
 
-    public void setId(String id){
+    public void setId(String id) {
         put(KEY_ID, id);
+    }
+
+    @Override
+    public String getSummary() {
+        return getString(KEY_SUMMARY);
+    }
+
+    public void setSummary(String summary){
+        put(KEY_SUMMARY, summary);
     }
 }
