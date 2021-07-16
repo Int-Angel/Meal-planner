@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
 import com.example.mealplanner.adapters.IngredientsImagesAdapter;
+import com.example.mealplanner.adapters.StepsAdapter;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
@@ -41,6 +43,7 @@ public class RecipeDetailsFragment extends Fragment {
 
     public interface RecipeDetailsFragmentListener {
         void backButtonPressed();
+
         void updateRecipeList();
     }
 
@@ -52,6 +55,7 @@ public class RecipeDetailsFragment extends Fragment {
     private int index;
     private RecipeDetailsFragmentListener listener;
     private IngredientsImagesAdapter adapter;
+    private StepsAdapter stepsAdapter;
 
     private TextView tvTitle;
     private ImageButton ibtnBackOnlineDetails;
@@ -67,6 +71,7 @@ public class RecipeDetailsFragment extends Fragment {
     private CardView cvDetails;
     private TextView tvIngredientsTitle;
     private RecyclerView rvIngredientsImages;
+    private ViewPager vpSteps;
 
 
     public RecipeDetailsFragment() {
@@ -116,8 +121,16 @@ public class RecipeDetailsFragment extends Fragment {
         tvIngredientsTitle = view.findViewById(R.id.tvIngredientsTitle);
         ibtnGoToOriginalUrl = view.findViewById(R.id.ibtnGoToOriginalUrl);
         rvIngredientsImages = view.findViewById(R.id.rvIngredientsImages);
+        vpSteps = view.findViewById(R.id.vpSteps);
 
-        adapter = new IngredientsImagesAdapter(getContext(), recipe.getIngredients(), recipe.getIngredientsImagesUrl());
+        stepsAdapter = new StepsAdapter(getContext(),recipe.getInstructions());
+        vpSteps.setAdapter(stepsAdapter);
+
+        int pagerPadding = 20;
+        vpSteps.setClipToPadding(false);
+        vpSteps.setPadding(pagerPadding, pagerPadding, pagerPadding, pagerPadding);
+
+        adapter = new IngredientsImagesAdapter(getContext(), recipe.getIngredientsImagesUrl());
         rvIngredientsImages.setAdapter(adapter);
         rvIngredientsImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 

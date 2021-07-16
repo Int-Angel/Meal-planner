@@ -23,12 +23,10 @@ public class IngredientsImagesAdapter extends RecyclerView.Adapter<IngredientsIm
     private final static String TAG = "IngredientsImagesAdapter";
 
     private Context context;
-    private List<String> ingredientsName;
     private List<String> ingredientsImageUrl;
 
-    public IngredientsImagesAdapter(Context context, List<String> ingredientsName, List<String> ingredientsImageUrl) {
+    public IngredientsImagesAdapter(Context context, List<String> ingredientsImageUrl) {
         this.context = context;
-        this.ingredientsName = ingredientsName;
         this.ingredientsImageUrl = ingredientsImageUrl;
     }
 
@@ -42,7 +40,7 @@ public class IngredientsImagesAdapter extends RecyclerView.Adapter<IngredientsIm
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
-        holder.bind(ingredientsName.get(position), ingredientsImageUrl.get(position));
+        holder.bind(ingredientsImageUrl.get(position));
     }
 
     @Override
@@ -62,7 +60,7 @@ public class IngredientsImagesAdapter extends RecyclerView.Adapter<IngredientsIm
             tvIngredientItem = itemView.findViewById(R.id.tvIngredientItem);
         }
 
-        public void bind(String ingredient, String imageUrl){
+        public void bind(String imageUrl){
             tvIngredientItem.setText(getIngredientName(imageUrl));
 
             Glide.with(context)

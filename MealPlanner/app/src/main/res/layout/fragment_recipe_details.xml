@@ -79,7 +79,7 @@
             android:layout_marginTop="180dp"
             android:elevation="7dp"
 
-            android:scaleType="fitStart"
+            android:scaleType="center"
             tools:src="@tools:sample/avatars" />
 
         <ImageButton
@@ -314,6 +314,36 @@
             android:lineSpacingExtra="5dp"
 
             android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tvStepsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/tvIngredients"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="20dp"
+
+            android:text="Steps: "
+            android:textColor="@color/blue_1"
+
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vpSteps"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+
+            android:padding="20dp"
+
+            android:layout_below="@+id/tvStepsTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+
+            />
     </RelativeLayout>
 
 </ScrollView>
