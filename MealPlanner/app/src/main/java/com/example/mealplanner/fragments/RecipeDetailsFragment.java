@@ -139,11 +139,6 @@ public class RecipeDetailsFragment extends Fragment {
         else
             tvCuisineTypeDetails.setText(recipe.getCuisineType());
 
-        if (recipe.getMealType().equals(""))
-            tvMealTypeDetails.setVisibility(View.GONE);
-        else
-            tvMealTypeDetails.setText(recipe.getMealType());
-
         tvCaloriesDetails.setText(recipe.getCalories());
         tvTimeDetails.setText(recipe.getTotalTime() + " min");
 
@@ -205,7 +200,7 @@ public class RecipeDetailsFragment extends Fragment {
             ibtnSaveRecipeDetails.setSelected(true);
             ((OnlineRecipe) recipe).setSaved(true);
         } else {
-            SavedRecipesManager.unSaveRecipeByUri(recipe.getUri());
+            SavedRecipesManager.unSaveRecipeByUri(recipe.getId());
             ibtnSaveRecipeDetails.setSelected(false);
             ((OnlineRecipe) recipe).setSaved(false);
         }

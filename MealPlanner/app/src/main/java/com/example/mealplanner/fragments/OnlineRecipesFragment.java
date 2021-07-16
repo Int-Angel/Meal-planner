@@ -40,7 +40,7 @@ public class OnlineRecipesFragment extends Fragment {
     }
 
     private final static String TAG = "OnlineRecipes";
-    public static final String CHICKEN_RECIPES_URL = "https://api.edamam.com/api/recipes/v2?type=public&q=chiken&app_id=74ae975a&app_key=7ab0ed179d7a780e86361ffc79d73528";
+    public static final String BASE_RECIPES_URL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=728721c3da7543769d5413b35ac70cd7&addRecipeInformation=true&addRecipeNutrition=true&instructionsRequired=true&fillIngredients=true";
 
     private RecyclerView rvRecipes;
     private List<IRecipe> onlineRecipes;
@@ -70,7 +70,7 @@ public class OnlineRecipesFragment extends Fragment {
         adapter = new RecipeAdapter(getContext(), onlineRecipes, new RecipeAdapter.RecipeAdapterListener() {
             @Override
             public void openDetails(IRecipe recipe, int index) {
-                listener.openOnlineRecipeDetailsListener(recipe,index);
+                listener.openOnlineRecipeDetailsListener(recipe, index);
             }
         });
 
@@ -79,18 +79,18 @@ public class OnlineRecipesFragment extends Fragment {
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
 
         savedRecipesUri = new HashSet<>();
-        savedRecipesUri = SavedRecipesManager.getUriSet();
+        savedRecipesUri = SavedRecipesManager.getIdSet();
         getRecipes();
     }
 
     private void getRecipes() {
-        client.get(CHICKEN_RECIPES_URL, new JsonHttpResponseHandler() {
+        client.get(BASE_RECIPES_URL, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int i, Headers headers, JSON json) {
                 Log.i(TAG, "onSuccess");
 
                 try {
-                    JSONArray results = json.jsonObject.getJSONArray("hits");
+                    JSONArray results = json.jsonObject.getJSONArray("results");
                     onlineRecipes.addAll(OnlineRecipe.fromJsonArray(results));
                     checkIfRecipesAreAlreadySaved();
                 } catch (JSONException e) {
@@ -106,11 +106,11 @@ public class OnlineRecipesFragment extends Fragment {
     }
 
     private void checkIfRecipesAreAlreadySaved() {
-        for (String s:savedRecipesUri){
-            Log.i("Check",s);
+        for (String s : savedRecipesUri) {
+            Log.i("Check", s);
         }
         for (int i = 0; i < onlineRecipes.size(); i++) {
-            String uri = onlineRecipes.get(i).getUri();
+            String uri = onlineRecipes.get(i).getId();
             ((OnlineRecipe) onlineRecipes.get(i)).setSaved(savedRecipesUri.contains(uri));
         }
         adapter.notifyDataSetChanged();

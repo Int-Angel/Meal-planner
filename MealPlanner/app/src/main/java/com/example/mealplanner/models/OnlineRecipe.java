@@ -2,6 +2,9 @@ package com.example.mealplanner.models;
 
 import android.util.Log;
 
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,55 +13,51 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Headers;
+
 @Parcel
 public class OnlineRecipe implements IRecipe {
+
+    private final static String TAG = "OnlineRecipeClass";
 
     private String title;
     private String imageUrl;
     private String dishType;
-    private String mealType;
     private String cuisineType;
     private String totalTime;
     private String calories;
+    private String caloriesUnit;
     private String recipeUrl;
     private float caloriesNumber;
     private List<String> ingredients;
-    private String uri;
+    private String id;
     private boolean isSaved;
+    private String summary;
+    private String instructions;
+
 
     public OnlineRecipe() {
     }
 
     public OnlineRecipe(JSONObject jsonObject) throws JSONException {
-        JSONObject recipe = jsonObject.getJSONObject("recipe");
-        title = recipe.getString("label");
-        imageUrl = recipe.getString("image");
-        recipeUrl = recipe.getString("url");
-        totalTime = recipe.getString("totalTime");
-        uri = recipe.getString("uri");
 
-        calories = recipe.getString("calories");
+        id = jsonObject.getString("id");
+        title = jsonObject.getString("title");
+        imageUrl = jsonObject.getString("image");
+        recipeUrl = jsonObject.getString("sourceUrl");
+        totalTime = jsonObject.getString("readyInMinutes");
+        summary = jsonObject.getString("summary");
+        //instructions = jsonObject.getString("instructions");
+
+        JSONObject nutrition = jsonObject.getJSONObject("nutrition");
+
+        calories = nutrition.getJSONArray("nutrients").getJSONObject(0).getString("amount");
+        caloriesUnit = nutrition.getJSONArray("nutrients").getJSONObject(0).getString("unit");
         caloriesNumber = Float.parseFloat(calories);
-
-        if (caloriesNumber / 1000f >= 1f) {
-            calories = String.format("%.1f", caloriesNumber / 1000f) + " kcal";
-        } else {
-            calories = String.format("%.1f", caloriesNumber) + " cal";
-        }
-
-        ingredients = new ArrayList<>();
+        calories += " " + caloriesUnit;
 
         try {
-            JSONArray ingredientsArray = recipe.getJSONArray("ingredientLines");
-            for (int i = 0; i < ingredientsArray.length(); i++) {
-                ingredients.add(ingredientsArray.getString(i));
-            }
-        } catch (JSONException e) {
-            //no ingredients list
-        }
-
-        try {
-            JSONArray cuisineTypeArray = recipe.getJSONArray("cuisineType");
+            JSONArray cuisineTypeArray = jsonObject.getJSONArray("cuisines");
             if (cuisineTypeArray.length() != 0)
                 cuisineType = cuisineTypeArray.getString(0);
             else
@@ -68,17 +67,7 @@ public class OnlineRecipe implements IRecipe {
         }
 
         try {
-            JSONArray mealTypeArray = recipe.getJSONArray("mealType");
-            if (mealTypeArray.length() != 0)
-                mealType = mealTypeArray.getString(0);
-            else
-                mealType = "";
-        } catch (JSONException e) {
-            mealType = "";
-        }
-
-        try {
-            JSONArray dishTypeArray = recipe.getJSONArray("dishType");
+            JSONArray dishTypeArray = jsonObject.getJSONArray("dishTypes");
             if (dishTypeArray.length() != 0)
                 dishType = dishTypeArray.getString(0);
             else
@@ -87,6 +76,20 @@ public class OnlineRecipe implements IRecipe {
             dishType = "";
         }
 
+        getIngredientsFromJson(jsonObject);
+    }
+
+    private void getIngredientsFromJson(JSONObject jsonObject){
+        // TODO get all ingredients data
+        ingredients = new ArrayList<>();
+        try {
+            JSONArray ingredientsArray = jsonObject.getJSONArray("extendedIngredients");
+            for (int i = 0; i < ingredientsArray.length(); i++) {
+                ingredients.add(ingredientsArray.getJSONObject(i).getString("original"));
+            }
+        } catch (JSONException e) {
+            //no ingredients list
+        }
     }
 
     public String getTitle() {
@@ -99,10 +102,6 @@ public class OnlineRecipe implements IRecipe {
 
     public String getDishType() {
         return dishType;
-    }
-
-    public String getMealType() {
-        return mealType;
     }
 
     public String getCuisineType() {
@@ -129,8 +128,8 @@ public class OnlineRecipe implements IRecipe {
         return caloriesNumber;
     }
 
-    public String getUri() {
-        return uri;
+    public String getId() {
+        return id;
     }
 
     public boolean isSaved() {

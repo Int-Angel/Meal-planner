@@ -118,10 +118,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             else
                 tvCuisineTypeItem.setText(recipe.getCuisineType());
 
-            if (recipe.getMealType().equals(""))
-                tvMealTypeItem.setVisibility(View.GONE);
-            else
-                tvMealTypeItem.setText(recipe.getMealType());
         }
 
         private void copyRecipe() {
@@ -130,7 +126,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 ibtnSaveRecipeItem.setSelected(true);
                 ((OnlineRecipe)bindedRecipe).setSaved(true);
             }else{
-                SavedRecipesManager.unSaveRecipeByUri(bindedRecipe.getUri());
+                SavedRecipesManager.unSaveRecipeByUri(bindedRecipe.getId());
                 ibtnSaveRecipeItem.setSelected(false);
                 ((OnlineRecipe)bindedRecipe).setSaved(false);
             }

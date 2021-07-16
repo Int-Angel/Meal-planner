@@ -10,8 +10,6 @@ public interface IRecipe {
 
     public String getDishType();
 
-    public String getMealType();
-
     public String getCuisineType();
 
     public String getTotalTime();
@@ -24,6 +22,6 @@ public interface IRecipe {
 
     public float getCaloriesNumber();
 
-    public String getUri();
+    public String getId();
 
 }

@@ -1,7 +1,6 @@
 package com.example.mealplanner;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
@@ -23,11 +22,11 @@ public class SavedRecipesManager {
     private final static String TAG = "SavedRecipesManager";
 
     private static List<Recipe> recipes;
-    private static Set<String> uriSet;
+    private static Set<String> idSet;
 
     static {
         recipes = new ArrayList<>();
-        uriSet = new HashSet<>();
+        idSet = new HashSet<>();
     }
 
     public static void querySavedRecipes() {
@@ -43,14 +42,14 @@ public class SavedRecipesManager {
                     return;
                 }
                 recipes.addAll(objects);
-                createUriSet();
+                createIdSet();
             }
         });
     }
 
-    private static void createUriSet() {
+    private static void createIdSet() {
         for (int i = 0; i < recipes.size(); i++) {
-            uriSet.add(recipes.get(i).getUri());
+            idSet.add(recipes.get(i).getId());
         }
     }
 
@@ -58,14 +57,14 @@ public class SavedRecipesManager {
         return recipes;
     }
 
-    public static Set<String> getUriSet() {
-        return uriSet;
+    public static Set<String> getIdSet() {
+        return idSet;
     }
 
     public static void saveRecipe(OnlineRecipe onlineRecipe) {
         Recipe recipe = Recipe.createRecipe(onlineRecipe);
         recipes.add(0, recipe);
-        uriSet.add(recipe.getUri());
+        idSet.add(recipe.getId());
 
         recipe.saveInBackground(new com.parse.SaveCallback() {
             @Override
@@ -81,8 +80,8 @@ public class SavedRecipesManager {
 
     private static void deleteRecipeFromListByUri(String uri){
         for(int i = 0; i< recipes.size(); i++){
-            if(recipes.get(i).getUri().equals(uri)){
-                uriSet.remove(recipes.get(i).getUri());
+            if(recipes.get(i).getId().equals(uri)){
+                idSet.remove(recipes.get(i).getId());
                 recipes.remove(i);
                 return;
             }
@@ -91,7 +90,7 @@ public class SavedRecipesManager {
 
     public static void unSaveRecipeByUri(String uri) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Recipe");
-        query.whereEqualTo(Recipe.KEY_URI, uri);
+        query.whereEqualTo(Recipe.KEY_ID, uri);
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject object, ParseException e) {
@@ -117,7 +116,7 @@ public class SavedRecipesManager {
 
     public static void unSaveRecipe(int index) {
         Recipe recipe = recipes.get(index);
-        uriSet.remove(recipes.get(index).getUri());
+        idSet.remove(recipes.get(index).getId());
         recipes.remove(index);
         recipe.deleteInBackground(new DeleteCallback() {
             @Override

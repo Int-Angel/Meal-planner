@@ -20,14 +20,13 @@ public class Recipe extends ParseObject implements IRecipe {
     public final static String KEY_TITLE = "title";
     public final static String KEY_IMAGE_URL = "imageUrl";
     public final static String KEY_DISH_TYPE = "dishType";
-    public final static String KEY_MEAL_TYPE = "mealType";
     public final static String KEY_CUISINE_TYPE = "cuisineType";
     public final static String KEY_TOTAL_TIME = "totalTime";
     public final static String KEY_CALORIES = "calories";
     public final static String KEY_RECIPE_URL = "recipeUrl";
     public final static String KEY_INSTRUCTIONS = "instructions";
     public final static String KEY_INGREDIENTS = "ingredients";
-    public final static String KEY_URI = "uri";
+    public final static String KEY_ID = "idRecipe";
 
     public static Recipe createRecipe(OnlineRecipe onlineRecipe) {
         Recipe recipe = new Recipe();
@@ -36,14 +35,13 @@ public class Recipe extends ParseObject implements IRecipe {
         recipe.setTile(onlineRecipe.getTitle());
         recipe.setImageUrl(onlineRecipe.getImageUrl());
         recipe.setDishType(onlineRecipe.getDishType());
-        recipe.setMealType(onlineRecipe.getMealType());
         recipe.setCuisineType(onlineRecipe.getCuisineType());
         recipe.setTotalTime(onlineRecipe.getTotalTime());
         recipe.setCalories(onlineRecipe.getCaloriesNumber());
         recipe.setRecipeUrl(onlineRecipe.getRecipeUrl());
         recipe.setInstructions("Copy instructions from link");
         recipe.setIngredients(onlineRecipe.getIngredients());
-        recipe.setUri(onlineRecipe.getUri());
+        recipe.setId(onlineRecipe.getId());
 
         return recipe;
     }
@@ -78,14 +76,6 @@ public class Recipe extends ParseObject implements IRecipe {
 
     public void setDishType(String dishType) {
         put(KEY_DISH_TYPE, dishType);
-    }
-
-    public String getMealType() {
-        return getString(KEY_MEAL_TYPE);
-    }
-
-    public void setMealType(String mealType) {
-        put(KEY_MEAL_TYPE, mealType);
     }
 
     public String getCuisineType() {
@@ -169,11 +159,11 @@ public class Recipe extends ParseObject implements IRecipe {
         setIngredients(ingredientsJSONArray);
     }
 
-    public String getUri(){
-        return getString(KEY_URI);
+    public String getId(){
+        return getString(KEY_ID);
     }
 
-    public void setUri(String uri){
-        put(KEY_URI, uri);
+    public void setId(String id){
+        put(KEY_ID, id);
     }
 }
