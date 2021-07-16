@@ -114,6 +114,7 @@
 
         android:elevation="6dp"
 
+        android:scaleType="centerCrop"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageButton
