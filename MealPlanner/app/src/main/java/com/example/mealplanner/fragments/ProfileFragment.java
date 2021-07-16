@@ -12,9 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.LoginActivity;
 import com.example.mealplanner.R;
 import com.parse.ParseUser;
@@ -24,6 +27,7 @@ public class ProfileFragment extends Fragment {
 
     private final static String TAG = "ProfileFragment";
 
+    private ImageView ivProfileImage;
     private TextView tvUsername;
     private TextView tvName;
     private TextView tvLastname;
@@ -45,6 +49,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ivProfileImage = view.findViewById(R.id.ivProfileImage);
         tvUsername = view.findViewById(R.id.tvUsername);
         tvName = view.findViewById(R.id.tvName);
         tvLastname = view.findViewById(R.id.tvLastname);
@@ -57,6 +62,21 @@ public class ProfileFragment extends Fragment {
 
     private void bind(){
         swIsPublic.setChecked(ParseUser.getCurrentUser().getBoolean("isPublic"));
+        tvUsername.setText(ParseUser.getCurrentUser().getUsername());
+        tvName.setText(ParseUser.getCurrentUser().getString("name"));
+        tvLastname.setText(ParseUser.getCurrentUser().getString("lastname"));
+
+        if(ParseUser.getCurrentUser().getParseFile("image") != null){
+            Glide.with(getContext())
+                    .load(ParseUser.getCurrentUser().getParseFile("image").getUrl())
+                    .transform(new RoundedCorners(1000))
+                    .into(ivProfileImage);
+        }else{
+            Glide.with(getContext())
+                    .load("https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png")
+                    .transform(new RoundedCorners(1000))
+                    .into(ivProfileImage);
+        }
     }
 
     private void setUpListeners(){

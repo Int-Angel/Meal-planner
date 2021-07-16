@@ -7,72 +7,102 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ProfileFragment">
 
-
-    <ImageView
-        android:id="@+id/ivProfileImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-
-        tools:src="@tools:sample/avatars" />
-
-    <LinearLayout
-        android:id="@+id/llInformationContainer"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/main.appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:orientation="vertical"
-        android:gravity="center"
-
-        android:layout_below="@+id/ivProfileImage"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
+        android:layout_alignParentTop="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         >
-
-        <TextView
-            android:id="@+id/tvUsername"
-            android:layout_width="wrap_content"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/main.collapsing"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Username"
-            />
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            >
 
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvLastname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="lastname"
-            />
+                <ImageView
+                    android:id="@+id/ivProfileImage"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
 
-    </LinearLayout>
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
+                    android:layout_marginTop="20dp"
 
-        android:layout_below="@+id/llInformationContainer"/>
+                    tools:src="@tools:sample/avatars" />
+
+                <TextView
+                    android:id="@+id/tvUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/ivProfileImage"
+                    android:layout_marginTop="10dp"
+
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:text="Username"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/llInformationContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="horizontal"
+
+                    android:layout_below="@+id/tvUsername"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="20dp"
+                    >
+
+                    <TextView
+                        android:id="@+id/tvName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+
+
+                        android:text="Name" />
+
+                    <TextView
+                        android:id="@+id/tvLastname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="lastname" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
 
     <Switch
         android:id="@+id/swIsPublic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:layout_below="@+id/llInformationContainer"
+        android:layout_below="@+id/main.appbar"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="20dp"
 
         android:text="Public Profile"
+        android:fontFamily="sans-serif-light"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <Button
