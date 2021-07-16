@@ -17,6 +17,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.LoginActivity;
 import com.example.mealplanner.R;
@@ -74,7 +75,7 @@ public class ProfileFragment extends Fragment {
         }else{
             Glide.with(getContext())
                     .load("https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png")
-                    .transform(new RoundedCorners(1000))
+                    .transform(new CenterCrop(),new RoundedCorners(1000))
                     .into(ivProfileImage);
         }
     }

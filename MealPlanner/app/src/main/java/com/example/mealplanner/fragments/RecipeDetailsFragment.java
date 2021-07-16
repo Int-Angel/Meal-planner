@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
@@ -76,6 +77,7 @@ public class RecipeDetailsFragment extends Fragment {
 
     public RecipeDetailsFragment() {
         // Required empty public constructor
+        this.listener = listener;
     }
 
     public static RecipeDetailsFragment newInstance(IRecipe recipe, int index) {
@@ -123,6 +125,8 @@ public class RecipeDetailsFragment extends Fragment {
         rvIngredientsImages = view.findViewById(R.id.rvIngredientsImages);
         vpSteps = view.findViewById(R.id.vpSteps);
 
+        listener = (RecipeDetailsFragmentListener) getParentFragment();
+
         stepsAdapter = new StepsAdapter(getContext(),recipe.getInstructions());
         vpSteps.setAdapter(stepsAdapter);
 
@@ -163,7 +167,7 @@ public class RecipeDetailsFragment extends Fragment {
 
         Glide.with(getContext())
                 .load(recipe.getImageUrl())
-                .transform(new RoundedCorners(1000))
+                .transform(new CenterCrop(),new RoundedCorners(1000))
                 .into(ivRecipeImageOnlineDetails);
 
         StringBuilder tempIngredients = new StringBuilder();
@@ -242,12 +246,6 @@ public class RecipeDetailsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof RecipeDetailsFragmentListener) {
-            listener = (RecipeDetailsFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement Fragment new task Listener");
-        }
     }
 
     @Override

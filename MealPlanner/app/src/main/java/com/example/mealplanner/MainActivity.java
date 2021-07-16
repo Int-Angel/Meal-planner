@@ -13,9 +13,11 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.mealplanner.fragments.HomeFragment;
 import com.example.mealplanner.fragments.RecipeDetailsFragment;
 import com.example.mealplanner.fragments.OnlineRecipesFragment;
 import com.example.mealplanner.fragments.ProfileFragment;
+import com.example.mealplanner.fragments.RecipeFragment;
 import com.example.mealplanner.fragments.SavedRecipesFragment;
 import com.example.mealplanner.fragments.ShoppingListFragment;
 import com.example.mealplanner.fragments.SocialFragment;
@@ -24,30 +26,21 @@ import com.example.mealplanner.models.IRecipe;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity implements OnlineRecipesFragment.OnlineRecipesFragmentListener,
-        SavedRecipesFragment.SavedRecipesFragmentListener, RecipeDetailsFragment.RecipeDetailsFragmentListener {
+public class MainActivity extends AppCompatActivity {
 
-    enum FragmentSelection {
-        WEEK, SHOPPING_LIST, SAVED_RECIPES, ONLINE_RECIPES, SOCIAL, PROFILE;
+    public enum FragmentSelection {
+        HOME, RECIPES, SOCIAL, PROFILE, WEEK, SHOPPING_LIST, SAVED_RECIPES, ONLINE_RECIPES;
     }
 
     private final static String TAG = "MainActivity";
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-    private final WeekFragment weekFragment = new WeekFragment();
-    private final ShoppingListFragment shoppingListFragment = new ShoppingListFragment();
-    private final SavedRecipesFragment savedRecipesFragment = new SavedRecipesFragment();
-    private final OnlineRecipesFragment onlineRecipesFragment = new OnlineRecipesFragment();
+    private final HomeFragment homeFragment = new HomeFragment();
+    private final RecipeFragment recipeFragment = new RecipeFragment();
     private final SocialFragment socialFragment = new SocialFragment();
     private final ProfileFragment profileFragment = new ProfileFragment();
-    private RecipeDetailsFragment recipeDetailsFragment;
 
     private BottomNavigationView bottomNavigationView;
-
-    private RelativeLayout recipeFragmentHeader;
-    private RelativeLayout weekFragmentHeader;
-    private RadioButton weekRadioButton;
-    private RadioButton savedRecipesRadioButton;
 
     private FragmentSelection activeFragment;
     private FragmentSelection lastActiveFragment;
@@ -57,17 +50,10 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        weekFragmentHeader = findViewById(R.id.weekFragmentHeader);
-        recipeFragmentHeader = findViewById(R.id.recipeFragmentHeader);
-        recipeFragmentHeader.setVisibility(View.GONE);
-
-        weekRadioButton = findViewById(R.id.rbWeek);
-        savedRecipesRadioButton = findViewById(R.id.rbSavedRecipes);
-
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         setBottomNavigationListener();
-        bottomNavigationView.setSelectedItemId(R.id.action_week);
-        activeFragment = FragmentSelection.WEEK;
+        bottomNavigationView.setSelectedItemId(R.id.action_home);
+        activeFragment = FragmentSelection.HOME;
 
         SavedRecipesManager.querySavedRecipes();
     }
@@ -82,40 +68,13 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         });
     }
 
-    public void onRadioButtonClickedRecipes(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-        switch (view.getId()) {
-            case R.id.rbSavedRecipes:
-                if (checked)
-                    changeFragment(FragmentSelection.SAVED_RECIPES);
-                break;
-            case R.id.rbOnlineRecipes:
-                if (checked)
-                    changeFragment(FragmentSelection.ONLINE_RECIPES);
-                break;
-        }
-    }
-
-    public void onRadioButtonClickedWeek(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-        switch (view.getId()) {
-            case R.id.rbWeek:
-                if (checked)
-                    changeFragment(FragmentSelection.WEEK);
-                break;
-            case R.id.rbShoppingList:
-                if (checked)
-                    changeFragment(FragmentSelection.SHOPPING_LIST);
-                break;
-        }
-    }
 
     private FragmentSelection getFragmentSelectionFromMenu(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_week:
-                return weekRadioButton.isChecked() ? FragmentSelection.WEEK : FragmentSelection.SHOPPING_LIST;
+            case R.id.action_home:
+                return FragmentSelection.HOME;
             case R.id.action_recipes:
-                return savedRecipesRadioButton.isChecked() ? FragmentSelection.SAVED_RECIPES : FragmentSelection.ONLINE_RECIPES;
+                return FragmentSelection.RECIPES;
             case R.id.action_profile:
             default:
                 return FragmentSelection.PROFILE;
@@ -130,35 +89,17 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         activeFragment = fragmentSelected;
 
         switch (fragmentSelected) {
-            case WEEK:
-                weekFragmentHeader.setVisibility(View.VISIBLE);
-                recipeFragmentHeader.setVisibility(View.GONE);
-                fragment = weekFragment;
+            case HOME:
+                fragment = homeFragment;
                 break;
-            case SHOPPING_LIST:
-                weekFragmentHeader.setVisibility(View.VISIBLE);
-                recipeFragmentHeader.setVisibility(View.GONE);
-                fragment = shoppingListFragment;
-                break;
-            case SAVED_RECIPES:
-                weekFragmentHeader.setVisibility(View.GONE);
-                recipeFragmentHeader.setVisibility(View.VISIBLE);
-                fragment = savedRecipesFragment;
-                break;
-            case ONLINE_RECIPES:
-                weekFragmentHeader.setVisibility(View.GONE);
-                recipeFragmentHeader.setVisibility(View.VISIBLE);
-                fragment = onlineRecipesFragment;
+            case RECIPES:
+                fragment = recipeFragment;
                 break;
             case SOCIAL:
-                weekFragmentHeader.setVisibility(View.GONE);
-                recipeFragmentHeader.setVisibility(View.GONE);
                 fragment = socialFragment;
                 break;
             case PROFILE:
             default:
-                weekFragmentHeader.setVisibility(View.GONE);
-                recipeFragmentHeader.setVisibility(View.GONE);
                 fragment = profileFragment;
                 break;
         }
@@ -166,46 +107,36 @@ public class MainActivity extends AppCompatActivity implements OnlineRecipesFrag
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
-    private void openRecipeDetailsFragment(IRecipe recipe, int index) {
-        lastActiveFragment = activeFragment;
-
-        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, index);
-        weekFragmentHeader.setVisibility(View.GONE);
-        recipeFragmentHeader.setVisibility(View.GONE);
-
-        fragmentManager.beginTransaction().replace(R.id.flContainer, recipeDetailsFragment).commit();
-    }
-
     @Override
     public void onBackPressed() {
-        if (lastActiveFragment != null) {
+        /*if (lastActiveFragment != null) {
             changeFragment(lastActiveFragment);
             lastActiveFragment = null;
             return;
-        }
+        }*/
         super.onBackPressed();
     }
 
-    @Override
-    public void openOnlineRecipeDetailsListener(IRecipe recipe, int index) {
+
+    /*public void openOnlineRecipeDetailsListener(IRecipe recipe, int index) {
         openRecipeDetailsFragment(recipe, index);
     }
 
-    @Override
+
     public void openSavedRecipeDetailsFragment(IRecipe recipe, int index) {
         openRecipeDetailsFragment(recipe, index);
     }
 
-    @Override
+
     public void backButtonPressed() {
         Log.i(TAG, "BACK");
         Toast.makeText(MainActivity.this, "BACK", Toast.LENGTH_SHORT).show(); // Not showing
         onBackPressed();
     }
 
-    @Override
+
     public void updateRecipeList() {
-        savedRecipesFragment.updateRecipeList();
-    }
+        //savedRecipesFragment.updateRecipeList();
+    }*/
 
 }

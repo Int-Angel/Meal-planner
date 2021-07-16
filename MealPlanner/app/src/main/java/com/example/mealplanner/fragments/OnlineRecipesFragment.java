@@ -76,6 +76,8 @@ public class OnlineRecipesFragment extends Fragment {
             }
         });
 
+        listener = (OnlineRecipesFragmentListener) getParentFragment();
+
         progressBar = view.findViewById(R.id.progress_circular);
 
         rvRecipes = view.findViewById(R.id.rvRecipes);
@@ -124,12 +126,6 @@ public class OnlineRecipesFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnlineRecipesFragmentListener) {
-            listener = (OnlineRecipesFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement Fragment new task Listener");
-        }
     }
 
     @Override

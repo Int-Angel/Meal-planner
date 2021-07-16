@@ -51,6 +51,11 @@ public class SavedRecipesFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -68,6 +73,8 @@ public class SavedRecipesFragment extends Fragment {
                 listener.openSavedRecipeDetailsFragment(recipe, index);
             }
         });
+
+        listener = (SavedRecipesFragmentListener) getParentFragment();
 
         tvNoSavedRecipes = view.findViewById(R.id.tvNoSavedRecipes);
         progressBar = view.findViewById(R.id.progress_circular);
@@ -96,12 +103,6 @@ public class SavedRecipesFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof SavedRecipesFragmentListener) {
-            listener = (SavedRecipesFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement Fragment new task Listener");
-        }
     }
 
     @Override

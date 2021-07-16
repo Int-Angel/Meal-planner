@@ -16,6 +16,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
@@ -107,7 +108,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
             Glide.with(context)
                     .load(recipe.getImageUrl())
-                    .transform(new RoundedCorners(200))
+                    .transform(new CenterCrop(),new RoundedCorners(1000))
                     .into(ivRecipeImageItem);
 
             tvRecipeTitleItem.setText(recipe.getTitle());
