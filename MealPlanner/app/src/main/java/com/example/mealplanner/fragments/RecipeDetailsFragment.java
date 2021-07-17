@@ -32,6 +32,7 @@ import com.example.mealplanner.adapters.StepsAdapter;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
+import com.google.android.material.tabs.TabLayout;
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
@@ -73,6 +74,7 @@ public class RecipeDetailsFragment extends Fragment {
     private TextView tvIngredientsTitle;
     private RecyclerView rvIngredientsImages;
     private ViewPager vpSteps;
+    private TabLayout tabLayout;
 
 
     public RecipeDetailsFragment() {
@@ -124,11 +126,13 @@ public class RecipeDetailsFragment extends Fragment {
         ibtnGoToOriginalUrl = view.findViewById(R.id.ibtnGoToOriginalUrl);
         rvIngredientsImages = view.findViewById(R.id.rvIngredientsImages);
         vpSteps = view.findViewById(R.id.vpSteps);
+        tabLayout = view.findViewById(R.id.tabLayout);
 
         listener = (RecipeDetailsFragmentListener) getParentFragment();
 
         stepsAdapter = new StepsAdapter(getContext(),recipe.getInstructions());
         vpSteps.setAdapter(stepsAdapter);
+        tabLayout.setupWithViewPager(vpSteps,true);
 
         int pagerPadding = 20;
         vpSteps.setClipToPadding(false);

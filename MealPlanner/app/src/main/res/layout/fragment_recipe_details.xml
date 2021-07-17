@@ -350,6 +350,22 @@
             android:layout_marginBottom="20dp"
 
             />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            app:tabGravity="center"
+
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+
+            app:tabIndicatorHeight="0dp"
+            app:tabBackground="@drawable/tab_selector"
+            android:background="@drawable/ic_rounded_white_bg"
+
+            />
     </RelativeLayout>
 
 </ScrollView>
