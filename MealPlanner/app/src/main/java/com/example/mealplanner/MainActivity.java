@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity";
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-    private final HomeFragment homeFragment = new HomeFragment();
+    private final WeekFragment weekFragment = new WeekFragment();
+    private final ShoppingListFragment shoppingListFragment = new ShoppingListFragment();
     private final RecipeFragment recipeFragment = new RecipeFragment();
     private final SocialFragment socialFragment = new SocialFragment();
     private final ProfileFragment profileFragment = new ProfileFragment();
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         setBottomNavigationListener();
-        bottomNavigationView.setSelectedItemId(R.id.action_home);
+        bottomNavigationView.setSelectedItemId(R.id.action_plan);
         activeFragment = FragmentSelection.HOME;
 
         SavedRecipesManager.querySavedRecipes();
@@ -71,8 +72,10 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentSelection getFragmentSelectionFromMenu(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_home:
-                return FragmentSelection.HOME;
+            case R.id.action_plan:
+                return FragmentSelection.WEEK;
+            case R.id.action_shoppingList:
+                return FragmentSelection.SHOPPING_LIST;
             case R.id.action_recipes:
                 return FragmentSelection.RECIPES;
             case R.id.action_profile:
@@ -89,8 +92,11 @@ public class MainActivity extends AppCompatActivity {
         activeFragment = fragmentSelected;
 
         switch (fragmentSelected) {
-            case HOME:
-                fragment = homeFragment;
+            case WEEK:
+                fragment = weekFragment;
+                break;
+            case SHOPPING_LIST:
+                fragment = shoppingListFragment;
                 break;
             case RECIPES:
                 fragment = recipeFragment;
@@ -106,37 +112,4 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
-
-    @Override
-    public void onBackPressed() {
-        /*if (lastActiveFragment != null) {
-            changeFragment(lastActiveFragment);
-            lastActiveFragment = null;
-            return;
-        }*/
-        super.onBackPressed();
-    }
-
-
-    /*public void openOnlineRecipeDetailsListener(IRecipe recipe, int index) {
-        openRecipeDetailsFragment(recipe, index);
-    }
-
-
-    public void openSavedRecipeDetailsFragment(IRecipe recipe, int index) {
-        openRecipeDetailsFragment(recipe, index);
-    }
-
-
-    public void backButtonPressed() {
-        Log.i(TAG, "BACK");
-        Toast.makeText(MainActivity.this, "BACK", Toast.LENGTH_SHORT).show(); // Not showing
-        onBackPressed();
-    }
-
-
-    public void updateRecipeList() {
-        //savedRecipesFragment.updateRecipeList();
-    }*/
-
 }

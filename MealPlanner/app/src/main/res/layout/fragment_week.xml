@@ -1,14 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.WeekFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.WeekFragment"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/main.appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/main.collapsing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways|snap">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/blue_1"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/llMonthContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+
+                        android:layout_centerHorizontal="true"
+                        >
+
+                        <TextView
+                            android:id="@+id/tvMonth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textStyle="bold"
+
+                            android:text="December"
+                            />
+
+                        <TextView
+                            android:id="@+id/tvYear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_marginStart="8dp"
+
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textStyle="bold"
+
+                            android:text="1934"
+                            />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvDayNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_below="@+id/ibtnExpandCalendar"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="-4dp"
+
+                        android:fontFamily="sans-serif-light"
+                        android:text="23"
+
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tvDayName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_below="@+id/tvDayNumber"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="5dp"
+
+                        android:fontFamily="sans-serif-light"
+                        android:text="Wen"
+                        android:textColor="@color/white"
+
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/view_current_day"
+                        android:layout_width="50dp"
+                        android:layout_height="5dp"
+                        android:background="@color/orange_1"
+
+                        android:layout_below="@id/tvDayName"
+                        android:layout_centerHorizontal="true"/>
+
+                    <ImageButton
+                        android:id="@+id/ibtnPrevDay"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+
+                        android:src="@drawable/ic_round_arrow_back_24"
+
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="10dp"
+
+                        android:background="@android:color/transparent"
+                        app:tint="@color/white" />
+
+                    <ImageButton
+                        android:id="@+id/ibtnNextDay"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+
+                        android:layout_alignParentEnd="true"
+
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:background="@android:color/transparent"
+
+                        android:rotation="180"
+                        android:src="@drawable/ic_round_arrow_back_24"
+                        app:tint="@color/white" />
+
+                    <ImageButton
+                        android:id="@+id/ibtnExpandCalendar"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+
+                        android:layout_below="@+id/calendarView"
+                        android:layout_centerHorizontal="true"
+
+                        android:layout_marginTop="13dp"
+
+                        android:background="@android:color/transparent"
+                        android:rotation="0"
+                        android:src="@drawable/ic_round_expand_more_24"
+                        app:tint="@color/white" />
+
+                    <CalendarView
+                        android:id="@+id/calendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        />
+
+                </RelativeLayout>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+
+            android:scrollbars="none"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+
+            android:src="@drawable/ic_round_white_add_24"
+            app:tint="@color/white"
+            app:elevation="3dp"
+
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="16dp"
+
+            />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+
+        android:visibility="visible"
+
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="100dp"
+        />
+
+    <FrameLayout
+        android:id="@+id/savedRecipesContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Week fragment" />
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/add_fragment_background"
+        />
 
-</FrameLayout>
+
+</RelativeLayout>
