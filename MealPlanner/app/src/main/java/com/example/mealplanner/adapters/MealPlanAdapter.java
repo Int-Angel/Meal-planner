@@ -58,7 +58,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
         private TextView tvRecipeTitleItem;
         private ImageButton ibtnSubtract;
         private ImageButton ibtnAdd;
-        private EditText etQuantity;
+        private TextView tvQuantity;
         private ImageView ivRecipeImageItem;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
@@ -67,7 +67,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
             tvRecipeTitleItem = itemView.findViewById(R.id.tvRecipeTitleItem);
             ibtnSubtract = itemView.findViewById(R.id.ibtnSubtract);
             ibtnAdd = itemView.findViewById(R.id.ibtnAdd);
-            etQuantity = itemView.findViewById(R.id.etQuantity);
+            tvQuantity = itemView.findViewById(R.id.tvQuantity);
             ivRecipeImageItem = itemView.findViewById(R.id.ivRecipeImageItem);
         }
 
@@ -81,7 +81,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
                     .transform(new CenterCrop(),new RoundedCorners(1000))
                     .into(ivRecipeImageItem);
 
-            etQuantity.setText(meal.getQuantity() + "");
+            tvQuantity.setText(meal.getQuantity() + "");
 
             setUpOnClickListeners();
         }
@@ -103,7 +103,12 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
         }
 
         private void changeQuantity(int n){
-            //TODO
+            int newQuantity = bindedMeal.getQuantity() + n;
+            if(newQuantity >= 1){
+                bindedMeal.setQuantity(newQuantity);
+                tvQuantity.setText(newQuantity + "");
+                bindedMeal.saveInBackground();
+            }
         }
     }
 }

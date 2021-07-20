@@ -69,15 +69,14 @@
                     android:rotationY="180"
                     />
 
-                <EditText
-                    android:id="@+id/etQuantity"
+                <TextView
+                    android:id="@+id/tvQuantity"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
 
                     android:text="1"
                     android:gravity="center"
                     android:fontFamily="sans-serif-light"
-                    android:inputType="number"
                     />
 
                 <ImageButton
