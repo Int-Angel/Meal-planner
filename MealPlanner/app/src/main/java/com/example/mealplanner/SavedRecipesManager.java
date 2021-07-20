@@ -41,6 +41,7 @@ public class SavedRecipesManager {
                     Log.e(TAG, "Fail getting recipes", e);
                     return;
                 }
+                recipes.clear();
                 recipes.addAll(objects);
                 createIdSet();
             }
@@ -48,9 +49,18 @@ public class SavedRecipesManager {
     }
 
     private static void createIdSet() {
+        idSet.clear();
         for (int i = 0; i < recipes.size(); i++) {
             idSet.add(recipes.get(i).getId());
         }
+    }
+
+    public static Recipe getRecipeById(String id){
+        for(int i = 0; i<recipes.size(); i++){
+            if(recipes.get(i).getId().equals(id))
+                return recipes.get(i);
+        }
+        return null;
     }
 
     public static List<Recipe> getRecipes() {

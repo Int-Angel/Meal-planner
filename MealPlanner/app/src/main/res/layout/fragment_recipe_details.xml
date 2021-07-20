@@ -6,7 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.RecipeDetailsFragment"
     android:elevation="20dp"
-    android:clickable="true">
+    android:clickable="true"
+    android:background="@color/white">
 
 
     <RelativeLayout

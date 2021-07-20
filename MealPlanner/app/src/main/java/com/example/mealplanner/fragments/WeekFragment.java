@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,7 +20,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.mealplanner.R;
+import com.example.mealplanner.SwipeToDeleteCallback;
 import com.example.mealplanner.adapters.MealPlanAdapter;
+import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.MealPlan;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
@@ -44,10 +47,12 @@ import java.util.Locale;
 import static android.view.View.GONE;
 
 
-public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecipeListener {
+public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecipeListener,
+        RecipeDetailsFragment.RecipeDetailsFragmentListener {
 
     private final static String TAG = "WeekFragment";
     private final AddRecipeFragment addRecipeFragment = new AddRecipeFragment();
+    private RecipeDetailsFragment recipeDetailsFragment;
 
     private Calendar calendar;
     private List<MealPlan> mealPlans;
@@ -111,9 +116,17 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         calendarView.setVisibility(GONE);
         savedRecipesContainer.setVisibility(GONE);
 
-        adapter = new MealPlanAdapter(getContext(), mealPlans);
+        adapter = new MealPlanAdapter(getContext(), mealPlans, new MealPlanAdapter.MealPlanAdapterListener() {
+            @Override
+            public void openDetails(IRecipe recipe, int index) {
+                openRecipeDetailsFragment(recipe, index);
+            }
+        });
+
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
+        itemTouchHelper.attachToRecyclerView(rvRecipes);
 
         setUpOnClickListeners();
         updateDateOnScreen();
@@ -221,6 +234,21 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
                 .beginTransaction().replace(R.id.savedRecipesContainer, addRecipeFragment).commit();
     }
 
+    private void openRecipeDetailsFragment(IRecipe recipe, int index) {
+        appBarLayout.setVisibility(View.GONE);
+        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, index);
+
+        getChildFragmentManager()
+                .beginTransaction().replace(R.id.flContainer, recipeDetailsFragment).commit();
+    }
+
+    private void closeRecipeDetailsFragment(){
+        appBarLayout.setVisibility(View.VISIBLE);
+
+        getChildFragmentManager()
+                .beginTransaction().remove(recipeDetailsFragment).commit();
+    }
+
     private void setUpOnClickListeners() {
         ibtnExpandCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,5 +300,15 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         } catch (java.text.ParseException e) {
             Log.e(TAG, "Error with the date", e);
         }
+    }
+
+    @Override
+    public void backButtonPressed() {
+        closeRecipeDetailsFragment();
+    }
+
+    @Override
+    public void updateRecipeList() {
+
     }
 }

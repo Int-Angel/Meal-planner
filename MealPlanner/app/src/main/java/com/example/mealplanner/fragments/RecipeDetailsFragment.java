@@ -79,7 +79,6 @@ public class RecipeDetailsFragment extends Fragment {
 
     public RecipeDetailsFragment() {
         // Required empty public constructor
-        this.listener = listener;
     }
 
     public static RecipeDetailsFragment newInstance(IRecipe recipe, int index) {
@@ -240,8 +239,8 @@ public class RecipeDetailsFragment extends Fragment {
     private void removeSavedRecipe() {
         if (recipe instanceof Recipe) {
             if (!ibtnSaveRecipeDetails.isSelected()) {
-                //SavedRecipesManager.unSaveRecipeByUri(recipe.getUri());
-                SavedRecipesManager.unSaveRecipe(index);
+                SavedRecipesManager.unSaveRecipeByUri(recipe.getId());
+                //SavedRecipesManager.unSaveRecipe(index);
                 listener.updateRecipeList();
             }
         }
