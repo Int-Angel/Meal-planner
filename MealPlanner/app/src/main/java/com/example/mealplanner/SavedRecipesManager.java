@@ -2,11 +2,13 @@ package com.example.mealplanner;
 
 import android.util.Log;
 
+import com.example.mealplanner.models.MealPlan;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -55,9 +57,9 @@ public class SavedRecipesManager {
         }
     }
 
-    public static Recipe getRecipeById(String id){
-        for(int i = 0; i<recipes.size(); i++){
-            if(recipes.get(i).getId().equals(id))
+    public static Recipe getRecipeById(String id) {
+        for (int i = 0; i < recipes.size(); i++) {
+            if (recipes.get(i).getId().equals(id))
                 return recipes.get(i);
         }
         return null;
@@ -98,9 +100,10 @@ public class SavedRecipesManager {
         }
     }
 
-    public static void unSaveRecipeByUri(String uri) {
+    public static void unSaveRecipeById(String id) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Recipe");
-        query.whereEqualTo(Recipe.KEY_ID, uri);
+        query.whereEqualTo(Recipe.KEY_ID, id);
+        deleteRecipeFromListByUri(id);
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject object, ParseException e) {
@@ -108,6 +111,7 @@ public class SavedRecipesManager {
                     Log.e(TAG, "Can't Unsave recipe because it's not saved", e);
                     return;
                 }
+                deleteMealPlansWithRecipe((Recipe) object);
                 object.deleteInBackground(new DeleteCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -116,10 +120,24 @@ public class SavedRecipesManager {
                             return;
                         }
                         Log.i(TAG, "Recipe unSaved!");
-                        //querySavedRecipes();
-                        deleteRecipeFromListByUri(uri);
                     }
                 });
+            }
+        });
+    }
+
+    private static void deleteMealPlansWithRecipe(Recipe recipe) {
+        ParseQuery<MealPlan> query = ParseQuery.getQuery("Week");
+        query.whereEqualTo(MealPlan.KEY_RECIPE, recipe);
+        query.findInBackground(new FindCallback<MealPlan>() {
+            @Override
+            public void done(List<MealPlan> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Error removing meal plan from recipe", e);
+                    return;
+                }
+                Log.i(TAG, "Removing meal plan: " + objects.size());
+                ParseObject.deleteAllInBackground(objects);
             }
         });
     }

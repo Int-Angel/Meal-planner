@@ -1,15 +1,12 @@
 package com.example.mealplanner.adapters;
 
 import android.content.Context;
-import android.service.autofill.SaveCallback;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -22,9 +19,7 @@ import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
-import com.example.mealplanner.models.Recipe;
 
-import java.text.ParseException;
 import java.util.List;
 
 
@@ -127,7 +122,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 ibtnSaveRecipeItem.setSelected(true);
                 ((OnlineRecipe)bindedRecipe).setSaved(true);
             }else{
-                SavedRecipesManager.unSaveRecipeByUri(bindedRecipe.getId());
+                SavedRecipesManager.unSaveRecipeById(bindedRecipe.getId());
                 ibtnSaveRecipeItem.setSelected(false);
                 ((OnlineRecipe)bindedRecipe).setSaved(false);
             }

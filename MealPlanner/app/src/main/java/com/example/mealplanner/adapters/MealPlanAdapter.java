@@ -90,7 +90,6 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
 
         public void bind(MealPlan meal) {
             bindedMeal = meal;
-
             tvRecipeTitleItem.setText(meal.getRecipe().getString(Recipe.KEY_TITLE));
 
             Glide.with(context)

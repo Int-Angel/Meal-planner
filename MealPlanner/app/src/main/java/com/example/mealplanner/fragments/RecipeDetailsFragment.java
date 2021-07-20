@@ -13,14 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -33,8 +31,6 @@ import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
 import com.google.android.material.tabs.TabLayout;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
@@ -226,7 +222,7 @@ public class RecipeDetailsFragment extends Fragment {
             ibtnSaveRecipeDetails.setSelected(true);
             ((OnlineRecipe) recipe).setSaved(true);
         } else {
-            SavedRecipesManager.unSaveRecipeByUri(recipe.getId());
+            SavedRecipesManager.unSaveRecipeById(recipe.getId());
             ibtnSaveRecipeDetails.setSelected(false);
             ((OnlineRecipe) recipe).setSaved(false);
         }
@@ -239,7 +235,7 @@ public class RecipeDetailsFragment extends Fragment {
     private void removeSavedRecipe() {
         if (recipe instanceof Recipe) {
             if (!ibtnSaveRecipeDetails.isSelected()) {
-                SavedRecipesManager.unSaveRecipeByUri(recipe.getId());
+                SavedRecipesManager.unSaveRecipeById(recipe.getId());
                 //SavedRecipesManager.unSaveRecipe(index);
                 listener.updateRecipeList();
             }
