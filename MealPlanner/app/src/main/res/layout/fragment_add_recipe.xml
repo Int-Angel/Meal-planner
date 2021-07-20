@@ -29,6 +29,7 @@
         android:layout_below="@+id/searchContainer"/>
 
     <ImageButton
+        android:id="@+id/ibtnClose"
         android:layout_width="40dp"
         android:layout_height="40dp"
 

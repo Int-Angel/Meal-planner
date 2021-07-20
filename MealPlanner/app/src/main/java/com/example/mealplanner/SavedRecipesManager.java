@@ -78,9 +78,9 @@ public class SavedRecipesManager {
         });
     }
 
-    private static void deleteRecipeFromListByUri(String uri){
-        for(int i = 0; i< recipes.size(); i++){
-            if(recipes.get(i).getId().equals(uri)){
+    private static void deleteRecipeFromListByUri(String uri) {
+        for (int i = 0; i < recipes.size(); i++) {
+            if (recipes.get(i).getId().equals(uri)) {
                 idSet.remove(recipes.get(i).getId());
                 recipes.remove(i);
                 return;

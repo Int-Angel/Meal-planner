@@ -205,6 +205,23 @@
         android:layout_marginTop="100dp"
         />
 
+    <TextView
+        android:id="@+id/tvNoPlan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:visibility="gone"
+
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="100dp"
+
+        android:textSize="20sp"
+
+        android:text="Add something!"
+        />
+
     <FrameLayout
         android:id="@+id/savedRecipesContainer"
         android:layout_width="match_parent"
@@ -212,7 +229,8 @@
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="20dp"
-        android:background="@drawable/add_fragment_background"
+        android:visibility="gone"
+
         />
 
 

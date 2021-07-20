@@ -5,8 +5,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,30 +19,47 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.mealplanner.R;
+import com.example.mealplanner.adapters.MealPlanAdapter;
+import com.example.mealplanner.models.MealPlan;
+import com.example.mealplanner.models.OnlineRecipe;
+import com.example.mealplanner.models.Recipe;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static android.view.View.GONE;
 
 
-public class WeekFragment extends Fragment {
+public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecipeListener {
 
     private final static String TAG = "WeekFragment";
     private final AddRecipeFragment addRecipeFragment = new AddRecipeFragment();
 
     private Calendar calendar;
+    private List<MealPlan> mealPlans;
+    private MealPlanAdapter adapter;
+    private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
     private AppBarLayout appBarLayout;
     private TextView tvMonth;
     private TextView tvYear;
     private TextView tvDayNumber;
     private TextView tvDayName;
+    private TextView tvNoPlan;
     private ImageButton ibtnPrevDay;
     private ImageButton ibtnNextDay;
     private ImageButton ibtnExpandCalendar;
@@ -71,6 +90,8 @@ public class WeekFragment extends Fragment {
         calendar = Calendar.getInstance();
         calendarExpanded = false;
 
+        mealPlans = new ArrayList<>();
+
         appBarLayout = view.findViewById(R.id.main_appbar);
         tvMonth = view.findViewById(R.id.tvMonth);
         tvYear = view.findViewById(R.id.tvYear);
@@ -85,28 +106,67 @@ public class WeekFragment extends Fragment {
         view_current_day = view.findViewById(R.id.view_current_day);
         calendarView = view.findViewById(R.id.calendarView);
         savedRecipesContainer = view.findViewById(R.id.savedRecipesContainer);
+        tvNoPlan = view.findViewById(R.id.tvNoPlan);
 
         calendarView.setVisibility(GONE);
-        progress_circular.setVisibility(GONE);
         savedRecipesContainer.setVisibility(GONE);
+
+        adapter = new MealPlanAdapter(getContext(), mealPlans);
+        rvRecipes.setAdapter(adapter);
+        rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
 
         setUpOnClickListeners();
         updateDateOnScreen();
+        queryRecipesDay();
+    }
+
+    private void queryRecipesDay() {
+        progress_circular.setVisibility(View.VISIBLE);
+        tvNoPlan.setVisibility(GONE);
+
+        ParseQuery<MealPlan> query = ParseQuery.getQuery(MealPlan.class);
+
+        query.include("recipe");
+
+        query.whereEqualTo(MealPlan.KEY_USER, ParseUser.getCurrentUser());
+        try {
+            query.whereEqualTo(MealPlan.KEY_DATE, formatter.parse(formatter.format(calendar.getTime())));
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
+        query.findInBackground(new FindCallback<MealPlan>() {
+            @Override
+            public void done(List<MealPlan> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Error while getting meal plan", e);
+                    return;
+                }
+                Log.i(TAG, "Success getting the meal plan :D");
+                mealPlans.clear();
+                mealPlans.addAll(objects);
+                progress_circular.setVisibility(GONE);
+                if (mealPlans.size() == 0)
+                    tvNoPlan.setVisibility(View.VISIBLE);
+
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void updateDateOnScreen() {
-
         tvYear.setText(calendar.get(Calendar.YEAR) + "");
         tvDayNumber.setText(calendar.get(Calendar.DAY_OF_MONTH) + "");
         tvDayName.setText(calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US) + "");
         tvMonth.setText(calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US) + "");
 
 
-
         if (isToday(calendar))
             view_current_day.setVisibility(View.VISIBLE);
         else
             view_current_day.setVisibility(View.INVISIBLE);
+
+        queryRecipesDay();
     }
 
     private boolean isToday(Calendar calendar) {
@@ -117,11 +177,6 @@ public class WeekFragment extends Fragment {
 
     private void changeDate(int n) {
         calendar.add(Calendar.DAY_OF_MONTH, n);
-        updateDateOnScreen();
-    }
-
-    private void updateDate(long date) {
-        calendar.setTime(new Date(date));
         updateDateOnScreen();
     }
 
@@ -194,9 +249,28 @@ public class WeekFragment extends Fragment {
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                //Date date = new Date(year,month,dayOfMonth);
-                //updateDate(view.getDate());
+                calendar.set(year, month, dayOfMonth);
+                updateDateOnScreen();
             }
         });
+    }
+
+    @Override
+    public void addRecipeToPlan(Recipe recipe) {
+        tvNoPlan.setVisibility(GONE);
+        try {
+            MealPlan newMeal = MealPlan.createMealPlan(recipe, formatter.parse(formatter.format(calendar.getTime())));
+            newMeal.saveInBackground(e -> {
+                if (e != null) {
+                    Log.e(TAG, "Error while saving meal", e);
+                    return;
+                }
+                Log.i(TAG, "Meal saved :D");
+                mealPlans.add(0, newMeal);
+                adapter.notifyItemInserted(0);
+            });
+        } catch (java.text.ParseException e) {
+            Log.e(TAG, "Error with the date", e);
+        }
     }
 }

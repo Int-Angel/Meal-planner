@@ -60,7 +60,7 @@ public class AddRecipeAdapter extends RecyclerView.Adapter<AddRecipeAdapter.View
         return recipes.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         private IRecipe bindedRecipe;
 
@@ -86,7 +86,7 @@ public class AddRecipeAdapter extends RecyclerView.Adapter<AddRecipeAdapter.View
             ibtnAddRecipeItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    listener.addToPlan(bindedRecipe, getAdapterPosition());
                 }
             });
         }
@@ -96,7 +96,7 @@ public class AddRecipeAdapter extends RecyclerView.Adapter<AddRecipeAdapter.View
 
             Glide.with(context)
                     .load(recipe.getImageUrl())
-                    .transform(new CenterCrop(),new RoundedCorners(1000))
+                    .transform(new CenterCrop(), new RoundedCorners(1000))
                     .into(ivRecipeImageItem);
 
             tvRecipeTitleItem.setText(recipe.getTitle());

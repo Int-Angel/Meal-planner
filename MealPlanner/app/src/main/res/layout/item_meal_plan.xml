@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvItemContainer"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:cardElevation="5dp"
+        app:cardCornerRadius="5dp"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <TextView
+                android:id="@+id/tvRecipeTitleItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="10dp"
+
+                android:fontFamily="sans-serif"
+                android:text="Chiken Tikka Masala Recipe"
+
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+
+                android:weightSum="3"
+
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="100dp"
+                android:layout_marginBottom="10dp"
+
+                android:gravity="center"
+
+                >
+
+                <ImageButton
+                    android:id="@+id/ibtnSubtract"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_round_chevron_right_24"
+                    android:rotationY="180"
+                    />
+
+                <EditText
+                    android:id="@+id/etQuantity"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+
+                    android:text="1"
+                    android:gravity="center"
+                    android:fontFamily="sans-serif-light"
+                    android:inputType="number"
+                    />
+
+                <ImageButton
+                    android:id="@+id/ibtnAdd"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_round_chevron_right_24"
+
+                    />
+
+
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/ivRecipeImageItem"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+
+        android:elevation="6dp"
+
+        android:scaleType="fitCenter"
+        tools:srcCompat="@tools:sample/avatars" />
+
+
+
+
+</RelativeLayout>

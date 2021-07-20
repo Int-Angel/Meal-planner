@@ -14,6 +14,17 @@ public class MealPlan extends ParseObject {
     public final static String KEY_QUANTITY = "quantity";
     public final static String KEY_DATE = "date";
 
+    public static MealPlan createMealPlan(Recipe recipe, Date date){
+        MealPlan mealPlan = new MealPlan();
+
+        mealPlan.setUser(ParseUser.getCurrentUser());
+        mealPlan.setRecipe(recipe);
+        mealPlan.setQuantity(1);
+        mealPlan.setDate(date);
+
+        return mealPlan;
+    }
+
     public ParseUser getUser(){
         return getParseUser(KEY_USER);
     }
