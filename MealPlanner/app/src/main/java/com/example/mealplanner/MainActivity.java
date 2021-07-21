@@ -20,6 +20,7 @@ import com.example.mealplanner.fragments.ProfileFragment;
 import com.example.mealplanner.fragments.RecipeFragment;
 import com.example.mealplanner.fragments.SavedRecipesFragment;
 import com.example.mealplanner.fragments.ShoppingListFragment;
+import com.example.mealplanner.fragments.ShoppingListListFragment;
 import com.example.mealplanner.fragments.SocialFragment;
 import com.example.mealplanner.fragments.WeekFragment;
 import com.example.mealplanner.models.IRecipe;
@@ -36,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private final WeekFragment weekFragment = new WeekFragment();
-    private final ShoppingListFragment shoppingListFragment = new ShoppingListFragment();
+    //private final ShoppingListFragment shoppingListFragment = new ShoppingListFragment();
+    private final ShoppingListListFragment shoppingListListFragment = new ShoppingListListFragment();
     private final RecipeFragment recipeFragment = new RecipeFragment();
     private final SocialFragment socialFragment = new SocialFragment();
     private final ProfileFragment profileFragment = new ProfileFragment();
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = weekFragment;
                 break;
             case SHOPPING_LIST:
-                fragment = shoppingListFragment;
+                fragment = shoppingListListFragment;
                 break;
             case RECIPES:
                 fragment = recipeFragment;

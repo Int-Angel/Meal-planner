@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.ShoppingListFragment">
+    tools:context=".fragments.ShoppingListListFragment">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -35,56 +35,15 @@
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
 
 
-                        android:text="Shopping list"
+                        android:text="Shopping lists"
                         android:gravity="center"
                         android:textStyle="bold"
                         android:textSize="30sp"
                         android:textColor="@android:color/white"
                         />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-
-                        android:layout_below="@+id/tvShoppinglistTitle"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_centerHorizontal="true"
-                        >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-
-                            android:textSize="16sp"
-                            android:layout_gravity="center"
-                            android:fontFamily="sans-serif-condensed-light"
-                            android:textColor="@color/white"
-                            android:text="Date range:"
-
-                            android:drawableLeft="@drawable/ic_round_date_range_24"
-                            />
-
-                        <TextView
-                            android:id="@+id/tvDateRange"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-
-                            android:background="@drawable/rounded_button"
-                            android:textColor="@color/gray"
-                            android:fontFamily="sans-serif-light"
-                            android:paddingStart="20dp"
-                            android:paddingEnd="20dp"
-                            android:textSize="16sp"
-
-                            android:text="Jul 9 - Jul 31"
-                            />
-
-                    </LinearLayout>
 
                 </RelativeLayout>
 
@@ -99,14 +58,35 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+
+            android:src="@drawable/ic_round_white_add_24"
+            app:tint="@color/white"
+            app:elevation="3dp"
+
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="16dp"
+
+            />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <TextView
-        android:id="@+id/tvTest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="216dp"
-        android:text="TextView" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="100dp"
+        />
+
+    <FrameLayout
+        android:id="@+id/flContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </RelativeLayout>

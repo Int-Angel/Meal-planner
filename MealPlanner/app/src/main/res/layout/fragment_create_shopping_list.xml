@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.CreateShoppingListFragment"
+
+    app:cardElevation="5dp"
+    app:cardCornerRadius="5dp"
+
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginTop="150dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/ibtnClose"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+
+            android:layout_margin="10dp"
+
+            android:src="@drawable/ic_round_close_24"
+            android:background="@android:color/transparent"
+            />
+
+        <EditText
+            android:id="@+id/etShoppingListName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:layout_marginStart="40dp"
+
+            android:fontFamily="sans-serif-light"
+
+            android:gravity="center"
+            android:hint="Shopping list name"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+
+            android:layout_below="@+id/etShoppingListName"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:textSize="16sp"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/black"
+                android:text="Date range:"
+
+                android:drawableLeft="@drawable/ic_round_date_range_24"
+                />
+
+            <TextView
+                android:id="@+id/tvDateRange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/rounded_darker"
+                android:textColor="@color/gray"
+                android:fontFamily="sans-serif-light"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp"
+                android:textSize="16sp"
+
+                android:text="Click"
+                />
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btnDone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentBottom="true"
+            android:layout_margin="30dp"
+
+            android:text="Done!"
+            android:background="@drawable/rounded_green"
+
+            />
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

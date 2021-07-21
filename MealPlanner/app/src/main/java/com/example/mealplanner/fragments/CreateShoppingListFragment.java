@@ -7,43 +7,42 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.codepath.asynchttpclient.AbsCallback;
 import com.codepath.asynchttpclient.AsyncHttpClient;
-import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.mealplanner.R;
+import com.example.mealplanner.models.ShoppingList;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.w3c.dom.Text;
 
-import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
-import java.util.concurrent.CancellationException;
-
-import okhttp3.Call;
-import okhttp3.Headers;
-import okhttp3.Response;
 
 
-public class ShoppingListFragment extends Fragment {
+public class CreateShoppingListFragment extends Fragment {
 
-    private final static String TAG = "ShoppingListFragment";
-    private final static String COMPUTE_SHOPPING_LIST_URL = "https://api.spoonacular.com/mealplanner/shopping-list/compute?apiKey=728721c3da7543769d5413b35ac70cd7";
+    public interface CreateShoppingListFragmentListener{
+        void closeCreateShoppingListFragment();
+        void shoppingListCreated(ShoppingList shoppingList);
+    }
+
+    private final static String TAG = "CreateShoppingList";
+
+    private CreateShoppingListFragmentListener listener;
 
     private AsyncHttpClient client;
     private Calendar startDayCalendar;
@@ -51,11 +50,12 @@ public class ShoppingListFragment extends Fragment {
     private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
     private MaterialDatePicker dateRangePicker;
-    private TextView tvTest;
-    private RecyclerView rvShoppingList;
+    private ImageButton ibtnClose;
+    private EditText etShoppingListName;
     private TextView tvDateRange;
+    private Button btnDone;
 
-    public ShoppingListFragment() {
+    public CreateShoppingListFragment() {
         // Required empty public constructor
     }
 
@@ -63,29 +63,50 @@ public class ShoppingListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_shopping_list, container, false);
+        return inflater.inflate(R.layout.fragment_create_shopping_list, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        listener = (CreateShoppingListFragmentListener) getParentFragment();
+
         startDayCalendar = Calendar.getInstance();
         endDayCalendar = Calendar.getInstance();
 
-        tvTest = view.findViewById(R.id.tvTest);
+        ibtnClose = view.findViewById(R.id.ibtnClose);
+        etShoppingListName = view.findViewById(R.id.etShoppingListName);
         tvDateRange = view.findViewById(R.id.tvDateRange);
-        rvShoppingList = view.findViewById(R.id.rvShoppingList);
+        btnDone = view.findViewById(R.id.btnDone);
 
-        setUpDateRangePicker();
         setUpOnClickListeners();
+        setUpDateRangePicker();
     }
 
-    private void setUpOnClickListeners() {
+    private void setUpOnClickListeners(){
+        ibtnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.closeCreateShoppingListFragment();
+            }
+        });
+
         tvDateRange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dateRangePicker.show(getChildFragmentManager(), TAG);
+                openDatePicker();
+            }
+        });
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    createShoppingList();
+                } catch (ParseException e) {
+                    Log.e(TAG,"Parse exceptions creating shopping list", e);
+                }
             }
         });
     }
@@ -125,38 +146,25 @@ public class ShoppingListFragment extends Fragment {
         endDayCalendar.add(Calendar.DAY_OF_MONTH, 1);
     }
 
-
-    private String getCalendarDate(Calendar calendar) {
-        String res = "";
-
-        res += calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
-        res += " " + calendar.get(Calendar.DAY_OF_MONTH);
-        res += " " + calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US);
-        res += " " + calendar.get(Calendar.YEAR);
-
-        return res;
+    private void openDatePicker(){
+        dateRangePicker.show(getChildFragmentManager(), TAG);
     }
 
-    private void TEST() {
-        client = new AsyncHttpClient();
-        String body = "{items: [4 lbs tomatoes,10 tomatoes,20 Tablespoons Olive Oil,6 tbsp Olive Oil]}";
-        client.post(COMPUTE_SHOPPING_LIST_URL, body, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int i, Headers headers, JSON json) {
-                Log.i(TAG, "YEII");
-                try {
-                    JSONArray jsonArray = json.jsonObject.getJSONArray("aisles");
-                    Log.i(TAG, json.jsonObject.toString());
-                } catch (JSONException e) {
-                    Log.e(TAG, "NO jasonArray", e);
-                }
-            }
+    private void createShoppingList() throws ParseException {
+        ShoppingList shoppingList = ShoppingList.createShoppingList(etShoppingListName.getText().toString(),
+                formatter.parse(formatter.format(startDayCalendar.getTime())),
+                formatter.parse(formatter.format(endDayCalendar.getTime())));
 
+        shoppingList.saveInBackground(new SaveCallback() {
             @Override
-            public void onFailure(int i, Headers headers, String s, Throwable throwable) {
-                Log.e(TAG, "NOOO", throwable);
+            public void done(com.parse.ParseException e) {
+                if(e != null){
+                    Log.e(TAG,"Couldn't save shopping list", e);
+                    return;
+                }
+                listener.shoppingListCreated(shoppingList);
             }
         });
-
     }
+
 }
