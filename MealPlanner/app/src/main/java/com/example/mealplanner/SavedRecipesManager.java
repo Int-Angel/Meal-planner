@@ -2,6 +2,7 @@ package com.example.mealplanner;
 
 import android.util.Log;
 
+import com.example.mealplanner.models.Ingredient;
 import com.example.mealplanner.models.MealPlan;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
@@ -13,6 +14,9 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,6 +25,7 @@ import java.util.Set;
 
 public class SavedRecipesManager {
 
+    //TODO: Delete ingredinets when unsaving recipe
     private final static String TAG = "SavedRecipesManager";
 
     private static List<Recipe> recipes;
@@ -78,6 +83,8 @@ public class SavedRecipesManager {
         recipes.add(0, recipe);
         idSet.add(recipe.getId());
 
+        createRecipeIngredients(recipe, onlineRecipe);
+
         recipe.saveInBackground(new com.parse.SaveCallback() {
             @Override
             public void done(com.parse.ParseException e) {
@@ -88,6 +95,25 @@ public class SavedRecipesManager {
                 Log.i(TAG, "Recipe saved!");
             }
         });
+    }
+
+    private static void createRecipeIngredients(Recipe recipe, OnlineRecipe onlineRecipe){
+        try {
+            List<Ingredient> ingredients = Ingredient.fromJSONArray(recipe, onlineRecipe.getExtendedIngredients());
+
+            ParseObject.saveAllInBackground(ingredients, new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e != null){
+                        Log.e(TAG, "Couldn't save ingredients in database", e);
+                        return;
+                    }
+                }
+            });
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Couldn't create ingredients from recipe", e);
+        }
     }
 
     private static void deleteRecipeFromListByUri(String uri) {

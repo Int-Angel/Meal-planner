@@ -20,12 +20,18 @@ import java.util.List;
 
 public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListListAdapter.ViewHolder> {
 
+    public interface ShoppingListListAdapterListener{
+        void openShoppingList(ShoppingList shoppingList);
+    }
+
     private Context context;
     private List<ShoppingList> shoppingLists;
+    private ShoppingListListAdapterListener listener;
 
-    public ShoppingListListAdapter(Context context, List<ShoppingList> shoppingLists) {
+    public ShoppingListListAdapter(Context context, List<ShoppingList> shoppingLists, ShoppingListListAdapterListener listener) {
         this.context = context;
         this.shoppingLists = shoppingLists;
+        this.listener = listener;
     }
 
     @NonNull
@@ -46,7 +52,7 @@ public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListLi
         return shoppingLists.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ShoppingList bindedShoppingList;
 
@@ -60,6 +66,8 @@ public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListLi
             tvStartDateItem = itemView.findViewById(R.id.tvStartDateItem);
             tvEndDateItem = itemView.findViewById(R.id.tvEndDateItem);
             tvShoppingListNameItem = itemView.findViewById(R.id.tvShoppingListNameItem);
+
+            itemView.setOnClickListener(this);
         }
 
         public void bind(ShoppingList shoppingList) {
@@ -72,6 +80,11 @@ public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListLi
 
         private String getStringDate(Date date){
             return DateFormat.format("yyyy.MM.dd", date).toString();
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.openShoppingList(bindedShoppingList);
         }
     }
 }

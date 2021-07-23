@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
@@ -29,6 +30,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         if(ParseUser.getCurrentUser() != null){
+            // default ACLs for User object
+            ParseACL parseACL = new ParseACL(ParseUser.getCurrentUser());
+            parseACL.setPublicReadAccess(true);
+
+            ParseUser.getCurrentUser().setACL(parseACL);
             goMainActivity();
         }
 
@@ -65,6 +71,13 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Fail to login!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                // default ACLs for User object
+                ParseACL parseACL = new ParseACL(ParseUser.getCurrentUser());
+                parseACL.setPublicReadAccess(true);
+
+                ParseUser.getCurrentUser().setACL(parseACL);
+
                 goMainActivity();
             }
         });

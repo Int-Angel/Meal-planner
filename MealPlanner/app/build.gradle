@@ -58,6 +58,7 @@ dependencies {
     annotationProcessor 'org.parceler:parceler:1.1.12'
 
     implementation 'com.codepath.libraries:asynchttpclient:2.0.0'
+    compile 'com.loopj.android:android-async-http:1.4.9'
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
 
     implementation "androidx.palette:palette:1.0.0"

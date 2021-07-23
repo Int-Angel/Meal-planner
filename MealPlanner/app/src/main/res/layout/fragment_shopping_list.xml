@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.ShoppingListFragment">
+    tools:context=".fragments.ShoppingListFragment"
+
+    android:background="@color/white">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -54,6 +56,8 @@
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_centerHorizontal="true"
+
+                        android:visibility="gone"
                         >
 
                         <TextView
@@ -101,12 +105,14 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <TextView
-        android:id="@+id/tvTest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="216dp"
-        android:text="TextView" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="150dp"
+        />
+
 </RelativeLayout>

@@ -9,7 +9,6 @@ import java.util.Date;
 @ParseClassName("ShoppingList")
 public class ShoppingList extends ParseObject {
 
-    public final static String KEY_OBJECT_ID = "objectId";
     public final static String KEY_NAME = "name";
     public final static String KEY_COMPLETED = "completed";
     public final static String KEY_START_DATE = "startDate";
@@ -32,10 +31,6 @@ public class ShoppingList extends ParseObject {
 
     public void setUser(ParseUser user){
         put(KEY_USER, user);
-    }
-
-    public String getObjectId() {
-        return getString(KEY_OBJECT_ID);
     }
 
     public String getName() {

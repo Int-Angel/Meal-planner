@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
+import org.parceler.Transient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ public class OnlineRecipe implements IRecipe {
     private boolean isSaved;
     private String summary;
     private List<String> instructions;
+    @Transient
+    private JSONArray extendedIngredients;
 
 
     public OnlineRecipe() {
@@ -76,6 +79,9 @@ public class OnlineRecipe implements IRecipe {
             dishType = "";
         }
 
+        extendedIngredients = new JSONArray();
+        extendedIngredients = jsonObject.getJSONArray("extendedIngredients");
+
         getIngredientsFromJson(jsonObject);
         getInstructionsFromJson(jsonObject);
     }
@@ -109,6 +115,10 @@ public class OnlineRecipe implements IRecipe {
         } catch (JSONException e) {
             //no instructions
         }
+    }
+
+    public JSONArray getExtendedIngredients(){
+        return extendedIngredients;
     }
 
     @Override

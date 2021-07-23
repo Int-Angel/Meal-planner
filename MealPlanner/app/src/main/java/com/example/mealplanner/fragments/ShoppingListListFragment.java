@@ -35,6 +35,7 @@ public class ShoppingListListFragment extends Fragment implements CreateShopping
     private final static String TAG = "ShoppingList LISTS";
 
     private final CreateShoppingListFragment createShoppingListFragment = new CreateShoppingListFragment();
+    private ShoppingListFragment shoppingListFragment;
 
     private List<ShoppingList> shoppingLists;
     private ShoppingListListAdapter adapter;
@@ -63,7 +64,13 @@ public class ShoppingListListFragment extends Fragment implements CreateShopping
         fab = view.findViewById(R.id.fab);
         rvShoppingList = view.findViewById(R.id.rvShoppingList);
 
-        adapter = new ShoppingListListAdapter(getContext(), shoppingLists);
+        adapter = new ShoppingListListAdapter(getContext(), shoppingLists, new ShoppingListListAdapter.ShoppingListListAdapterListener() {
+            @Override
+            public void openShoppingList(ShoppingList shoppingList) {
+                openShoppingListDetails(shoppingList);
+            }
+        });
+
         rvShoppingList.setAdapter(adapter);
         rvShoppingList.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -103,6 +110,12 @@ public class ShoppingListListFragment extends Fragment implements CreateShopping
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void openShoppingListDetails(ShoppingList shoppingList){
+        shoppingListFragment = ShoppingListFragment.newInstance(shoppingList);
+        getChildFragmentManager()
+                .beginTransaction().replace(R.id.flContainer, shoppingListFragment).commit();
     }
 
     @Override

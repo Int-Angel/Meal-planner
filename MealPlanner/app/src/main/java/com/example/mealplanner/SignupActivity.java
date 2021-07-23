@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -76,6 +77,13 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this, "Fail to signup", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                // default ACLs for User object
+                ParseACL parseACL = new ParseACL(ParseUser.getCurrentUser());
+                parseACL.setPublicReadAccess(true);
+
+                ParseUser.getCurrentUser().setACL(parseACL);
+
                 //Toast.makeText(SignupActivity.this, "successful sign up",Toast.LENGTH_SHORT).show();
                 goMainActivity();
             }

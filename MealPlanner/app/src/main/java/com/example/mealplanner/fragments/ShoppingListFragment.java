@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -14,24 +15,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codepath.asynchttpclient.AbsCallback;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.mealplanner.R;
+import com.example.mealplanner.adapters.ShoppingListAdapter;
+import com.example.mealplanner.models.ShoppingList;
+import com.example.mealplanner.models.ShoppingListItem;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CancellationException;
 
@@ -43,20 +54,35 @@ import okhttp3.Response;
 public class ShoppingListFragment extends Fragment {
 
     private final static String TAG = "ShoppingListFragment";
-    private final static String COMPUTE_SHOPPING_LIST_URL = "https://api.spoonacular.com/mealplanner/shopping-list/compute?apiKey=728721c3da7543769d5413b35ac70cd7";
+    private final static String SHOPPING_LIST = "shopping_list";
 
-    private AsyncHttpClient client;
-    private Calendar startDayCalendar;
-    private Calendar endDayCalendar;
-    private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+    private ShoppingList shoppingList;
+    private List<ShoppingListItem> shoppingListItems;
+    private ShoppingListAdapter adapter;
 
-    private MaterialDatePicker dateRangePicker;
-    private TextView tvTest;
     private RecyclerView rvShoppingList;
     private TextView tvDateRange;
+    private TextView tvShoppinglistTitle;
+    private ProgressBar progress_circular;
 
     public ShoppingListFragment() {
         // Required empty public constructor
+    }
+
+    public static ShoppingListFragment newInstance(ShoppingList shoppingList) {
+        ShoppingListFragment fragment = new ShoppingListFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(SHOPPING_LIST, Parcels.wrap(shoppingList));
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments() != null){
+            shoppingList = Parcels.unwrap(getArguments().getParcelable(SHOPPING_LIST));
+        }
     }
 
     @Override
@@ -70,93 +96,39 @@ public class ShoppingListFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        startDayCalendar = Calendar.getInstance();
-        endDayCalendar = Calendar.getInstance();
+        shoppingListItems = new ArrayList<>();
+        adapter = new ShoppingListAdapter(getContext(), shoppingListItems);
 
-        tvTest = view.findViewById(R.id.tvTest);
         tvDateRange = view.findViewById(R.id.tvDateRange);
         rvShoppingList = view.findViewById(R.id.rvShoppingList);
+        tvShoppinglistTitle = view.findViewById(R.id.tvShoppinglistTitle);
+        progress_circular = view.findViewById(R.id.progress_circular);
 
-        setUpDateRangePicker();
-        setUpOnClickListeners();
+        tvShoppinglistTitle.setText(shoppingList.getName());
+
+        rvShoppingList.setAdapter(adapter);
+        rvShoppingList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        queryShoppingListItems();
     }
 
-    private void setUpOnClickListeners() {
-        tvDateRange.setOnClickListener(new View.OnClickListener() {
+    private void queryShoppingListItems() {
+        ParseQuery<ShoppingListItem> query = ParseQuery.getQuery(ShoppingListItem.class);
+        query.whereEqualTo(ShoppingListItem.KEY_SHOPPING_LIST, shoppingList);
+
+        query.findInBackground(new FindCallback<ShoppingListItem>() {
             @Override
-            public void onClick(View v) {
-                dateRangePicker.show(getChildFragmentManager(), TAG);
-            }
-        });
-    }
-
-    private void setUpDateRangePicker() {
-        dateRangePicker =
-                MaterialDatePicker.Builder.dateRangePicker()
-                        .setTitleText("Select dates")
-                        .setSelection(
-                                new Pair<>(
-                                        MaterialDatePicker.thisMonthInUtcMilliseconds(),
-                                        MaterialDatePicker.todayInUtcMilliseconds()
-                                )
-                        )
-                        .build();
-
-        dateRangePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>() {
-            @Override
-            public void onPositiveButtonClick(Pair<Long, Long> selection) {
-                tvDateRange.setText(dateRangePicker.getHeaderText());
-                updateDateRange(selection.first, selection.second);
-            }
-        });
-
-        dateRangePicker.addOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-
-            }
-        });
-    }
-
-    private void updateDateRange(Long startDate, Long endDate) {
-        startDayCalendar.setTimeInMillis(startDate);
-        startDayCalendar.add(Calendar.DAY_OF_MONTH, 1);
-        endDayCalendar.setTimeInMillis(endDate);
-        endDayCalendar.add(Calendar.DAY_OF_MONTH, 1);
-    }
-
-
-    private String getCalendarDate(Calendar calendar) {
-        String res = "";
-
-        res += calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US);
-        res += " " + calendar.get(Calendar.DAY_OF_MONTH);
-        res += " " + calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US);
-        res += " " + calendar.get(Calendar.YEAR);
-
-        return res;
-    }
-
-    private void TEST() {
-        client = new AsyncHttpClient();
-        String body = "{items: [4 lbs tomatoes,10 tomatoes,20 Tablespoons Olive Oil,6 tbsp Olive Oil]}";
-        client.post(COMPUTE_SHOPPING_LIST_URL, body, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int i, Headers headers, JSON json) {
-                Log.i(TAG, "YEII");
-                try {
-                    JSONArray jsonArray = json.jsonObject.getJSONArray("aisles");
-                    Log.i(TAG, json.jsonObject.toString());
-                } catch (JSONException e) {
-                    Log.e(TAG, "NO jasonArray", e);
+            public void done(List<ShoppingListItem> objects, ParseException e) {
+                progress_circular.setVisibility(View.GONE);
+                if(e != null){
+                    Log.e(TAG, "Error while getting shopping list items", e);
+                    return;
                 }
-            }
-
-            @Override
-            public void onFailure(int i, Headers headers, String s, Throwable throwable) {
-                Log.e(TAG, "NOOO", throwable);
+                shoppingListItems.clear();
+                shoppingListItems.addAll(objects);
+                adapter.notifyDataSetChanged();
             }
         });
-
     }
+
 }

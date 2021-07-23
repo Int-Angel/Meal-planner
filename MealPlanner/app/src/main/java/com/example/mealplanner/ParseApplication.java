@@ -2,9 +2,11 @@ package com.example.mealplanner;
 
 import android.app.Application;
 
+import com.example.mealplanner.models.Ingredient;
 import com.example.mealplanner.models.MealPlan;
 import com.example.mealplanner.models.Recipe;
 import com.example.mealplanner.models.ShoppingList;
+import com.example.mealplanner.models.ShoppingListItem;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -17,6 +19,8 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(Recipe.class);
         ParseObject.registerSubclass(MealPlan.class);
         ParseObject.registerSubclass(ShoppingList.class);
+        ParseObject.registerSubclass(ShoppingListItem.class);
+        ParseObject.registerSubclass(Ingredient.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("qy7PFL9qRlAc0O78cKJJkDAjwj6rItJuobbrOuDU")

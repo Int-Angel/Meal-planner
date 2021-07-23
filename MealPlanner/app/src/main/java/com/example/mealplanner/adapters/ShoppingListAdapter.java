@@ -55,14 +55,18 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+
+            cbItemChecked = itemView.findViewById(R.id.cbItemChecked);
+            tvItem = itemView.findViewById(R.id.tvItem);
+            tvItemAmount = itemView.findViewById(R.id.tvItemAmount);
         }
 
         public void bind(ShoppingListItem item) {
             bindedItem = item;
 
             cbItemChecked.setChecked(item.isChecked());
-            tvItem.setText(item.getItem());
-            tvItemAmount.setText(item.getItemAmount());
+            tvItem.setText(item.getName());
+            tvItemAmount.setText(item.getAmount() + " " + item.getUnit());
         }
     }
 }
