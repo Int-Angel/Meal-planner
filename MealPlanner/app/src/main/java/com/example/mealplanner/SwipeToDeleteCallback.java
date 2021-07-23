@@ -6,15 +6,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mealplanner.adapters.IAdapter;
 import com.example.mealplanner.adapters.MealPlanAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
-    MealPlanAdapter adapter;
+    private IAdapter adapter;
 
-    public SwipeToDeleteCallback(MealPlanAdapter adapter) {
+    public SwipeToDeleteCallback(IAdapter adapter) {
         super(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
     }

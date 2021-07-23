@@ -25,7 +25,6 @@ import java.util.Set;
 
 public class SavedRecipesManager {
 
-    //TODO: Delete ingredinets when unsaving recipe
     private final static String TAG = "SavedRecipesManager";
 
     private static List<Recipe> recipes;

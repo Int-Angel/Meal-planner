@@ -26,7 +26,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHolder> {
+public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHolder>
+        implements IAdapter {
 
     public interface MealPlanAdapterListener {
         void openDetails(IRecipe recipe, int index);
@@ -60,6 +61,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
         return mealPlan.size();
     }
 
+    @Override
     public void deleteItem(int position) {
         MealPlan meal = mealPlan.get(position);
         mealPlan.remove(position);

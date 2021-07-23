@@ -17,12 +17,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder> {
+public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>
+        implements IAdapter {
 
     private Context context;
     private List<ShoppingListItem> items;
 
-    public ShoppingListAdapter(Context context, List<ShoppingListItem> items){
+    public ShoppingListAdapter(Context context, List<ShoppingListItem> items) {
         this.context = context;
         this.items = items;
     }
@@ -43,6 +44,14 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    @Override
+    public void deleteItem(int position) {
+        ShoppingListItem item = items.get(position);
+        items.remove(position);
+        notifyItemRemoved(position);
+        item.deleteInBackground();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

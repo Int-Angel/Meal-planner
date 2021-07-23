@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.mealplanner.R;
+import com.example.mealplanner.SwipeToDeleteCallback;
 import com.example.mealplanner.adapters.ShoppingListListAdapter;
 import com.example.mealplanner.models.Recipe;
 import com.example.mealplanner.models.ShoppingList;
@@ -30,7 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ShoppingListListFragment extends Fragment implements CreateShoppingListFragment.CreateShoppingListFragmentListener {
+public class ShoppingListListFragment extends Fragment implements
+        CreateShoppingListFragment.CreateShoppingListFragmentListener,
+        ShoppingListFragment.ShoppingListFragmentListener {
 
     private final static String TAG = "ShoppingList LISTS";
 
@@ -73,6 +77,8 @@ public class ShoppingListListFragment extends Fragment implements CreateShopping
 
         rvShoppingList.setAdapter(adapter);
         rvShoppingList.setLayoutManager(new LinearLayoutManager(getContext()));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
+        itemTouchHelper.attachToRecyclerView(rvShoppingList);
 
         setUpOnClickListeners();
         queryShoppingLists();
@@ -115,13 +121,17 @@ public class ShoppingListListFragment extends Fragment implements CreateShopping
     private void openShoppingListDetails(ShoppingList shoppingList){
         shoppingListFragment = ShoppingListFragment.newInstance(shoppingList);
         getChildFragmentManager()
-                .beginTransaction().replace(R.id.flContainer, shoppingListFragment).commit();
+                .beginTransaction()
+                .replace(R.id.flContainer, shoppingListFragment)
+                .commit();
     }
 
     @Override
     public void closeCreateShoppingListFragment() {
         getChildFragmentManager()
-                .beginTransaction().remove(createShoppingListFragment).commit();
+                .beginTransaction()
+                .remove(createShoppingListFragment)
+                .commit();
     }
 
     @Override
@@ -129,5 +139,13 @@ public class ShoppingListListFragment extends Fragment implements CreateShopping
         closeCreateShoppingListFragment();
         shoppingLists.add(0, shoppingList);
         adapter.notifyItemInserted(0);
+    }
+
+    @Override
+    public void closeShoppingList() {
+        getChildFragmentManager()
+                .beginTransaction()
+                .remove(shoppingListFragment)
+                .commit();
     }
 }

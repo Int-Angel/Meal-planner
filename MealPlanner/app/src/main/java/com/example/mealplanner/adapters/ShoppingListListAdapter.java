@@ -2,6 +2,7 @@ package com.example.mealplanner.adapters;
 
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +13,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mealplanner.R;
 import com.example.mealplanner.models.ShoppingList;
+import com.example.mealplanner.models.ShoppingListItem;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 import java.util.List;
 
-public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListListAdapter.ViewHolder> {
+public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListListAdapter.ViewHolder>
+        implements IAdapter {
 
-    public interface ShoppingListListAdapterListener{
+    public interface ShoppingListListAdapterListener {
         void openShoppingList(ShoppingList shoppingList);
     }
+
+    private final static String TAG = "ShoppingListListAdapter";
 
     private Context context;
     private List<ShoppingList> shoppingLists;
@@ -52,6 +61,32 @@ public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListLi
         return shoppingLists.size();
     }
 
+    @Override
+    public void deleteItem(int position) {
+        ShoppingList list = shoppingLists.get(position);
+        shoppingLists.remove(position);
+        notifyItemRemoved(position);
+
+        deleteShoppingListItems(list);
+    }
+
+    private void deleteShoppingListItems(ShoppingList shoppingList) {
+        ParseQuery<ShoppingListItem> query = ParseQuery.getQuery("ShoppingListItems");
+        query.whereEqualTo(ShoppingListItem.KEY_SHOPPING_LIST, shoppingList);
+        query.findInBackground(new FindCallback<ShoppingListItem>() {
+            @Override
+            public void done(List<ShoppingListItem> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "error couldn't delete shopping list items", e);
+                    return;
+                }
+                ParseObject.deleteAllInBackground(objects);
+                Log.i(TAG, "Shopping list items deleted");
+                shoppingList.deleteInBackground();
+            }
+        });
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ShoppingList bindedShoppingList;
@@ -78,7 +113,7 @@ public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListLi
             tvShoppingListNameItem.setText(shoppingList.getName());
         }
 
-        private String getStringDate(Date date){
+        private String getStringDate(Date date) {
             return DateFormat.format("yyyy.MM.dd", date).toString();
         }
 

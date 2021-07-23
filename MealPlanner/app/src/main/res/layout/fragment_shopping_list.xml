@@ -29,6 +29,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <ImageButton
+                        android:id="@+id/ibtnBack"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_margin="10dp"
+
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_round_arrow_back_24"
+                        />
+
                     <TextView
                         android:id="@+id/tvShoppinglistTitle"
                         android:layout_width="match_parent"
@@ -57,7 +70,6 @@
                         android:layout_marginTop="10dp"
                         android:layout_centerHorizontal="true"
 
-                        android:visibility="gone"
                         >
 
                         <TextView

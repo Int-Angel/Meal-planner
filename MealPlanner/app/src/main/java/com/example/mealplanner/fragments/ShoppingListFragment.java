@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,6 +24,7 @@ import com.codepath.asynchttpclient.AbsCallback;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.mealplanner.R;
+import com.example.mealplanner.SwipeToDeleteCallback;
 import com.example.mealplanner.adapters.ShoppingListAdapter;
 import com.example.mealplanner.models.ShoppingList;
 import com.example.mealplanner.models.ShoppingListItem;
@@ -53,8 +56,14 @@ import okhttp3.Response;
 
 public class ShoppingListFragment extends Fragment {
 
+    public interface ShoppingListFragmentListener{
+        void closeShoppingList();
+    }
+
     private final static String TAG = "ShoppingListFragment";
     private final static String SHOPPING_LIST = "shopping_list";
+
+    private ShoppingListFragmentListener listener;
 
     private ShoppingList shoppingList;
     private List<ShoppingListItem> shoppingListItems;
@@ -64,6 +73,7 @@ public class ShoppingListFragment extends Fragment {
     private TextView tvDateRange;
     private TextView tvShoppinglistTitle;
     private ProgressBar progress_circular;
+    private ImageButton ibtnBack;
 
     public ShoppingListFragment() {
         // Required empty public constructor
@@ -96,6 +106,8 @@ public class ShoppingListFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        listener = (ShoppingListFragmentListener) getParentFragment();
+
         shoppingListItems = new ArrayList<>();
         adapter = new ShoppingListAdapter(getContext(), shoppingListItems);
 
@@ -103,11 +115,21 @@ public class ShoppingListFragment extends Fragment {
         rvShoppingList = view.findViewById(R.id.rvShoppingList);
         tvShoppinglistTitle = view.findViewById(R.id.tvShoppinglistTitle);
         progress_circular = view.findViewById(R.id.progress_circular);
+        ibtnBack = view.findViewById(R.id.ibtnBack);
 
         tvShoppinglistTitle.setText(shoppingList.getName());
 
         rvShoppingList.setAdapter(adapter);
         rvShoppingList.setLayoutManager(new LinearLayoutManager(getContext()));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
+        itemTouchHelper.attachToRecyclerView(rvShoppingList);
+
+        ibtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.closeShoppingList();
+            }
+        });
 
         queryShoppingListItems();
     }

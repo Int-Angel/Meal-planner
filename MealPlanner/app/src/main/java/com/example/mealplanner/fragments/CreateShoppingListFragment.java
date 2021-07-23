@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,6 +87,7 @@ public class CreateShoppingListFragment extends Fragment {
     private EditText etShoppingListName;
     private TextView tvDateRange;
     private Button btnDone;
+    private ProgressBar progressBar;
 
     public CreateShoppingListFragment() {
         // Required empty public constructor
@@ -114,6 +116,7 @@ public class CreateShoppingListFragment extends Fragment {
         etShoppingListName = view.findViewById(R.id.etShoppingListName);
         tvDateRange = view.findViewById(R.id.tvDateRange);
         btnDone = view.findViewById(R.id.btnDone);
+        progressBar = view.findViewById(R.id.progress_circular);
 
         setUpOnClickListeners();
         setUpDateRangePicker();
@@ -186,6 +189,8 @@ public class CreateShoppingListFragment extends Fragment {
     }
 
     private void createShoppingList() throws ParseException {
+        progressBar.setVisibility(View.VISIBLE);
+
         createdShoppingList = ShoppingList.createShoppingList(etShoppingListName.getText().toString(),
                 formatter.parse(formatter.format(startDayCalendar.getTime())),
                 formatter.parse(formatter.format(endDayCalendar.getTime())));
@@ -289,7 +294,6 @@ public class CreateShoppingListFragment extends Fragment {
                 ingredients.addAll(objects);
 
                 generateShoppingListFromIngredients();
-                //computeShoppingList(generateJSONArrayFromIngredients());
             }
         });
     }
@@ -321,63 +325,11 @@ public class CreateShoppingListFragment extends Fragment {
                     return;
                 }
                 Log.i(TAG, "Shopping list items saved :D");
+
+                progressBar.setVisibility(View.GONE);
+
                 listener.shoppingListCreated(createdShoppingList);
             }
         });
     }
-
-
-    /*
-     *
-     * API doesn't work
-     *
-     * */
-    private JSONArray generateJSONArrayFromIngredients() {
-        JSONArray jsonArray = new JSONArray();
-        for (int i = 0; i < ingredients.size(); i++) {
-            String s = "" + ingredients.get(i).getAmount() + " " + ingredients.get(i).getUnit() + " " + ingredients.get(i).getNameClean();
-            jsonArray.put(s);
-        }
-        return jsonArray;
-    }
-
-
-    private void computeShoppingList(JSONArray jsonArray) {
-        client = new AsyncHttpClient();
-
-        JSONObject jsonParams = new JSONObject();
-        try {
-            jsonParams.put("items", jsonArray);
-        } catch (JSONException e) {
-            Log.e(TAG, "Cant create parameters", e);
-        }
-
-        StringEntity entity = null;
-        try {
-            entity = new StringEntity(jsonParams.toString());
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "Cant create entity", e);
-        }
-
-        client.post(getContext(), COMPUTE_SHOPPING_LIST_URL, entity, "application/json", new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String res = new String(responseBody);
-                try {
-                    JSONObject jsonObject = new JSONObject(res);
-                } catch (JSONException e) {
-                    Log.e(TAG, "Couldn't create JSONobject from shopping list response", e);
-                }
-                Log.i(TAG, "onSuccess getting shopping list: " + res);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                String res = new String(responseBody);
-                Log.e(TAG, "onFailure getting shopping list statusCode:" + statusCode + " Headers: " + headers.toString() + " Res: " + res, error);
-            }
-        });
-    }
-
-
 }
