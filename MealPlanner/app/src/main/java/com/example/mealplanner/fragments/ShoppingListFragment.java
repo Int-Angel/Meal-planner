@@ -27,6 +27,7 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SwipeToDeleteCallback;
 import com.example.mealplanner.adapters.ShoppingListAdapter;
+import com.example.mealplanner.adapters.ShoppingListAisleAdapter;
 import com.example.mealplanner.models.ShoppingList;
 import com.example.mealplanner.models.ShoppingListItem;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -46,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CancellationException;
@@ -68,7 +70,9 @@ public class ShoppingListFragment extends Fragment {
 
     private ShoppingList shoppingList;
     private List<ShoppingListItem> shoppingListItems;
-    private ShoppingListAdapter adapter;
+    private HashMap<String, List<ShoppingListItem>> aisles;
+    private List<String> aislesName;
+    private ShoppingListAisleAdapter adapter;
 
     private RecyclerView rvShoppingList;
     private TextView tvDateRange;
@@ -109,8 +113,11 @@ public class ShoppingListFragment extends Fragment {
 
         listener = (ShoppingListFragmentListener) getParentFragment();
 
+        aisles = new HashMap<>();
+        aislesName = new ArrayList<>();
+
         shoppingListItems = new ArrayList<>();
-        adapter = new ShoppingListAdapter(getContext(), shoppingListItems);
+        adapter = new ShoppingListAisleAdapter(getContext(), aisles, aislesName);
 
         tvDateRange = view.findViewById(R.id.tvDateRange);
         rvShoppingList = view.findViewById(R.id.rvShoppingList);
@@ -122,8 +129,6 @@ public class ShoppingListFragment extends Fragment {
 
         rvShoppingList.setAdapter(adapter);
         rvShoppingList.setLayoutManager(new LinearLayoutManager(getContext()));
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
-        itemTouchHelper.attachToRecyclerView(rvShoppingList);
 
         ibtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,9 +161,31 @@ public class ShoppingListFragment extends Fragment {
                 }
                 shoppingListItems.clear();
                 shoppingListItems.addAll(objects);
-                adapter.notifyDataSetChanged();
+
+                generateAisles();
             }
         });
+    }
+
+    private void generateAisles() {
+        for (ShoppingListItem item : shoppingListItems) {
+            String aisleNameStr = getShoppingListAisle(item);
+            if (aisles.containsKey(aisleNameStr)) {
+                aisles.get(aisleNameStr).add(item);
+            } else {
+                aislesName.add(aisleNameStr);
+                List<ShoppingListItem> shoppingListItems = new ArrayList<>();
+                shoppingListItems.add(item);
+                aisles.put(aisleNameStr, shoppingListItems);
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private String getShoppingListAisle(ShoppingListItem item) {
+        String auxAisle = item.getAisle();
+        return auxAisle.split(";")[0];
     }
 
 }
