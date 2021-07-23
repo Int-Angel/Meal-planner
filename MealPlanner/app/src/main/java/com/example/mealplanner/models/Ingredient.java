@@ -45,7 +45,7 @@ public class Ingredient extends ParseObject {
     public static List<Ingredient> fromJSONArray(Recipe recipe, JSONArray jsonArray) throws JSONException {
         List<Ingredient> ingredients = new ArrayList<>();
 
-        for(int i = 0; i<jsonArray.length(); i++){
+        for (int i = 0; i < jsonArray.length(); i++) {
             ingredients.add(createIngredient(recipe, jsonArray.getJSONObject(i)));
         }
 
@@ -77,10 +77,9 @@ public class Ingredient extends ParseObject {
     }
 
     public float getAmount() {
-        try{
+        try {
             return (float) getNumber(KEY_AMOUNT);
-
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             return (int) getNumber(KEY_AMOUNT);
         }
     }
@@ -92,7 +91,6 @@ public class Ingredient extends ParseObject {
     public String getIngredientId() {
         return getString(KEY_INGREDIENT_ID);
     }
-
 
     public void setRecipe(Recipe recipe) {
         put(KEY_RECIPE, recipe);
