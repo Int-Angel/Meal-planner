@@ -1,21 +1,18 @@
 package com.example.mealplanner;
 
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mealplanner.adapters.IAdapter;
-import com.example.mealplanner.adapters.MealPlanAdapter;
+import com.example.mealplanner.adapters.IAdapterSwipeToDelete;
 
 import org.jetbrains.annotations.NotNull;
 
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
-    private IAdapter adapter;
+    private IAdapterSwipeToDelete adapter;
 
-    public SwipeToDeleteCallback(IAdapter adapter) {
+    public SwipeToDeleteCallback(IAdapterSwipeToDelete adapter) {
         super(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
     }

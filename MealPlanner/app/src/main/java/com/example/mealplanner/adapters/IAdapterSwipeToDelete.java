@@ -1,5 +1,5 @@
 package com.example.mealplanner.adapters;
 
-public interface IAdapter {
+public interface IAdapterSwipeToDelete {
     void deleteItem(int position);
 }

@@ -115,6 +115,20 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+
+            android:src="@drawable/ic_round_white_add_24"
+            app:tint="@color/white"
+            app:elevation="3dp"
+
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="16dp"
+
+            />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ProgressBar
@@ -126,5 +140,10 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="150dp"
         />
+
+    <FrameLayout
+        android:id="@+id/flContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

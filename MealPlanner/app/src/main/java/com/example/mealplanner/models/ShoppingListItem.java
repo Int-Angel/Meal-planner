@@ -33,6 +33,21 @@ public class ShoppingListItem extends ParseObject {
         return shoppingListItem;
     }
 
+    public static ShoppingListItem createShoppingListItem(ShoppingList shoppingList, String name, String aisle, float amount, String unit){
+        ShoppingListItem shoppingListItem = new ShoppingListItem();
+
+        shoppingListItem.setShoppingList(shoppingList);
+        shoppingListItem.setChecked(false);
+        shoppingListItem.setName(name);
+        shoppingListItem.setAisle(aisle);
+        shoppingListItem.setIngredientId("custom");
+        shoppingListItem.setAmount(amount);
+        shoppingListItem.setUnit(unit);
+        shoppingListItem.setImage("");
+
+        return shoppingListItem;
+    }
+
     public void addAmount(float n){
         put(KEY_AMOUNT, getAmount() + n);
     }

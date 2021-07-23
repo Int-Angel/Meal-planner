@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.CreateNewShoppingListItemFragment"
+    android:background="@color/gray"
+    android:clickable="true"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:cardElevation="5dp"
+        app:cardCornerRadius="5dp"
+
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="150dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/ibtnClose"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+
+                android:layout_margin="10dp"
+
+                android:src="@drawable/ic_round_close_24"
+                android:background="@android:color/transparent"
+                />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp"
+                >
+
+                <EditText
+                    android:id="@+id/etItem"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+
+                    android:hint="Item"
+                    android:gravity="center"
+                    android:fontFamily="sans-serif-light"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center">
+
+                    <EditText
+                        android:id="@+id/etAmount"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+
+                        android:hint="n"
+                        android:gravity="center"
+                        android:fontFamily="sans-serif-light"
+
+                        android:inputType="number"
+                        />
+
+                    <EditText
+                        android:id="@+id/etUnit"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+
+                        android:hint="Unit"
+                        android:gravity="center"
+                        android:fontFamily="sans-serif-light"
+                        />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/etAisle"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+
+                    android:hint="Aisle"
+                    android:gravity="center"
+                    android:fontFamily="sans-serif-light"
+                    />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnDone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentBottom="true"
+                android:layout_margin="30dp"
+
+                android:text="Save!"
+                android:background="@drawable/rounded_green"
+
+                />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+</RelativeLayout>

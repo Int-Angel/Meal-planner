@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHolder>
-        implements IAdapter {
+        implements IAdapterSwipeToDelete {
 
     public interface MealPlanAdapterListener {
         void openDetails(IRecipe recipe, int index);

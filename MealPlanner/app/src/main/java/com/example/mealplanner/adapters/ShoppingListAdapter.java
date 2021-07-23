@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>
-        implements IAdapter {
+        implements IAdapterSwipeToDelete {
 
     public interface ShoppingListAdapterListener{
         void deletedItem(int position);

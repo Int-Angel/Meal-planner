@@ -87,7 +87,7 @@ public class ShoppingListAisleAdapter extends RecyclerView.Adapter<ShoppingListA
                     }
                 }
             });
-            
+
             rvItems.setAdapter(adapter);
             rvItems.setLayoutManager(new LinearLayoutManager(context));
 

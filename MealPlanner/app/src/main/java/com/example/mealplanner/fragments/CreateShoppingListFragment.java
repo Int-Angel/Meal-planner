@@ -273,6 +273,12 @@ public class CreateShoppingListFragment extends Fragment {
         List<Recipe> recipes = RecipeQuantity.getListOfRecipes(recipeQuantities);
         List<ParseQuery<Ingredient>> queries = new ArrayList<>();
 
+        if(recipes.size() == 0){
+            progressBar.setVisibility(View.GONE);
+            listener.shoppingListCreated(createdShoppingList);
+            return;
+        }
+
         for (int i = 0; i < recipes.size(); i++) {
             ParseQuery<Ingredient> query = ParseQuery.getQuery(Ingredient.class);
             query.whereEqualTo(Ingredient.KEY_RECIPE, recipes.get(i));

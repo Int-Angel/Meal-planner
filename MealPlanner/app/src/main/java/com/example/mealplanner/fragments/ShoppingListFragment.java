@@ -32,6 +32,7 @@ import com.example.mealplanner.models.ShoppingList;
 import com.example.mealplanner.models.ShoppingListItem;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -57,7 +58,7 @@ import okhttp3.Headers;
 import okhttp3.Response;
 
 
-public class ShoppingListFragment extends Fragment {
+public class ShoppingListFragment extends Fragment implements CreateNewShoppingListItemFragment.CreateNewItemListener {
 
     public interface ShoppingListFragmentListener {
         void closeShoppingList();
@@ -65,6 +66,8 @@ public class ShoppingListFragment extends Fragment {
 
     private final static String TAG = "ShoppingListFragment";
     private final static String SHOPPING_LIST = "shopping_list";
+
+    private CreateNewShoppingListItemFragment createShoppingListItem;
 
     private ShoppingListFragmentListener listener;
 
@@ -79,6 +82,7 @@ public class ShoppingListFragment extends Fragment {
     private TextView tvShoppinglistTitle;
     private ProgressBar progress_circular;
     private ImageButton ibtnBack;
+    private FloatingActionButton fab;
 
     public ShoppingListFragment() {
         // Required empty public constructor
@@ -124,12 +128,22 @@ public class ShoppingListFragment extends Fragment {
         tvShoppinglistTitle = view.findViewById(R.id.tvShoppinglistTitle);
         progress_circular = view.findViewById(R.id.progress_circular);
         ibtnBack = view.findViewById(R.id.ibtnBack);
+        fab = view.findViewById(R.id.fab);
 
         tvShoppinglistTitle.setText(shoppingList.getName());
 
         rvShoppingList.setAdapter(adapter);
         rvShoppingList.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        String dateRange = getStringDate(shoppingList.getStartDate()) + " - " + getStringDate(shoppingList.getEndDate());
+        tvDateRange.setText(dateRange);
+
+        setUpOnClickListeners();
+
+        queryShoppingListItems();
+    }
+
+    private void setUpOnClickListeners(){
         ibtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,10 +151,21 @@ public class ShoppingListFragment extends Fragment {
             }
         });
 
-        String dateRange = getStringDate(shoppingList.getStartDate()) + " - " + getStringDate(shoppingList.getEndDate());
-        tvDateRange.setText(dateRange);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCreateShoppingListItemFragment();
+            }
+        });
+    }
 
-        queryShoppingListItems();
+    void openCreateShoppingListItemFragment(){
+        createShoppingListItem = CreateNewShoppingListItemFragment.newInstance(shoppingList);
+
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flContainer, createShoppingListItem)
+                .commit();
     }
 
     private String getStringDate(Date date) {
@@ -183,9 +208,36 @@ public class ShoppingListFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    private void addItemToAisles(ShoppingListItem item){
+        String aisleNameStr = getShoppingListAisle(item);
+        if (aisles.containsKey(aisleNameStr)) {
+            aisles.get(aisleNameStr).add(item);
+        } else {
+            aislesName.add(aisleNameStr);
+            List<ShoppingListItem> shoppingListItems = new ArrayList<>();
+            shoppingListItems.add(item);
+            aisles.put(aisleNameStr, shoppingListItems);
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
     private String getShoppingListAisle(ShoppingListItem item) {
         String auxAisle = item.getAisle();
-        return auxAisle.split(";")[0];
+        return auxAisle.split(";")[0]; // some items have multiple aisle, I only use the first aisle
+    }
+
+    @Override
+    public void closeCreateNewItemFragment() {
+        getChildFragmentManager()
+                .beginTransaction()
+                .remove(createShoppingListItem)
+                .commit();
+    }
+
+    @Override
+    public void shoppingItemCreated(ShoppingListItem item) {
+        addItemToAisles(item);
     }
 
 }

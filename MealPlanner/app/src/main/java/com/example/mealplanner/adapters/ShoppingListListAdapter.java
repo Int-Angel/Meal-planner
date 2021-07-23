@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListListAdapter.ViewHolder>
-        implements IAdapter {
+        implements IAdapterSwipeToDelete {
 
     public interface ShoppingListListAdapterListener {
         void openShoppingList(ShoppingList shoppingList);
