@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -76,6 +77,18 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             cbItemChecked.setChecked(item.isChecked());
             tvItem.setText(item.getName());
             tvItemAmount.setText(item.getAmount() + " " + item.getUnit());
+
+            cbItemChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    updateItemChecked(isChecked);
+                }
+            });
+        }
+
+        private void updateItemChecked(boolean isChecked){
+            bindedItem.setChecked(isChecked);
+            bindedItem.saveInBackground();
         }
     }
 }
