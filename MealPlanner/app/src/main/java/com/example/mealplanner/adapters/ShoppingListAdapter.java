@@ -21,12 +21,18 @@ import java.util.List;
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>
         implements IAdapter {
 
+    public interface ShoppingListAdapterListener{
+        void deletedItem(int position);
+    }
+
     private Context context;
     private List<ShoppingListItem> items;
+    private ShoppingListAdapterListener listener;
 
-    public ShoppingListAdapter(Context context, List<ShoppingListItem> items) {
+    public ShoppingListAdapter(Context context, List<ShoppingListItem> items, ShoppingListAdapterListener listener) {
         this.context = context;
         this.items = items;
+        this.listener = listener;
     }
 
     @NonNull
@@ -53,6 +59,8 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         items.remove(position);
         notifyItemRemoved(position);
         item.deleteInBackground();
+
+        listener.deletedItem(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

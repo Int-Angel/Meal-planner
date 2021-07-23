@@ -59,6 +59,8 @@ public class ShoppingListAisleAdapter extends RecyclerView.Adapter<ShoppingListA
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        private List<ShoppingListItem> bindedShoppingListItems;
+
         private TextView tvAisle;
         private RecyclerView rvItems;
         private ShoppingListAdapter adapter;
@@ -72,9 +74,20 @@ public class ShoppingListAisleAdapter extends RecyclerView.Adapter<ShoppingListA
         }
 
         public void bind(String aisle, List<ShoppingListItem> shoppingListItems) {
+            bindedShoppingListItems = shoppingListItems;
+
             tvAisle.setText(aisle);
 
-            adapter = new ShoppingListAdapter(context, shoppingListItems);
+            adapter = new ShoppingListAdapter(context, shoppingListItems, new ShoppingListAdapter.ShoppingListAdapterListener() {
+                @Override
+                public void deletedItem(int position) {
+                    if(bindedShoppingListItems.isEmpty()){
+                        aislesName.remove(getAdapterPosition());
+                        notifyItemRemoved(getAdapterPosition());
+                    }
+                }
+            });
+            
             rvItems.setAdapter(adapter);
             rvItems.setLayoutManager(new LinearLayoutManager(context));
 
