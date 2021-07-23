@@ -33,7 +33,7 @@ public class ShoppingListItem extends ParseObject {
         return shoppingListItem;
     }
 
-    public void addAmount(int n){
+    public void addAmount(float n){
         put(KEY_AMOUNT, getAmount() + n);
     }
 
@@ -81,7 +81,7 @@ public class ShoppingListItem extends ParseObject {
         return (int) getNumber(KEY_AMOUNT);
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(float amount) {
         put(KEY_AMOUNT, amount);
     }
 

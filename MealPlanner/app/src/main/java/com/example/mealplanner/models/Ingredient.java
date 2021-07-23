@@ -76,8 +76,13 @@ public class Ingredient extends ParseObject {
         return getString(KEY_ORIGINAL);
     }
 
-    public int getAmount() {
-        return (int) getNumber(KEY_AMOUNT);
+    public float getAmount() {
+        try{
+            return (float) getNumber(KEY_AMOUNT);
+
+        }catch (ClassCastException e){
+            return (int) getNumber(KEY_AMOUNT);
+        }
     }
 
     public String getUnit() {

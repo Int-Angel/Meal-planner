@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mealplanner.R;
 import com.example.mealplanner.models.Ingredient;
@@ -28,8 +27,6 @@ import com.example.mealplanner.models.ShoppingListItem;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.FindCallback;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -37,12 +34,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,13 +43,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import okio.BufferedSink;
 
 
 public class CreateShoppingListFragment extends Fragment {
@@ -228,10 +213,10 @@ public class CreateShoppingListFragment extends Fragment {
             current = calendar.getTime();
         }
 
-        queryMealsPlanDay(dates);
+        queryMealPlanDays(dates);
     }
 
-    private void queryMealsPlanDay(List<Date> dates) {
+    private void queryMealPlanDays(List<Date> dates) {
         List<ParseQuery<MealPlan>> queries = new ArrayList<>();
         try {
             for (int i = 0; i < dates.size(); i++) {
@@ -264,18 +249,30 @@ public class CreateShoppingListFragment extends Fragment {
 
 
     private void getAllRecipesFromMealPlans() {
-        List<Recipe> recipes = new ArrayList<>();
+        HashMap<Integer, RecipeQuantity> recipeQuantityHashMap = new HashMap<>();
+
         for (int i = 0; i < mealPlans.size(); i++) {
+
             Recipe recipe = (Recipe) mealPlans.get(i).getRecipe();
-            recipes.add(recipe);
+            int id = Integer.parseInt(recipe.getId());
+
+            if (recipeQuantityHashMap.containsKey(id)) {
+                recipeQuantityHashMap.get(id).addQuantity(mealPlans.get(i).getQuantity());
+            } else {
+                RecipeQuantity recipeQuantity = new RecipeQuantity(recipe, mealPlans.get(i).getQuantity());
+                recipeQuantityHashMap.put(id, recipeQuantity);
+            }
         }
 
-        getAllIngredientsFromRecipes(recipes);
+        getAllIngredientsFromRecipes(recipeQuantityHashMap);
     }
 
-    private void getAllIngredientsFromRecipes(List<Recipe> recipes) {
+    private void getAllIngredientsFromRecipes(HashMap<Integer, RecipeQuantity> recipeQuantityHashMap) {
 
+        List<RecipeQuantity> recipeQuantities = new ArrayList<>(recipeQuantityHashMap.values());
+        List<Recipe> recipes = RecipeQuantity.getListOfRecipes(recipeQuantities);
         List<ParseQuery<Ingredient>> queries = new ArrayList<>();
+
         for (int i = 0; i < recipes.size(); i++) {
             ParseQuery<Ingredient> query = ParseQuery.getQuery(Ingredient.class);
             query.whereEqualTo(Ingredient.KEY_RECIPE, recipes.get(i));
@@ -283,6 +280,7 @@ public class CreateShoppingListFragment extends Fragment {
         }
 
         ParseQuery<Ingredient> mainQuery = ParseQuery.or(queries);
+        mainQuery.include(Ingredient.KEY_RECIPE);
         mainQuery.findInBackground(new FindCallback<Ingredient>() {
             @Override
             public void done(List<Ingredient> objects, com.parse.ParseException e) {
@@ -293,9 +291,27 @@ public class CreateShoppingListFragment extends Fragment {
                 Log.i(TAG, "Ingredients :D");
                 ingredients.addAll(objects);
 
-                generateShoppingListFromIngredients();
+                updateIngredientsAmount(recipeQuantityHashMap);
+
             }
         });
+    }
+
+    private void updateIngredientsAmount(HashMap<Integer, RecipeQuantity> recipeQuantityHashMap) {
+
+        for(Ingredient ingredient: ingredients){
+            Recipe recipe = (Recipe) ingredient.getRecipe();
+            int id = Integer.parseInt(recipe.getId());
+
+            if(recipeQuantityHashMap.containsKey(id)){
+                int amount = recipeQuantityHashMap.get(id).getQuantity();
+                ingredient.setAmount(ingredient.getAmount() * amount * 1.0f);
+            }else{
+                Log.e(TAG,"Ingredient without recipe");
+            }
+        }
+
+        generateShoppingListFromIngredients();
     }
 
     private void generateShoppingListFromIngredients() {
@@ -331,5 +347,38 @@ public class CreateShoppingListFragment extends Fragment {
                 listener.shoppingListCreated(createdShoppingList);
             }
         });
+    }
+
+
+    static class RecipeQuantity {
+        private Recipe recipe;
+        private int quantity;
+
+        public static List<Recipe> getListOfRecipes(List<RecipeQuantity> recipeQuantities) {
+            List<Recipe> recipes = new ArrayList<>();
+
+            for (RecipeQuantity recipeQuantity : recipeQuantities) {
+                recipes.add(recipeQuantity.getRecipe());
+            }
+
+            return recipes;
+        }
+
+        public RecipeQuantity(Recipe recipe, int quantity) {
+            this.recipe = recipe;
+            this.quantity = quantity;
+        }
+
+        public void addQuantity(int n) {
+            quantity += n;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public Recipe getRecipe() {
+            return recipe;
+        }
     }
 }
