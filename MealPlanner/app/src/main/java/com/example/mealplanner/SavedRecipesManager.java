@@ -97,14 +97,14 @@ public class SavedRecipesManager {
         });
     }
 
-    private static void createRecipeIngredients(Recipe recipe, OnlineRecipe onlineRecipe){
+    private static void createRecipeIngredients(Recipe recipe, OnlineRecipe onlineRecipe) {
         try {
             List<Ingredient> ingredients = Ingredient.fromJSONArray(recipe, onlineRecipe.getExtendedIngredients());
 
             ParseObject.saveAllInBackground(ingredients, new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
-                    if(e != null){
+                    if (e != null) {
                         Log.e(TAG, "Couldn't save ingredients in database", e);
                         return;
                     }
@@ -116,7 +116,7 @@ public class SavedRecipesManager {
         }
     }
 
-    private static void deleteRecipeFromListByUri(String uri) {
+    private static void deleteRecipeFromListById(String uri) {
         for (int i = 0; i < recipes.size(); i++) {
             if (recipes.get(i).getId().equals(uri)) {
                 idSet.remove(recipes.get(i).getId());
@@ -129,7 +129,7 @@ public class SavedRecipesManager {
     public static void unSaveRecipeById(String id) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Recipe");
         query.whereEqualTo(Recipe.KEY_ID, id);
-        deleteRecipeFromListByUri(id);
+        deleteRecipeFromListById(id);
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject object, ParseException e) {
@@ -137,7 +137,10 @@ public class SavedRecipesManager {
                     Log.e(TAG, "Can't Unsave recipe because it's not saved", e);
                     return;
                 }
+
                 deleteMealPlansWithRecipe((Recipe) object);
+                deleteIngredientsWithRecipe((Recipe) object);
+
                 object.deleteInBackground(new DeleteCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -168,20 +171,19 @@ public class SavedRecipesManager {
         });
     }
 
-    public static void unSaveRecipe(int index) {
-        Recipe recipe = recipes.get(index);
-        idSet.remove(recipes.get(index).getId());
-        recipes.remove(index);
-        recipe.deleteInBackground(new DeleteCallback() {
+    private static void deleteIngredientsWithRecipe(Recipe recipe) {
+        ParseQuery<Ingredient> query = ParseQuery.getQuery("Ingredient");
+        query.whereEqualTo(Ingredient.KEY_RECIPE, recipe);
+        query.findInBackground(new FindCallback<Ingredient>() {
             @Override
-            public void done(ParseException e) {
+            public void done(List<Ingredient> objects, ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, "Error while deleting recipe: " + index, e);
+                    Log.e(TAG, "Error removing all ingredients from recipe", e);
                     return;
                 }
+                Log.i(TAG, "Removing ingredients: " + objects.size());
+                ParseObject.deleteAllInBackground(objects);
             }
         });
     }
-
-
 }
