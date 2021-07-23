@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,10 +42,10 @@ import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CancellationException;
@@ -56,7 +57,7 @@ import okhttp3.Response;
 
 public class ShoppingListFragment extends Fragment {
 
-    public interface ShoppingListFragmentListener{
+    public interface ShoppingListFragmentListener {
         void closeShoppingList();
     }
 
@@ -90,7 +91,7 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null){
+        if (getArguments() != null) {
             shoppingList = Parcels.unwrap(getArguments().getParcelable(SHOPPING_LIST));
         }
     }
@@ -131,7 +132,14 @@ public class ShoppingListFragment extends Fragment {
             }
         });
 
+        String dateRange = getStringDate(shoppingList.getStartDate()) + " - " + getStringDate(shoppingList.getEndDate());
+        tvDateRange.setText(dateRange);
+
         queryShoppingListItems();
+    }
+
+    private String getStringDate(Date date) {
+        return DateFormat.format("MMM.dd", date).toString();
     }
 
     private void queryShoppingListItems() {
@@ -142,7 +150,7 @@ public class ShoppingListFragment extends Fragment {
             @Override
             public void done(List<ShoppingListItem> objects, ParseException e) {
                 progress_circular.setVisibility(View.GONE);
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Error while getting shopping list items", e);
                     return;
                 }
