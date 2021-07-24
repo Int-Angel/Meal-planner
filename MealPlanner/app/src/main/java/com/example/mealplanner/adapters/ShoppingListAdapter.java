@@ -21,8 +21,10 @@ import java.util.List;
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>
         implements IAdapterSwipeToDelete {
 
-    public interface ShoppingListAdapterListener{
+    public interface ShoppingListAdapterListener {
         void deletedItem(int position);
+
+        void editItem(int position, String oldAisle, ShoppingListItem item);
     }
 
     private Context context;
@@ -77,6 +79,14 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             cbItemChecked = itemView.findViewById(R.id.cbItemChecked);
             tvItem = itemView.findViewById(R.id.tvItem);
             tvItemAmount = itemView.findViewById(R.id.tvItemAmount);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.editItem(getAdapterPosition(), bindedItem.getAisle(), bindedItem);
+                    return true;
+                }
+            });
         }
 
         public void bind(ShoppingListItem item) {
@@ -94,7 +104,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             });
         }
 
-        private void updateItemChecked(boolean isChecked){
+        private void updateItemChecked(boolean isChecked) {
             bindedItem.setChecked(isChecked);
             bindedItem.saveInBackground();
         }

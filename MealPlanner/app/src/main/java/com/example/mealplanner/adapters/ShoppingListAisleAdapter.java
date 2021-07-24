@@ -26,14 +26,20 @@ import java.util.List;
 
 public class ShoppingListAisleAdapter extends RecyclerView.Adapter<ShoppingListAisleAdapter.ViewHolder> {
 
+    public interface ShoppingListAisleAdapterListener {
+        void editItem(int position, String oldAisle, ShoppingListItem item);
+    }
+
+    private ShoppingListAisleAdapterListener listener;
     private Context context;
     private HashMap<String, List<ShoppingListItem>> aisles;
     private List<String> aislesName;
 
-    public ShoppingListAisleAdapter(Context context, HashMap<String, List<ShoppingListItem>> aisles, List<String> aislesName) {
+    public ShoppingListAisleAdapter(Context context, HashMap<String, List<ShoppingListItem>> aisles, List<String> aislesName, ShoppingListAisleAdapterListener listener) {
         this.context = context;
         this.aisles = aisles;
         this.aislesName = aislesName;
+        this.listener = listener;
     }
 
     @NonNull
@@ -81,11 +87,17 @@ public class ShoppingListAisleAdapter extends RecyclerView.Adapter<ShoppingListA
             adapter = new ShoppingListAdapter(context, shoppingListItems, new ShoppingListAdapter.ShoppingListAdapterListener() {
                 @Override
                 public void deletedItem(int position) {
-                    if(bindedShoppingListItems.isEmpty()){
+                    if (bindedShoppingListItems.isEmpty()) {
                         aislesName.remove(getAdapterPosition());
                         notifyItemRemoved(getAdapterPosition());
                     }
                 }
+
+                @Override
+                public void editItem(int position, String oldAisle, ShoppingListItem item) {
+                    listener.editItem(position, oldAisle, item);
+                }
+
             });
 
             rvItems.setAdapter(adapter);

@@ -121,7 +121,12 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         aislesName = new ArrayList<>();
 
         shoppingListItems = new ArrayList<>();
-        adapter = new ShoppingListAisleAdapter(getContext(), aisles, aislesName);
+        adapter = new ShoppingListAisleAdapter(getContext(), aisles, aislesName, new ShoppingListAisleAdapter.ShoppingListAisleAdapterListener() {
+            @Override
+            public void editItem(int position, String oldAisle, ShoppingListItem item) {
+                openEditShoppingListItemFragment(position, oldAisle, item);
+            }
+        });
 
         tvDateRange = view.findViewById(R.id.tvDateRange);
         rvShoppingList = view.findViewById(R.id.rvShoppingList);
@@ -143,7 +148,7 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         queryShoppingListItems();
     }
 
-    private void setUpOnClickListeners(){
+    private void setUpOnClickListeners() {
         ibtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,8 +164,17 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         });
     }
 
-    void openCreateShoppingListItemFragment(){
+    void openCreateShoppingListItemFragment() {
         createShoppingListItem = CreateNewShoppingListItemFragment.newInstance(shoppingList);
+
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flContainer, createShoppingListItem)
+                .commit();
+    }
+
+    void openEditShoppingListItemFragment(int position, String oldAisle, ShoppingListItem item) {
+        createShoppingListItem = CreateNewShoppingListItemFragment.newInstance(shoppingList, item, oldAisle, position);
 
         getChildFragmentManager()
                 .beginTransaction()
@@ -187,12 +201,14 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
                 shoppingListItems.clear();
                 shoppingListItems.addAll(objects);
 
+                aisles.clear();
                 generateAisles();
             }
         });
     }
 
     private void generateAisles() {
+
         for (ShoppingListItem item : shoppingListItems) {
             String aisleNameStr = getShoppingListAisle(item);
             if (aisles.containsKey(aisleNameStr)) {
@@ -208,7 +224,7 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         adapter.notifyDataSetChanged();
     }
 
-    private void addItemToAisles(ShoppingListItem item){
+    private void addItemToAisles(ShoppingListItem item) {
         String aisleNameStr = getShoppingListAisle(item);
         if (aisles.containsKey(aisleNameStr)) {
             aisles.get(aisleNameStr).add(item);
@@ -238,6 +254,19 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
     @Override
     public void shoppingItemCreated(ShoppingListItem item) {
         addItemToAisles(item);
+        closeCreateNewItemFragment();
+    }
+
+    @Override
+    public void shoppingItemEdited(ShoppingListItem item, int position, String oldAisle) {
+        addItemToAisles(item);
+        aisles.get(oldAisle).remove(position);
+        if(aisles.get(oldAisle).size() == 0){
+            aislesName.remove(position);
+            aisles.remove(oldAisle);
+        }
+        adapter.notifyDataSetChanged();
+        closeCreateNewItemFragment();
     }
 
 }

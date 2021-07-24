@@ -26,16 +26,23 @@ import org.parceler.Parcels;
 
 public class CreateNewShoppingListItemFragment extends Fragment {
 
-    public interface CreateNewItemListener{
+    public interface CreateNewItemListener {
         void closeCreateNewItemFragment();
+
         void shoppingItemCreated(ShoppingListItem item);
+
+        void shoppingItemEdited(ShoppingListItem item, int position, String oldAisle);
     }
 
     private final static String TAG = "CreateNewShoppingItem";
     private final static String SHOPPING_LIST = "shoppingList";
     private static final String SHOPPING_LIST_ITEM = "item";
+    private static final String AISLE = "aisle";
+    private static final String POSITION = "position";
 
     private ShoppingListItem item;
+    private String oldAisle;
+    private int position;
     private ShoppingList shoppingList;
 
     private CreateNewItemListener listener;
@@ -51,11 +58,13 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static CreateNewShoppingListItemFragment newInstance(ShoppingList shoppingList, ShoppingListItem item) {
+    public static CreateNewShoppingListItemFragment newInstance(ShoppingList shoppingList, ShoppingListItem item, String oldAisle, int position) {
         CreateNewShoppingListItemFragment fragment = new CreateNewShoppingListItemFragment();
         Bundle args = new Bundle();
         args.putParcelable(SHOPPING_LIST_ITEM, Parcels.wrap(item));
         args.putParcelable(SHOPPING_LIST, Parcels.wrap(shoppingList));
+        args.putString(AISLE, oldAisle);
+        args.putInt(POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,6 +83,8 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         if (getArguments() != null) {
             item = Parcels.unwrap(getArguments().getParcelable(SHOPPING_LIST_ITEM));
             shoppingList = Parcels.unwrap(getArguments().getParcelable(SHOPPING_LIST));
+            oldAisle = getArguments().getString(AISLE);
+            position = getArguments().getInt(POSITION);
         }
     }
 
@@ -97,16 +108,26 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         etAisle = view.findViewById(R.id.etAisle);
         btnDone = view.findViewById(R.id.btnDone);
 
+        if (item != null)
+            bind();
+
         setUpOnClickListeners();
+    }
+
+    private void bind() {
+        etItem.setText(item.getName());
+        etAmount.setText(item.getAmount() + "");
+        etUnit.setText(item.getUnit());
+        etAisle.setText(item.getAisle());
     }
 
     private void createNewItem() {
         String name = etItem.getText().toString();
         String unit = etUnit.getText().toString();
-        
+
         String amountStr = etAmount.getText().toString();
         float amount = 1;
-        if(!amountStr.equals(""))
+        if (!amountStr.equals(""))
             amount = Float.parseFloat(amountStr);
 
         String aisle = etAisle.getText().toString();
@@ -115,12 +136,40 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         shoppingListItem.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Couldn't create new shopping list item", e);
                     return;
                 }
-                Log.i(TAG,"Item created");
+                Log.i(TAG, "Item created");
                 listener.shoppingItemCreated(shoppingListItem);
+            }
+        });
+    }
+
+    void updateItem() {
+        item.deleteInBackground();
+
+        String name = etItem.getText().toString();
+        String unit = etUnit.getText().toString();
+
+        String amountStr = etAmount.getText().toString();
+        float amount = 1;
+        if (!amountStr.equals(""))
+            amount = Float.parseFloat(amountStr);
+
+        String aisle = etAisle.getText().toString();
+
+        ShoppingListItem shoppingListItem = ShoppingListItem.createShoppingListItem(shoppingList, name, aisle, amount, unit);
+        shoppingListItem.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Couldn't create new shopping list item", e);
+                    return;
+                }
+                Log.i(TAG, "Item created");
+
+                listener.shoppingItemEdited(shoppingListItem, position, oldAisle);
             }
         });
     }
@@ -136,7 +185,10 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createNewItem();
+                if (item == null)
+                    createNewItem();
+                else
+                    updateItem();
             }
         });
     }
