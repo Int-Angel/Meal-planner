@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ShoppingListListFragment extends Fragment implements
+public class ShoppingListManagerFragment extends Fragment implements
         CreateShoppingListFragment.CreateShoppingListFragmentListener,
         ShoppingListFragment.ShoppingListFragmentListener {
 
@@ -47,7 +47,7 @@ public class ShoppingListListFragment extends Fragment implements
     private ProgressBar progress_circular;
     private FloatingActionButton fab;
 
-    public ShoppingListListFragment() {
+    public ShoppingListManagerFragment() {
         // Required empty public constructor
     }
 

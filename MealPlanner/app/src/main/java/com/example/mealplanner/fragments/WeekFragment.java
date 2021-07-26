@@ -51,7 +51,7 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         RecipeDetailsFragment.RecipeDetailsFragmentListener {
 
     private final static String TAG = "WeekFragment";
-    private final AddRecipeFragment addRecipeFragment = new AddRecipeFragment();
+    private AddRecipeFragment addRecipeFragment;
     private RecipeDetailsFragment recipeDetailsFragment;
 
     private Calendar calendar;
@@ -230,8 +230,21 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
 
     private void openSavedRecipes() {
         savedRecipesContainer.setVisibility(View.VISIBLE);
+
+        addRecipeFragment = AddRecipeFragment.newInstance(getRecipesFromMealPlan(mealPlans));
+
         getChildFragmentManager()
                 .beginTransaction().replace(R.id.savedRecipesContainer, addRecipeFragment).commit();
+    }
+
+    private List<Recipe> getRecipesFromMealPlan(List<MealPlan> mealPlans) {
+        List<Recipe> recipes = new ArrayList<>();
+
+        for (int i = 0; i < mealPlans.size(); i++) {
+            recipes.add((Recipe) mealPlans.get(i).getRecipe());
+        }
+
+        return recipes;
     }
 
     private void openRecipeDetailsFragment(IRecipe recipe, int index) {
@@ -242,7 +255,7 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
                 .beginTransaction().replace(R.id.flContainer, recipeDetailsFragment).commit();
     }
 
-    private void closeRecipeDetailsFragment(){
+    private void closeRecipeDetailsFragment() {
         appBarLayout.setVisibility(View.VISIBLE);
 
         getChildFragmentManager()

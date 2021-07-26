@@ -6,24 +6,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.RadioButton;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.example.mealplanner.fragments.HomeFragment;
-import com.example.mealplanner.fragments.RecipeDetailsFragment;
-import com.example.mealplanner.fragments.OnlineRecipesFragment;
 import com.example.mealplanner.fragments.ProfileFragment;
 import com.example.mealplanner.fragments.RecipeFragment;
-import com.example.mealplanner.fragments.SavedRecipesFragment;
-import com.example.mealplanner.fragments.ShoppingListFragment;
-import com.example.mealplanner.fragments.ShoppingListListFragment;
+import com.example.mealplanner.fragments.ShoppingListManagerFragment;
 import com.example.mealplanner.fragments.SocialFragment;
 import com.example.mealplanner.fragments.WeekFragment;
-import com.example.mealplanner.models.IRecipe;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -37,8 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private final WeekFragment weekFragment = new WeekFragment();
-    //private final ShoppingListFragment shoppingListFragment = new ShoppingListFragment();
-    private final ShoppingListListFragment shoppingListListFragment = new ShoppingListListFragment();
+    private final ShoppingListManagerFragment shoppingListManagerFragment = new ShoppingListManagerFragment();
     private final RecipeFragment recipeFragment = new RecipeFragment();
     private final SocialFragment socialFragment = new SocialFragment();
     private final ProfileFragment profileFragment = new ProfileFragment();
@@ -98,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = weekFragment;
                 break;
             case SHOPPING_LIST:
-                fragment = shoppingListListFragment;
+                fragment = shoppingListManagerFragment;
                 break;
             case RECIPES:
                 fragment = recipeFragment;

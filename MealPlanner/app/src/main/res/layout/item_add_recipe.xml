@@ -138,7 +138,7 @@
         android:background="@drawable/rounded_button_selector"
 
         android:elevation="9dp"
-        app:srcCompat="@drawable/ic_round_add_24" />
+        app:srcCompat="@drawable/add_button" />
 
 
 </RelativeLayout>
