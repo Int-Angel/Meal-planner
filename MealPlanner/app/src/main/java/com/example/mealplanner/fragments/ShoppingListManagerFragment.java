@@ -17,8 +17,7 @@ import android.widget.ProgressBar;
 
 import com.example.mealplanner.R;
 import com.example.mealplanner.SwipeToDeleteCallback;
-import com.example.mealplanner.adapters.ShoppingListListAdapter;
-import com.example.mealplanner.models.Recipe;
+import com.example.mealplanner.adapters.ShoppingListManagerAdapter;
 import com.example.mealplanner.models.ShoppingList;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
@@ -42,7 +41,7 @@ public class ShoppingListManagerFragment extends Fragment implements
     private ShoppingListFragment shoppingListFragment;
 
     private List<ShoppingList> shoppingLists;
-    private ShoppingListListAdapter adapter;
+    private ShoppingListManagerAdapter adapter;
     private RecyclerView rvShoppingList;
     private ProgressBar progress_circular;
     private FloatingActionButton fab;
@@ -55,7 +54,7 @@ public class ShoppingListManagerFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_shopping_list_list, container, false);
+        return inflater.inflate(R.layout.fragment_shopping_list_manager, container, false);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class ShoppingListManagerFragment extends Fragment implements
         fab = view.findViewById(R.id.fab);
         rvShoppingList = view.findViewById(R.id.rvShoppingList);
 
-        adapter = new ShoppingListListAdapter(getContext(), shoppingLists, new ShoppingListListAdapter.ShoppingListListAdapterListener() {
+        adapter = new ShoppingListManagerAdapter(getContext(), shoppingLists, new ShoppingListManagerAdapter.ShoppingListListAdapterListener() {
             @Override
             public void openShoppingList(ShoppingList shoppingList) {
                 openShoppingListDetails(shoppingList);

@@ -17,7 +17,7 @@ import com.example.mealplanner.R;
 
 import org.jetbrains.annotations.NotNull;
 
-
+/* TODO: Delete*/
 public class HomeFragment extends Fragment {
 
     private final static String TAG = "HomeFragment";

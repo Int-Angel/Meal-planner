@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final static String TAG = "MainActivity";
+
+    private FilteringViewModel filteringViewModel;
 
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private final WeekFragment weekFragment = new WeekFragment();
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_plan);
         activeFragment = FragmentSelection.HOME;
 
+        filteringViewModel = new ViewModelProvider(this).get(FilteringViewModel.class);
         SavedRecipesManager.querySavedRecipes();
     }
 

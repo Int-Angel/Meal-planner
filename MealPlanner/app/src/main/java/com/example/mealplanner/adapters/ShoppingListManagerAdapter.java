@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 import java.util.List;
 
-public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListListAdapter.ViewHolder>
+public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingListManagerAdapter.ViewHolder>
         implements IAdapterSwipeToDelete {
 
     public interface ShoppingListListAdapterListener {
@@ -37,7 +37,7 @@ public class ShoppingListListAdapter extends RecyclerView.Adapter<ShoppingListLi
     private List<ShoppingList> shoppingLists;
     private ShoppingListListAdapterListener listener;
 
-    public ShoppingListListAdapter(Context context, List<ShoppingList> shoppingLists, ShoppingListListAdapterListener listener) {
+    public ShoppingListManagerAdapter(Context context, List<ShoppingList> shoppingLists, ShoppingListListAdapterListener listener) {
         this.context = context;
         this.shoppingLists = shoppingLists;
         this.listener = listener;

@@ -4,7 +4,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.example.mealplanner.FilteringViewModel;
 import com.example.mealplanner.MainActivity;
 import com.example.mealplanner.R;
 import com.example.mealplanner.models.IRecipe;
@@ -22,9 +25,10 @@ import org.jetbrains.annotations.NotNull;
 
 
 public class RecipeFragment extends Fragment implements OnlineRecipesFragment.OnlineRecipesFragmentListener,
-        SavedRecipesFragment.SavedRecipesFragmentListener, RecipeDetailsFragment.RecipeDetailsFragmentListener{
+        SavedRecipesFragment.SavedRecipesFragmentListener, RecipeDetailsFragment.RecipeDetailsFragmentListener {
 
     private final static String TAG = "RecipeFragment";
+    private FilteringViewModel filteringViewModel;
 
     private final SavedRecipesFragment savedRecipesFragment = new SavedRecipesFragment();
     private final OnlineRecipesFragment onlineRecipesFragment = new OnlineRecipesFragment();
@@ -36,6 +40,8 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     private RadioButton rbSavedRecipes;
     private RadioButton rbOnlineRecipes;
     private LinearLayout fragmentHeaderContainer;
+
+    private SearchView searchView;
 
 
     public RecipeFragment() {
@@ -58,9 +64,12 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        filteringViewModel = new ViewModelProvider(requireActivity()).get(FilteringViewModel.class);
+
         rbSavedRecipes = view.findViewById(R.id.rbSavedRecipes);
         rbOnlineRecipes = view.findViewById(R.id.rbOnlineRecipes);
         fragmentHeaderContainer = view.findViewById(R.id.fragmentHeaderContainer);
+        searchView = view.findViewById(R.id.search_recipes);
 
         activeFragment = MainActivity.FragmentSelection.SAVED_RECIPES;
 
@@ -68,11 +77,41 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
                 .beginTransaction().replace(R.id.flContainer, savedRecipesFragment).commit();
 
         setUpOnClickListeners();
+
+        filteringViewModel.getQueryName().observe(getViewLifecycleOwner(), ob ->{
+            Log.i(TAG, ob);
+        });
     }
 
-    private void setUpOnClickListeners(){
+    private void setUpOnClickListeners() {
         rbSavedRecipes.setOnClickListener(this::onRadioButtonClicked);
         rbOnlineRecipes.setOnClickListener(this::onRadioButtonClicked);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                updateQuery(query);
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                updateQuery("");
+                return false;
+            }
+        });
+    }
+
+    private void updateQuery(String query){
+        filteringViewModel.setQueryName(query);
     }
 
     private void onRadioButtonClicked(View view) {
@@ -95,7 +134,7 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         fragmentHeaderContainer.setVisibility(View.VISIBLE);
         Fragment fragment;
 
-        if(fragmentSelection == MainActivity.FragmentSelection.SAVED_RECIPES)
+        if (fragmentSelection == MainActivity.FragmentSelection.SAVED_RECIPES)
             fragment = savedRecipesFragment;
         else
             fragment = onlineRecipesFragment;
@@ -113,7 +152,7 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
                 .beginTransaction().replace(R.id.flContainer, recipeDetailsFragment).commit();
     }
 
-    private void closeDetailsFragment(){
+    private void closeDetailsFragment() {
         changeFragment(lastActiveFragment);
     }
 

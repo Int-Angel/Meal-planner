@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.mealplanner.FilteringViewModel;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
 import com.example.mealplanner.adapters.RecipeAdapter;
@@ -43,6 +45,8 @@ public class OnlineRecipesFragment extends Fragment {
     private final static String TAG = "OnlineRecipes";
     public static final String BASE_RECIPES_URL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=728721c3da7543769d5413b35ac70cd7&addRecipeInformation=true&addRecipeNutrition=true&instructionsRequired=true&fillIngredients=true";
 
+    private FilteringViewModel filteringViewModel;
+
     private RecyclerView rvRecipes;
     private ProgressBar progressBar;
     private List<IRecipe> onlineRecipes;
@@ -67,6 +71,8 @@ public class OnlineRecipesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        filteringViewModel = new ViewModelProvider(requireActivity()).get(FilteringViewModel.class);
+
         onlineRecipes = new ArrayList<>();
         client = new AsyncHttpClient();
         adapter = new RecipeAdapter(getContext(), onlineRecipes, new RecipeAdapter.RecipeAdapterListener() {
@@ -87,6 +93,13 @@ public class OnlineRecipesFragment extends Fragment {
         savedRecipesUri = new HashSet<>();
         savedRecipesUri = SavedRecipesManager.getIdSet();
         getRecipes();
+        searchListener();
+    }
+
+    private void searchListener() {
+        filteringViewModel.getQueryName().observe(getViewLifecycleOwner(), query -> {
+            getRecipes(query);
+        });
     }
 
     private void getRecipes() {
@@ -97,6 +110,30 @@ public class OnlineRecipesFragment extends Fragment {
 
                 try {
                     JSONArray results = json.jsonObject.getJSONArray("results");
+                    onlineRecipes.clear();
+                    onlineRecipes.addAll(OnlineRecipe.fromJsonArray(results));
+                    checkIfRecipesAreAlreadySaved();
+                } catch (JSONException e) {
+                    Log.e(TAG, "Issue creating recipes", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Headers headers, String s, Throwable throwable) {
+                Log.e(TAG, "onFailure", throwable);
+            }
+        });
+    }
+
+    private void getRecipes(String query) {
+        client.get(BASE_RECIPES_URL + "&query=" + query, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Headers headers, JSON json) {
+                Log.i(TAG, "onSuccess");
+
+                try {
+                    JSONArray results = json.jsonObject.getJSONArray("results");
+                    onlineRecipes.clear();
                     onlineRecipes.addAll(OnlineRecipe.fromJsonArray(results));
                     checkIfRecipesAreAlreadySaved();
                 } catch (JSONException e) {
