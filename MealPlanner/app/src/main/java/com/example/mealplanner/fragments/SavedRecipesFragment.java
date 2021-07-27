@@ -21,6 +21,7 @@ import com.example.mealplanner.FilteringViewModel;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
 import com.example.mealplanner.adapters.RecipeAdapter;
+import com.example.mealplanner.models.FilterCheckBox;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.Recipe;
 import com.parse.FindCallback;
@@ -41,6 +42,7 @@ public class SavedRecipesFragment extends Fragment {
     }
 
     private FilteringViewModel filteringViewModel;
+    private String queryName;
 
     private RecyclerView rvRecipes;
     private ProgressBar progressBar;
@@ -70,6 +72,8 @@ public class SavedRecipesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        queryName = "";
+
         filteringViewModel = new ViewModelProvider(requireActivity()).get(FilteringViewModel.class);
 
         recipes = new ArrayList<>();
@@ -95,7 +99,12 @@ public class SavedRecipesFragment extends Fragment {
 
     private void searchListener() {
         filteringViewModel.getQueryName().observe(getViewLifecycleOwner(), query -> {
-            getRecipes(query);
+            queryName = query;
+            getCustomRecipes();
+            //getRecipes(query);
+        });
+        filteringViewModel.getActiveCuisines().observe(getViewLifecycleOwner(), observer -> {
+            getCustomRecipes();
         });
     }
 
@@ -113,20 +122,35 @@ public class SavedRecipesFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void getRecipes(String name) {
-        if (name.equals("") || name.equals("null")) {
-            updateRecipeList();
-            return;
-        }
-
+    private void getCustomRecipes() {
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
         query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
-        query.whereFullText(Recipe.KEY_TITLE, name);
+
+        if (!queryName.equals("") && !queryName.equals(" ") && !queryName.equals("null"))
+            query.whereFullText(Recipe.KEY_TITLE, queryName);
+
+        if (filteringViewModel.getActiveCuisines().getValue()) {
+            query.whereContainedIn(Recipe.KEY_CUISINE_TYPE, filteringViewModel.getCuisines().getValue());
+        }
+
+        if (filteringViewModel.getActiveMealTypes().getValue()) {
+            query.whereEqualTo(Recipe.KEY_DISH_TYPE, filteringViewModel.getMealTypes().getValue());
+        }
+
+        if (filteringViewModel.getActiveMaxTimeReady().getValue()) {
+            query.whereLessThanOrEqualTo(Recipe.KEY_TOTAL_TIME, filteringViewModel.getMaxTimeReady().getValue());
+        }
+
+        if (filteringViewModel.getActiveCalories().getValue()) {
+            query.whereGreaterThan(Recipe.KEY_CALORIES, filteringViewModel.getMinCalories());
+            query.whereLessThanOrEqualTo(Recipe.KEY_CALORIES, filteringViewModel.getMaxCalories());
+        }
+
         query.findInBackground(new FindCallback<Recipe>() {
             @Override
             public void done(List<Recipe> objects, ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, "Couldn't complete the search for: " + name, e);
+                    Log.e(TAG, "Couldn't complete the custom search", e);
                     return;
                 }
                 recipes.clear();

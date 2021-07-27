@@ -38,7 +38,7 @@ public class Recipe extends ParseObject implements IRecipe {
         recipe.setImageUrl(onlineRecipe.getImageUrl());
         recipe.setDishType(onlineRecipe.getDishType());
         recipe.setCuisineType(onlineRecipe.getCuisineType());
-        recipe.setTotalTime(onlineRecipe.getTotalTime());
+        recipe.setTotalTime(Integer.parseInt(onlineRecipe.getTotalTime()));
         recipe.setCalories(onlineRecipe.getCaloriesNumber());
         recipe.setRecipeUrl(onlineRecipe.getRecipeUrl());
         recipe.setIngredients(onlineRecipe.getIngredients());
@@ -96,10 +96,10 @@ public class Recipe extends ParseObject implements IRecipe {
 
     @Override
     public String getTotalTime() {
-        return getString(KEY_TOTAL_TIME);
+        return getNumber(KEY_TOTAL_TIME) + "";
     }
 
-    public void setTotalTime(String totalTime) {
+    public void setTotalTime(int totalTime) {
         put(KEY_TOTAL_TIME, totalTime);
     }
 
