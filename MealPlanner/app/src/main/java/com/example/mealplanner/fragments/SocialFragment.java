@@ -33,6 +33,8 @@ public class SocialFragment extends Fragment {
 
     private final static String TAG = "SocialFragment";
 
+    private UserProfileFragment userProfileFragment;
+
     private List<ParseUser> users;
     private UsersAdapter adapter;
     private String queryUsername;
@@ -65,7 +67,12 @@ public class SocialFragment extends Fragment {
         progress_circular = view.findViewById(R.id.progress_circular);
         tvNoUsers = view.findViewById(R.id.tvNoUsers);
 
-        adapter = new UsersAdapter(getContext(), users);
+        adapter = new UsersAdapter(getContext(), users, new UsersAdapter.UsersAdapterListener() {
+            @Override
+            public void openUserDetails(ParseUser user) {
+                openUserDetailsFragment(user);
+            }
+        });
         rvUsers.setAdapter(adapter);
         rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -73,7 +80,7 @@ public class SocialFragment extends Fragment {
         queryUsers();
     }
 
-    private void setUpSearchBar(){
+    private void setUpSearchBar() {
         search_users.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -104,10 +111,9 @@ public class SocialFragment extends Fragment {
         progress_circular.setVisibility(View.VISIBLE);
         ParseQuery<ParseUser> query = ParseUser.getQuery();
 
-        if (!queryUsername.equals("")){
+        if (!queryUsername.equals("")) {
             query.whereEqualTo("username", queryUsername);
         }
-
 
         query.findInBackground(new FindCallback<ParseUser>() {
             @Override
@@ -128,5 +134,15 @@ public class SocialFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void openUserDetailsFragment(ParseUser user) {
+
+        userProfileFragment = UserProfileFragment.newInstance(user);
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .add(R.id.flContainer, userProfileFragment)
+                .commit();
     }
 }

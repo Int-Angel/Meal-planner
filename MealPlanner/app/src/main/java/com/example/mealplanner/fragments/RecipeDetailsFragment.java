@@ -125,9 +125,9 @@ public class RecipeDetailsFragment extends Fragment {
 
         listener = (RecipeDetailsFragmentListener) getParentFragment();
 
-        stepsAdapter = new StepsAdapter(getContext(),recipe.getInstructions());
+        stepsAdapter = new StepsAdapter(getContext(), recipe.getInstructions());
         vpSteps.setAdapter(stepsAdapter);
-        tabLayout.setupWithViewPager(vpSteps,true);
+        tabLayout.setupWithViewPager(vpSteps, true);
 
         int pagerPadding = 20;
         vpSteps.setClipToPadding(false);
@@ -143,9 +143,11 @@ public class RecipeDetailsFragment extends Fragment {
 
     private void bind() {
 
-        if (recipe instanceof Recipe)
-            ibtnSaveRecipeDetails.setSelected(true);
-        else {
+        if (recipe instanceof Recipe) {
+            //ibtnSaveRecipeDetails.setSelected(true);
+            boolean selected = SavedRecipesManager.checkIfRecipeIsSaved(recipe.getId());
+            ibtnSaveRecipeDetails.setSelected(selected);
+        } else {
             ibtnSaveRecipeDetails.setSelected(((OnlineRecipe) recipe).isSaved());
         }
 
@@ -166,7 +168,7 @@ public class RecipeDetailsFragment extends Fragment {
 
         Glide.with(getContext())
                 .load(recipe.getImageUrl())
-                .transform(new CenterCrop(),new RoundedCorners(1000))
+                .transform(new CenterCrop(), new RoundedCorners(1000))
                 .into(ivRecipeImageOnlineDetails);
 
         StringBuilder tempIngredients = new StringBuilder();

@@ -185,4 +185,8 @@ public class SavedRecipesManager {
             }
         });
     }
+
+    public static boolean checkIfRecipeIsSaved(String idRecipe){
+        return idSet.contains(idRecipe);
+    }
 }

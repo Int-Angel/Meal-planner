@@ -22,12 +22,18 @@ import java.util.List;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
 
+    public interface UsersAdapterListener {
+        void openUserDetails(ParseUser user);
+    }
+
     private Context context;
     private List<ParseUser> users;
+    private UsersAdapterListener listener;
 
-    public UsersAdapter(Context context, List<ParseUser> users) {
+    public UsersAdapter(Context context, List<ParseUser> users, UsersAdapterListener listener) {
         this.context = context;
         this.users = users;
+        this.listener = listener;
     }
 
     @NonNull
@@ -48,7 +54,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         return users.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView ivProfileImage;
         private TextView tvUsername;
@@ -60,6 +66,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvName = itemView.findViewById(R.id.tvName);
+
+            itemView.setOnClickListener(this);
         }
 
         public void bind(ParseUser user) {
@@ -77,6 +85,11 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
             tvUsername.setText(user.getUsername());
             tvName.setText(user.getString("name") + " " + user.getString("lastname"));
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.openUserDetails(users.get(getAdapterPosition()));
         }
     }
 }
