@@ -81,10 +81,6 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
                 .beginTransaction().replace(R.id.flContainer, savedRecipesFragment).commit();
 
         setUpOnClickListeners();
-
-        filteringViewModel.getQueryName().observe(getViewLifecycleOwner(), ob ->{
-            Log.i(TAG, ob);
-        });
     }
 
     private void setUpOnClickListeners() {

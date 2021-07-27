@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -12,9 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 
+import com.example.mealplanner.FilteringViewModel;
 import com.example.mealplanner.R;
+import com.example.mealplanner.adapters.FilterCheckBoxAdapter;
 import com.example.mealplanner.models.FilterCheckBox;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
@@ -28,11 +34,18 @@ import java.util.List;
 public class FiltersFragment extends Fragment {
 
     private final static String TAG = "FiltersFragment";
+    private FilteringViewModel filteringViewModel;
 
     private List<FilterCheckBox> cuisines;
     private List<FilterCheckBox> mealType;
+    private FilterCheckBoxAdapter cuisinesAdapter;
+    private FilterCheckBoxAdapter mealTypesAdapter;
 
     private ImageButton ibtnClose;
+    private CheckBox cbCuisines;
+    private CheckBox cbMealTypes;
+    private CheckBox cbMaxTime;
+    private CheckBox cbCalories;
     private RecyclerView rvCuisines;
     private RecyclerView rvMealTypes;
     private Slider slMaxTime;
@@ -54,21 +67,68 @@ public class FiltersFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        filteringViewModel = new ViewModelProvider(requireActivity()).get(FilteringViewModel.class);
 
         initializeCuisines();
         initializeMealType();
 
         ibtnClose = view.findViewById(R.id.ibtnClose);
+        cbCuisines = view.findViewById(R.id.cbCuisines);
+        cbMealTypes = view.findViewById(R.id.cbMealTypes);
+        cbCalories = view.findViewById(R.id.cbCalories);
+        cbMaxTime = view.findViewById(R.id.cbMaxTime);
         rvCuisines = view.findViewById(R.id.rvCuisines);
         rvMealTypes = view.findViewById(R.id.rvMealTypes);
         slMaxTime = view.findViewById(R.id.slMaxTime);
         rSlCalories = view.findViewById(R.id.rSlCalories);
         btnApply = view.findViewById(R.id.btnApply);
 
+        cuisinesAdapter = new FilterCheckBoxAdapter(getContext(), cuisines);
+        mealTypesAdapter = new FilterCheckBoxAdapter(getContext(), mealType);
+
+        rvCuisines.setAdapter(cuisinesAdapter);
+        rvCuisines.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+
+        rvMealTypes.setAdapter(mealTypesAdapter);
+        rvMealTypes.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+
         setUpOnClickListeners();
     }
 
-    private void setUpOnClickListeners(){
+    private void setUpOnClickListeners() {
+
+        cbCuisines.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int visibility = isChecked ? View.VISIBLE : View.GONE;
+                rvCuisines.setVisibility(visibility);
+            }
+        });
+
+        cbMealTypes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int visibility = isChecked ? View.VISIBLE : View.GONE;
+                rvMealTypes.setVisibility(visibility);
+            }
+        });
+
+        cbMaxTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int visibility = isChecked ? View.VISIBLE : View.GONE;
+                slMaxTime.setVisibility(visibility);
+            }
+        });
+
+        cbCalories.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int visibility = isChecked ? View.VISIBLE : View.GONE;
+                rSlCalories.setVisibility(visibility);
+            }
+        });
+
         ibtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,18 +144,29 @@ public class FiltersFragment extends Fragment {
         });
     }
 
-    private void applyFilters(){
+    private void applyFilters() {
+        filteringViewModel.setCuisines(FilterCheckBox.getSelectedItems(cuisines));
+        filteringViewModel.setMealTypes(FilterCheckBox.getSelectedItems(mealType));
+        filteringViewModel.setMaxTimeReady((int) slMaxTime.getValue());
+        filteringViewModel.setMinCalories(Math.round(rSlCalories.getValues().get(0)));
+        filteringViewModel.setMaxCalories(Math.round(rSlCalories.getValues().get(1)));
 
+        filteringViewModel.setActiveCalories(cbCalories.isChecked());
+        filteringViewModel.setActiveCuisines(cbCuisines.isChecked());
+        filteringViewModel.setActiveMaxTimeReady(cbMaxTime.isChecked());
+        filteringViewModel.setActiveMealTypes(cbMealTypes.isChecked());
+
+        closeFilters();
     }
 
-    private void closeFilters(){
+    private void closeFilters() {
         getParentFragmentManager()
                 .beginTransaction()
                 .remove(FiltersFragment.this)
                 .commit();
     }
 
-    private void initializeCuisines(){
+    private void initializeCuisines() {
         cuisines = new ArrayList<>();
 
         cuisines.add(new FilterCheckBox("African"));
@@ -127,7 +198,7 @@ public class FiltersFragment extends Fragment {
         cuisines.add(new FilterCheckBox("Vietnamese"));
     }
 
-    private void initializeMealType(){
+    private void initializeMealType() {
         mealType = new ArrayList<>();
 
         mealType.add(new FilterCheckBox("main course"));

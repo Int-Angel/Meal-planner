@@ -15,16 +15,21 @@
         android:layout_height="35dp"
 
         android:layout_margin="10dp"
+        android:layout_gravity="right"
 
         android:src="@drawable/ic_round_close_24"
         android:background="@android:color/transparent"
         />
 
-    <TextView
+    <CheckBox
+        android:id="@+id/cbCuisines"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:layout_marginTop="5dp"
+
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
 
         android:textSize="20sp"
         android:fontFamily="sans-serif-light"
@@ -39,13 +44,18 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="5dp"
+
+        android:visibility="gone"
         />
 
-    <TextView
+    <CheckBox
+        android:id="@+id/cbMealTypes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:layout_marginTop="15dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
 
         android:textSize="20sp"
         android:fontFamily="sans-serif-light"
@@ -53,6 +63,7 @@
         android:textColor="@color/black"
 
         android:text="Meal Types"
+
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -60,13 +71,18 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="5dp"
+
+        android:visibility="gone"
         />
 
-    <TextView
+    <CheckBox
+        android:id="@+id/cbMaxTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:layout_marginTop="15dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
 
         android:textSize="20sp"
         android:fontFamily="sans-serif-light"
@@ -84,13 +100,18 @@
         android:layout_marginTop="5dp"
 
         android:valueFrom="10"
-        android:valueTo="500" />
+        android:valueTo="500"
 
-    <TextView
+        android:visibility="gone"/>
+
+    <CheckBox
+        android:id="@+id/cbCalories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:layout_marginTop="15dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
 
         android:textSize="20sp"
         android:fontFamily="sans-serif-light"
@@ -110,6 +131,8 @@
 
         android:valueFrom="0.0"
         android:valueTo="2000.0"
+
+        android:visibility="gone"
         />
 
     <RelativeLayout
