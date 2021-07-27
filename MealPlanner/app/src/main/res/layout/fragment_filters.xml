@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.FiltersFragment"
+
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <ImageButton
+        android:id="@+id/ibtnClose"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_margin="10dp"
+
+        android:src="@drawable/ic_round_close_24"
+        android:background="@android:color/transparent"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="5dp"
+
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:textColor="@color/black"
+
+        android:text="Cuisines"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCuisines"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="15dp"
+
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:textColor="@color/black"
+
+        android:text="Meal Types"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMealTypes"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="15dp"
+
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:textColor="@color/black"
+
+        android:text="Max ready time"
+        />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slMaxTime"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_marginTop="5dp"
+
+        android:valueFrom="10"
+        android:valueTo="500" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="15dp"
+
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:textColor="@color/black"
+
+        android:text="Calories"
+        />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/rSlCalories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="5dp"
+        app:values="@array/initial_slider_values"
+
+        android:valueFrom="0.0"
+        android:valueTo="2000.0"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btnApply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="30dp"
+
+            android:background="@drawable/rounded_green"
+
+            android:text="Apply"
+            />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

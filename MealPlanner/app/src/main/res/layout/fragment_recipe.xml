@@ -38,6 +38,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+                        <ImageButton
+                            android:id="@+id/ibtnFilter"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+
+                            android:src="@drawable/ic_round_filter_alt_24"
+                            android:background="@android:color/transparent"
+
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="20dp"
+                            />
+
                         <TextView
                             android:id="@+id/tvRecipesTitle"
                             android:layout_width="match_parent"

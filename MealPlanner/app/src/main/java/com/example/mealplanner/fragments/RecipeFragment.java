@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
 
     private final SavedRecipesFragment savedRecipesFragment = new SavedRecipesFragment();
     private final OnlineRecipesFragment onlineRecipesFragment = new OnlineRecipesFragment();
+    private final FiltersFragment filtersFragment = new FiltersFragment();
     private RecipeDetailsFragment recipeDetailsFragment;
 
     private MainActivity.FragmentSelection activeFragment;
@@ -40,6 +42,7 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     private RadioButton rbSavedRecipes;
     private RadioButton rbOnlineRecipes;
     private LinearLayout fragmentHeaderContainer;
+    private ImageButton ibtnFilter;
 
     private SearchView searchView;
 
@@ -70,6 +73,7 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         rbOnlineRecipes = view.findViewById(R.id.rbOnlineRecipes);
         fragmentHeaderContainer = view.findViewById(R.id.fragmentHeaderContainer);
         searchView = view.findViewById(R.id.search_recipes);
+        ibtnFilter = view.findViewById(R.id.ibtnFilter);
 
         activeFragment = MainActivity.FragmentSelection.SAVED_RECIPES;
 
@@ -106,6 +110,13 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
             public boolean onClose() {
                 updateQuery("");
                 return false;
+            }
+        });
+
+        ibtnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilters();
             }
         });
     }
@@ -149,7 +160,16 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, index);
 
         getChildFragmentManager()
-                .beginTransaction().replace(R.id.flContainer, recipeDetailsFragment).commit();
+                .beginTransaction()
+                .replace(R.id.flContainer, recipeDetailsFragment)
+                .commit();
+    }
+
+    private void openFilters(){
+        getParentFragmentManager()
+                .beginTransaction()
+                .add(R.id.flContainer, filtersFragment)
+                .commit();
     }
 
     private void closeDetailsFragment() {
