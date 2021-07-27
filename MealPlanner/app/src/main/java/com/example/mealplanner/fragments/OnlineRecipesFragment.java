@@ -43,9 +43,11 @@ public class OnlineRecipesFragment extends Fragment {
     }
 
     private final static String TAG = "OnlineRecipes";
-    public static final String BASE_RECIPES_URL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=728721c3da7543769d5413b35ac70cd7&addRecipeInformation=true&addRecipeNutrition=true&instructionsRequired=true&fillIngredients=true";
+    private static final String BASE_RECIPES_URL = "https://api.spoonacular.com/recipes/complexSearch?apiKey=728721c3da7543769d5413b35ac70cd7&addRecipeInformation=true&addRecipeNutrition=true&instructionsRequired=true&fillIngredients=true";
+    private String searchUrl = BASE_RECIPES_URL;
 
     private FilteringViewModel filteringViewModel;
+    private String query;
 
     private RecyclerView rvRecipes;
     private ProgressBar progressBar;
@@ -70,6 +72,7 @@ public class OnlineRecipesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        query = "";
 
         filteringViewModel = new ViewModelProvider(requireActivity()).get(FilteringViewModel.class);
 
@@ -92,14 +95,43 @@ public class OnlineRecipesFragment extends Fragment {
 
         savedRecipesUri = new HashSet<>();
         savedRecipesUri = SavedRecipesManager.getIdSet();
-        getRecipes();
+        getRecipes(buildSearchUrl());
         searchListener();
     }
 
     private void searchListener() {
         filteringViewModel.getQueryName().observe(getViewLifecycleOwner(), query -> {
-            getRecipes(query);
+            this.query = query;
+            getRecipes(buildSearchUrl());
         });
+        filteringViewModel.getActiveCuisines().observe(getViewLifecycleOwner(), observer ->{
+            getRecipes(buildSearchUrl());
+        });
+    }
+
+    private String buildSearchUrl() {
+        searchUrl = BASE_RECIPES_URL;
+        if (!query.equals("") && !query.equals(" ") && !query.equals("null")) {
+            searchUrl += "&query=" + query;
+        }
+        if (filteringViewModel.getActiveCuisines().getValue()) {
+            String cuisines = "";
+            for (String cuisine : filteringViewModel.getCuisines().getValue()) {
+                cuisines += cuisine + ",";
+            }
+            searchUrl += "&cuisine=" + cuisines;
+        }
+        if (filteringViewModel.getActiveMealTypes().getValue()) {
+            searchUrl += "&type=" + filteringViewModel.getMealTypes().getValue();
+        }
+        if (filteringViewModel.getActiveMaxTimeReady().getValue()) {
+            searchUrl += "&maxReadyTime=" + filteringViewModel.getMaxTimeReady().getValue();
+        }
+        if (filteringViewModel.getActiveCalories().getValue()) {
+            searchUrl += "&minCalories=" + filteringViewModel.getMinCalories().getValue();
+            searchUrl += "&maxCalories=" + filteringViewModel.getMaxCalories().getValue();
+        }
+        return searchUrl;
     }
 
     private void getRecipes() {
@@ -125,8 +157,8 @@ public class OnlineRecipesFragment extends Fragment {
         });
     }
 
-    private void getRecipes(String query) {
-        client.get(BASE_RECIPES_URL + "&query=" + query, new JsonHttpResponseHandler() {
+    private void getRecipes(String url) {
+        client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int i, Headers headers, JSON json) {
                 Log.i(TAG, "onSuccess");

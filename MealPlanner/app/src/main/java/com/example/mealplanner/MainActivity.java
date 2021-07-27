@@ -50,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
         activeFragment = FragmentSelection.HOME;
 
         filteringViewModel = new ViewModelProvider(this).get(FilteringViewModel.class);
+        filteringViewModel.setActiveCuisines(false);
+        filteringViewModel.setActiveMealTypes(false);
+        filteringViewModel.setActiveMaxTimeReady(false);
+        filteringViewModel.setActiveCalories(false);
         SavedRecipesManager.querySavedRecipes();
     }
 

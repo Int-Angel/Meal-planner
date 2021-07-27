@@ -146,7 +146,10 @@ public class FiltersFragment extends Fragment {
 
     private void applyFilters() {
         filteringViewModel.setCuisines(FilterCheckBox.getSelectedItems(cuisines));
-        filteringViewModel.setMealTypes(FilterCheckBox.getSelectedItems(mealType));
+        if (FilterCheckBox.getSelectedItems(mealType).size() > 0)
+            filteringViewModel.setMealTypes(FilterCheckBox.getSelectedItems(mealType).get(0));
+        else
+            filteringViewModel.setMealTypes("");
         filteringViewModel.setMaxTimeReady((int) slMaxTime.getValue());
         filteringViewModel.setMinCalories(Math.round(rSlCalories.getValues().get(0)));
         filteringViewModel.setMaxCalories(Math.round(rSlCalories.getValues().get(1)));

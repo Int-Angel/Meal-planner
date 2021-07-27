@@ -7,13 +7,14 @@ import androidx.lifecycle.ViewModel;
 import java.util.List;
 
 public class FilteringViewModel extends ViewModel {
+
     private MutableLiveData<String> queryName = new MutableLiveData<>();
 
     private MutableLiveData<Boolean> activeCuisines = new MutableLiveData<>();
     private MutableLiveData<List<String>> cuisines = new MutableLiveData<>();
 
     private MutableLiveData<Boolean> activeMealTypes = new MutableLiveData<>();
-    private MutableLiveData<List<String>> mealTypes = new MutableLiveData<>();
+    private MutableLiveData<String> mealType = new MutableLiveData<>(); // Just one, API doesn't support more
 
     private MutableLiveData<Boolean> activeMaxTimeReady = new MutableLiveData<>();
     private MutableLiveData<Integer> maxTimeReady = new MutableLiveData<>();
@@ -54,12 +55,12 @@ public class FilteringViewModel extends ViewModel {
         return activeMealTypes;
     }
 
-    public void setMealTypes(List<String> mealTypes) {
-        this.mealTypes.setValue(mealTypes);
+    public void setMealTypes(String mealType) {
+        this.mealType.setValue(mealType);
     }
 
-    public LiveData<List<String>> getMealTypes() {
-        return mealTypes;
+    public LiveData<String> getMealTypes() {
+        return mealType;
     }
 
     public void setActiveMaxTimeReady(Boolean active) {
