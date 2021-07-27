@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 return FragmentSelection.SHOPPING_LIST;
             case R.id.action_recipes:
                 return FragmentSelection.RECIPES;
+            case R.id.action_social:
+                return FragmentSelection.SOCIAL;
             case R.id.action_profile:
             default:
                 return FragmentSelection.PROFILE;

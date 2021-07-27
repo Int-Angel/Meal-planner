@@ -2,59 +2,48 @@ package com.example.mealplanner.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.mealplanner.R;
+import com.example.mealplanner.adapters.UsersAdapter;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SocialFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class SocialFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private final static String TAG = "SocialFragment";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private List<ParseUser> users;
+    private UsersAdapter adapter;
+    private String queryUsername;
+
+    private SearchView search_users;
+    private RecyclerView rvUsers;
+    private ProgressBar progress_circular;
+    private TextView tvNoUsers;
 
     public SocialFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SocialFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SocialFragment newInstance(String param1, String param2) {
-        SocialFragment fragment = new SocialFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -62,5 +51,82 @@ public class SocialFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_social, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        queryUsername = "";
+        users = new ArrayList<>();
+
+        search_users = view.findViewById(R.id.search_users);
+        rvUsers = view.findViewById(R.id.rvUsers);
+        progress_circular = view.findViewById(R.id.progress_circular);
+        tvNoUsers = view.findViewById(R.id.tvNoUsers);
+
+        adapter = new UsersAdapter(getContext(), users);
+        rvUsers.setAdapter(adapter);
+        rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        setUpSearchBar();
+        queryUsers();
+    }
+
+    private void setUpSearchBar(){
+        search_users.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                queryUsername = query;
+                queryUsers();
+                search_users.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        search_users.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                queryUsername = "";
+                queryUsers();
+                search_users.clearFocus();
+                return false;
+            }
+        });
+    }
+
+    private void queryUsers() {
+        progress_circular.setVisibility(View.VISIBLE);
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+
+        if (!queryUsername.equals("")){
+            query.whereEqualTo("username", queryUsername);
+        }
+
+
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                progress_circular.setVisibility(View.GONE);
+                if (e != null) {
+                    Log.e(TAG, "Error while getting users", e);
+                    return;
+                }
+                if (objects.size() == 0) {
+                    tvNoUsers.setVisibility(View.VISIBLE);
+                } else {
+                    tvNoUsers.setVisibility(View.GONE);
+                }
+
+                users.clear();
+                users.addAll(objects);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }

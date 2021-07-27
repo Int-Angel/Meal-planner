@@ -163,9 +163,14 @@ public class FiltersFragment extends Fragment {
     }
 
     private void closeFilters() {
-        getParentFragmentManager()
+        /*getParentFragmentManager()
                 .beginTransaction()
                 .remove(FiltersFragment.this)
+                .commit();*/
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .hide(FiltersFragment.this)
                 .commit();
     }
 

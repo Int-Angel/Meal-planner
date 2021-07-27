@@ -162,10 +162,17 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     }
 
     private void openFilters(){
-        getParentFragmentManager()
-                .beginTransaction()
-                .add(R.id.flContainer, filtersFragment)
-                .commit();
+        if(filtersFragment.isAdded()){
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .show(filtersFragment)
+                    .commit();
+        }else {
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.flContainer, filtersFragment)
+                    .commit();
+        }
     }
 
     private void closeDetailsFragment() {

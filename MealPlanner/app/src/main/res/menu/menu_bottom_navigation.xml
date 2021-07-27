@@ -20,13 +20,11 @@
         android:title="@string/recipes"
         app:showAsAction="ifRoom" />
 
-    <!--
     <item
         android:id="@+id/action_social"
         android:icon="@drawable/ic_round_group_add_24"
         android:title="@string/social"
         app:showAsAction="ifRoom" />
-    -->
 
     <item
         android:id="@+id/action_profile"

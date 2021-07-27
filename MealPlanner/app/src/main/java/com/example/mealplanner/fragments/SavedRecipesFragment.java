@@ -24,6 +24,7 @@ import com.example.mealplanner.adapters.RecipeAdapter;
 import com.example.mealplanner.models.FilterCheckBox;
 import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.Recipe;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -49,6 +50,7 @@ public class SavedRecipesFragment extends Fragment {
     private TextView tvNoSavedRecipes;
     private List<IRecipe> recipes;
     private RecipeAdapter adapter;
+    private FloatingActionButton fab;
 
     private SavedRecipesFragmentListener listener;
 
@@ -88,13 +90,28 @@ public class SavedRecipesFragment extends Fragment {
 
         tvNoSavedRecipes = view.findViewById(R.id.tvNoSavedRecipes);
         progressBar = view.findViewById(R.id.progress_circular);
+        fab = view.findViewById(R.id.fab);
 
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        setUpFAB();
         updateRecipeList();
         searchListener();
+    }
+
+    private void setUpFAB(){
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCreateNewRecipe();
+            }
+        });
+    }
+
+    private void openCreateNewRecipe(){
+
     }
 
     private void searchListener() {

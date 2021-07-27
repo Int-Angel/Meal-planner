@@ -16,7 +16,6 @@
         android:layout_alignParentTop="true"
 
         android:scrollbars="none"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
 
     <ProgressBar
@@ -44,6 +43,21 @@
         android:textSize="20sp"
 
         android:text="There's nothing here!"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:src="@drawable/ic_round_white_add_24"
+        app:tint="@color/white"
+        app:elevation="3dp"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+
         />
 
 </RelativeLayout>
