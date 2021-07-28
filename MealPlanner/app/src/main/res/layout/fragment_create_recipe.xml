@@ -119,6 +119,7 @@
             android:layout_alignTop="@+id/ibtnGoToOriginalUrl"
             android:layout_toEndOf="@+id/ibtnGoToOriginalUrl"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="-10dp"
 
             android:textColor="@color/white"
             android:elevation="9dp"
@@ -214,7 +215,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/etCaloriesDetails"
+                android:id="@+id/etCalories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -258,7 +259,7 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/etTimeDetails"
+                android:id="@+id/etTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 

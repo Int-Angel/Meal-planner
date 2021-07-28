@@ -2,6 +2,7 @@ package com.example.mealplanner.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -27,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
@@ -69,8 +72,12 @@ public class CreateRecipeFragment extends Fragment {
     private ImageView ivRecipeImage;
     private ImageButton ibtnGoToOriginalUrl;
     private ProgressBar progressBarImage;
+    private EditText etCalories;
+    private EditText etTime;
 
     private String imageBase64;
+    private String imageUrl;
+    private String originalUrl;
 
     public CreateRecipeFragment() {
         // Required empty public constructor
@@ -113,6 +120,8 @@ public class CreateRecipeFragment extends Fragment {
         ivRecipeImage = view.findViewById(R.id.ivRecipeImage);
         ibtnGoToOriginalUrl = view.findViewById(R.id.ibtnGoToOriginalUrl);
         progressBarImage = view.findViewById(R.id.progress_circular_image);
+        etCalories = view.findViewById(R.id.etCalories);
+        etTime = view.findViewById(R.id.etTime);
 
 
         Glide.with(getContext())
@@ -141,10 +150,6 @@ public class CreateRecipeFragment extends Fragment {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            /*Glide.with(getContext())
-                                    .load(bitmapImage)
-                                    .transform(new CenterCrop(), new RoundedCorners(1000))
-                                    .into(ivRecipeImage);*/
 
                             imageBase64 = bitmapToBase64(bitmapImage);
                             loadImage();
@@ -208,28 +213,10 @@ public class CreateRecipeFragment extends Fragment {
         progressBarImage.setVisibility(View.VISIBLE);
 
         client = new AsyncHttpClient();
+
         RequestParams requestParams = new RequestParams();
         requestParams.put("key", "93840e7eaccdb120c423249c1cddd30f");
-        requestParams.put("image",imageBase64);
-        /*JSONObject jsonParams = new JSONObject();
-
-        try {
-            jsonParams.put("expiration", 600);
-            //jsonParams.put("key", "93840e7eaccdb120c423249c1cddd30f");
-            Log.i(TAG, "Size:" + imageBase64.length());
-            jsonParams.put("image", imageBase64);
-        } catch (JSONException e) {
-            Log.i(TAG, "Error with jsonParams", e);
-        }
-
-        StringEntity entity = null;
-
-        try {
-            entity = new StringEntity(jsonParams.toString());
-        } catch (UnsupportedEncodingException e) {
-            Log.e(TAG,"Error with Entity", e);
-        }*/
-
+        requestParams.put("image", imageBase64);
 
         client.post(getContext(), POST_IMAGE_URL, requestParams, new AsyncHttpResponseHandler() {
             @Override
@@ -239,7 +226,7 @@ public class CreateRecipeFragment extends Fragment {
                 Log.i(TAG, "Success uploading the image");
                 try {
                     JSONObject jsonObject = new JSONObject(res);
-                    String imageUrl = jsonObject.getJSONObject("data").getString("url");
+                    imageUrl = jsonObject.getJSONObject("data").getString("url");
 
                     Glide.with(getContext())
                             .load(imageUrl)
@@ -261,7 +248,34 @@ public class CreateRecipeFragment extends Fragment {
     }
 
     private void insertOriginalUrl() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Original Url");
 
+        final EditText input = new EditText(getContext());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+
+        builder.setView(input);
+
+        builder.setPositiveButton("save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                originalUrl = input.getText().toString();
+                Log.i(TAG,"Original url: " + originalUrl);
+            }
+        });
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                originalUrl = "";
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void closeFragment() {
