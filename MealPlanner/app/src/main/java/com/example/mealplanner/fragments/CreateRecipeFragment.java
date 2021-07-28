@@ -1,36 +1,76 @@
 package com.example.mealplanner.fragments;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
 import com.example.mealplanner.models.Recipe;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class CreateRecipeFragment extends Fragment {
 
-    private static final String RECIPE = "recipe";
+    private static final String RECIPE = "recipe";//93840e7eaccdb120c423249c1cddd30f
+    private static final String POST_IMAGE_URL = "https://api.imgbb.com/1/upload";
     private static final String missingImageUrl = "https://cdn2.vectorstock.com/i/thumb-large/48/06/image-preview-icon-picture-placeholder-vector-31284806.jpg";
     private static final String TAG = "CreateRecipe";
 
+    private ActivityResultLauncher<Intent> galleryLauncher;
+
+    private AsyncHttpClient client;
     private Recipe recipe;
 
     private ImageButton ibtnBack;
+    private EditText etTitle;
     private ImageView ivRecipeImage;
+    private ImageButton ibtnGoToOriginalUrl;
+    private ProgressBar progressBarImage;
+
+    private String imageBase64;
 
     public CreateRecipeFragment() {
         // Required empty public constructor
@@ -69,7 +109,10 @@ public class CreateRecipeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ibtnBack = view.findViewById(R.id.ibtnBack);
+        etTitle = view.findViewById(R.id.etTitle);
         ivRecipeImage = view.findViewById(R.id.ivRecipeImage);
+        ibtnGoToOriginalUrl = view.findViewById(R.id.ibtnGoToOriginalUrl);
+        progressBarImage = view.findViewById(R.id.progress_circular_image);
 
 
         Glide.with(getContext())
@@ -77,21 +120,151 @@ public class CreateRecipeFragment extends Fragment {
                 .transform(new CenterCrop(), new RoundedCorners(1000))
                 .into(ivRecipeImage);
 
+        setUpGalleryLauncher();
         setUpOnClickListeners();
     }
 
+    private void setUpGalleryLauncher() {
+        galleryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            Intent data = result.getData();
+
+                            Uri returnUri = data.getData();
+                            Bitmap bitmapImage = null;
+
+                            try {
+                                bitmapImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), returnUri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            /*Glide.with(getContext())
+                                    .load(bitmapImage)
+                                    .transform(new CenterCrop(), new RoundedCorners(1000))
+                                    .into(ivRecipeImage);*/
+
+                            imageBase64 = bitmapToBase64(bitmapImage);
+                            loadImage();
+                        }
+                    }
+                });
+    }
+
+    private String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        return encoded;
+    }
 
 
-    private void setUpOnClickListeners(){
+    private void setUpOnClickListeners() {
         ibtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 closeFragment();
             }
         });
+
+        ivRecipeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkGalleryPermission();
+            }
+        });
+
+        ibtnGoToOriginalUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                insertOriginalUrl();
+            }
+        });
     }
 
-    private void closeFragment(){
+    private void checkGalleryPermission() {
+        if (ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    2000);
+        } else {
+            startGallery();
+        }
+    }
+
+    private void startGallery() {
+        Intent cameraIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        cameraIntent.setType("image/*");
+        galleryLauncher.launch(cameraIntent);
+    }
+
+    private void loadImage() {
+
+        progressBarImage.setVisibility(View.VISIBLE);
+
+        client = new AsyncHttpClient();
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("key", "93840e7eaccdb120c423249c1cddd30f");
+        requestParams.put("image",imageBase64);
+        /*JSONObject jsonParams = new JSONObject();
+
+        try {
+            jsonParams.put("expiration", 600);
+            //jsonParams.put("key", "93840e7eaccdb120c423249c1cddd30f");
+            Log.i(TAG, "Size:" + imageBase64.length());
+            jsonParams.put("image", imageBase64);
+        } catch (JSONException e) {
+            Log.i(TAG, "Error with jsonParams", e);
+        }
+
+        StringEntity entity = null;
+
+        try {
+            entity = new StringEntity(jsonParams.toString());
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG,"Error with Entity", e);
+        }*/
+
+
+        client.post(getContext(), POST_IMAGE_URL, requestParams, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String res = new String(responseBody);
+                progressBarImage.setVisibility(View.GONE);
+                Log.i(TAG, "Success uploading the image");
+                try {
+                    JSONObject jsonObject = new JSONObject(res);
+                    String imageUrl = jsonObject.getJSONObject("data").getString("url");
+
+                    Glide.with(getContext())
+                            .load(imageUrl)
+                            .transform(new CenterCrop(), new RoundedCorners(1000))
+                            .into(ivRecipeImage);
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error with image JSON", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                progressBarImage.setVisibility(View.GONE);
+                String res = new String(responseBody);
+                Log.e(TAG, "Error while loading image: " + headers.toString() + " " + res, error);
+            }
+        });
+    }
+
+    private void insertOriginalUrl() {
+
+    }
+
+    private void closeFragment() {
         getParentFragmentManager()
                 .beginTransaction()
                 .remove(CreateRecipeFragment.this)

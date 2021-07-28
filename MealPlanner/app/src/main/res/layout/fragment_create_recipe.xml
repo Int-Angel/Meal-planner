@@ -81,6 +81,20 @@
             android:scaleType="fitCenter"
             tools:src="@tools:sample/avatars" />
 
+        <ProgressBar
+            android:id="@+id/progress_circular_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:visibility="gone"
+            android:elevation="10dp"
+
+            android:layout_alignTop="@+id/ivRecipeImage"
+            android:layout_toStartOf="@+id/ivRecipeImage"
+            android:layout_marginEnd="-200dp"
+            android:layout_marginTop="80dp"
+            />
+
 
 
         <ImageButton
