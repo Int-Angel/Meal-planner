@@ -109,7 +109,7 @@ public class RecipeDetailsFragment extends Fragment {
         tvTitle = view.findViewById(R.id.tvTitle);
         ibtnBackOnlineDetails = view.findViewById(R.id.ibtnBackOnlineDetails);
         ibtnSaveRecipeDetails = view.findViewById(R.id.ibtnSaveRecipeDetails);
-        ivRecipeImageOnlineDetails = view.findViewById(R.id.ivRecipeImageOnlineDetails);
+        ivRecipeImageOnlineDetails = view.findViewById(R.id.ivRecipeImage);
         tvDishTypeDetails = view.findViewById(R.id.tvDishTypeDetails);
         tvCuisineTypeDetails = view.findViewById(R.id.tvCuisineTypeDetails);
         tvMealTypeDetails = view.findViewById(R.id.tvMealTypeDetails);

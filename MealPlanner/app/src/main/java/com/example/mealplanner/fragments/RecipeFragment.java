@@ -35,6 +35,7 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     private final OnlineRecipesFragment onlineRecipesFragment = new OnlineRecipesFragment();
     private final FiltersFragment filtersFragment = new FiltersFragment();
     private RecipeDetailsFragment recipeDetailsFragment;
+    private CreateRecipeFragment createRecipeFragment;
 
     private MainActivity.FragmentSelection activeFragment;
     private MainActivity.FragmentSelection lastActiveFragment;
@@ -199,5 +200,15 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     @Override
     public void openSavedRecipeDetailsFragment(IRecipe recipe, int index) {
         openRecipeDetailsFragment(recipe, index);
+    }
+
+    @Override
+    public void openCreateNewFragment() {
+        createRecipeFragment = CreateRecipeFragment.newInstance();
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .add(R.id.flContainer, createRecipeFragment)
+                .commit();
     }
 }

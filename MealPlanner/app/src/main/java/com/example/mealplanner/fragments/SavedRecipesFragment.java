@@ -40,6 +40,7 @@ public class SavedRecipesFragment extends Fragment {
 
     public interface SavedRecipesFragmentListener {
         void openSavedRecipeDetailsFragment(IRecipe recipe, int index);
+        void openCreateNewFragment();
     }
 
     private FilteringViewModel filteringViewModel;
@@ -111,7 +112,7 @@ public class SavedRecipesFragment extends Fragment {
     }
 
     private void openCreateNewRecipe(){
-
+        listener.openCreateNewFragment();
     }
 
     private void searchListener() {

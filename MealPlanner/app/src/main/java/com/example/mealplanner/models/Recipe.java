@@ -29,6 +29,7 @@ public class Recipe extends ParseObject implements IRecipe {
     public final static String KEY_ID = "idRecipe";
     public final static String KEY_SUMMARY = "summary";
     public final static String KEY_INGREDIENTS_IMAGES_URL = "ingredientsImagesUrl";
+    public final static String KEY_USER_CREATED = "userCreated";
 
     public static Recipe createRecipe(OnlineRecipe onlineRecipe) {
         Recipe recipe = new Recipe();
@@ -46,6 +47,7 @@ public class Recipe extends ParseObject implements IRecipe {
         recipe.setInstructions(onlineRecipe.getInstructions());
         recipe.setIngredientsImagesUrl(onlineRecipe.getIngredientsImagesUrl());
         recipe.setSummary(onlineRecipe.getSummary());
+        recipe.setUserCreated(false);
 
         return recipe;
     }
@@ -237,5 +239,13 @@ public class Recipe extends ParseObject implements IRecipe {
 
     public void setSummary(String summary){
         put(KEY_SUMMARY, summary);
+    }
+
+    public boolean getUserCreated(){
+        return getBoolean(KEY_USER_CREATED);
+    }
+
+    public void setUserCreated(boolean userCreated){
+        put(KEY_USER_CREATED, userCreated);
     }
 }
