@@ -140,8 +140,8 @@
 
             >
 
-            <EditText
-                android:id="@+id/etDishTypeDetails"
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinnerMealType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -149,15 +149,14 @@
                 android:fontFamily="sans-serif-light"
                 android:gravity="center"
                 android:padding="7dp"
-                android:hint="meal type"
 
                 android:textColor="@android:color/black"
 
                 android:textSize="12sp"
                 android:textStyle="normal" />
 
-            <EditText
-                android:id="@+id/tvCuisineTypeDetails"
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinnerCuisineType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -167,7 +166,6 @@
                 android:gravity="center"
                 android:padding="7dp"
 
-                android:hint="Cuisine type"
                 android:textColor="@android:color/black"
 
                 android:textSize="12sp"
@@ -223,7 +221,10 @@
                 android:hint="1000"
 
                 android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+
+                android:inputType="number"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -267,7 +268,9 @@
                 android:hint="60"
 
                 android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+
+                android:inputType="number"/>
 
             <TextView
                 android:layout_width="wrap_content"

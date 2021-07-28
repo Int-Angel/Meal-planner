@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -26,6 +27,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -74,10 +77,14 @@ public class CreateRecipeFragment extends Fragment {
     private ProgressBar progressBarImage;
     private EditText etCalories;
     private EditText etTime;
+    private AppCompatSpinner spinnerMealType;
+    private AppCompatSpinner spinnerCuisineType;
 
     private String imageBase64;
     private String imageUrl;
     private String originalUrl;
+    private String mealType;
+    private String cuisineType;
 
     public CreateRecipeFragment() {
         // Required empty public constructor
@@ -122,6 +129,8 @@ public class CreateRecipeFragment extends Fragment {
         progressBarImage = view.findViewById(R.id.progress_circular_image);
         etCalories = view.findViewById(R.id.etCalories);
         etTime = view.findViewById(R.id.etTime);
+        spinnerMealType = view.findViewById(R.id.spinnerMealType);
+        spinnerCuisineType = view.findViewById(R.id.spinnerCuisineType);
 
 
         Glide.with(getContext())
@@ -129,6 +138,7 @@ public class CreateRecipeFragment extends Fragment {
                 .transform(new CenterCrop(), new RoundedCorners(1000))
                 .into(ivRecipeImage);
 
+        setUpSpinners();
         setUpGalleryLauncher();
         setUpOnClickListeners();
     }
@@ -167,6 +177,45 @@ public class CreateRecipeFragment extends Fragment {
         return encoded;
     }
 
+    private void setUpSpinners() {
+        ArrayAdapter<CharSequence> mealTypeSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.meal_types_array, android.R.layout.simple_spinner_item);
+
+        mealTypeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerMealType.setAdapter(mealTypeSpinnerAdapter);
+        spinnerMealType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mealType = parent.getItemAtPosition(position).toString();
+                Log.i(TAG,"Meal type selected: " + mealType);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ArrayAdapter<CharSequence> cuisineTypeSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.cuisine_types_array, android.R.layout.simple_spinner_item);
+
+        cuisineTypeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerCuisineType.setAdapter(cuisineTypeSpinnerAdapter);
+        spinnerCuisineType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                cuisineType = parent.getItemAtPosition(position).toString();
+                Log.i(TAG,"Cuisine type selected: " + cuisineType);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
 
     private void setUpOnClickListeners() {
         ibtnBack.setOnClickListener(new View.OnClickListener() {
@@ -263,7 +312,7 @@ public class CreateRecipeFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 originalUrl = input.getText().toString();
-                Log.i(TAG,"Original url: " + originalUrl);
+                Log.i(TAG, "Original url: " + originalUrl);
             }
         });
 
