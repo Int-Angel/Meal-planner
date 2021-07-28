@@ -301,31 +301,34 @@
             android:textStyle="bold" />
 
 
-        <TextView
-            android:id="@+id/tvIngredients"
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvIngredients"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:visibility="gone"
-
             android:layout_below="@+id/tvIngredientsTitle"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="65dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="sans-serif-light"
-            android:lineSpacingExtra="5dp"
+            />
 
-            android:text="235 kcal \n hola \n hola \n hola"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabIngredients"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
 
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:src="@drawable/ic_round_white_add_24"
+            app:tint="@color/white"
+            app:elevation="3dp"
+
+            android:layout_below="@+id/rvIngredients"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            />
 
         <TextView
             android:id="@+id/tvStepsTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_below="@+id/tvIngredients"
+            android:layout_below="@+id/fabIngredients"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="130dp"
             android:layout_marginTop="20dp"
@@ -365,7 +368,37 @@
             android:background="@drawable/ic_rounded_white_bg"
 
             />
-    </RelativeLayout>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabSteps"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+
+            android:src="@drawable/ic_round_white_add_24"
+            app:tint="@color/white"
+            app:elevation="3dp"
+
+            android:layout_below="@+id/vpSteps"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="26dp"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabSave"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+
+            android:src="@drawable/ic_round_check_circle_24"
+            app:tint="@color/white"
+            app:elevation="13dp"
+
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="16dp"
+
+            app:backgroundTint="@color/cool_green"
+            />
+    </RelativeLayout>
 
 </ScrollView>

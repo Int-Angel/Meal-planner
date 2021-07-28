@@ -20,6 +20,8 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -39,7 +41,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
+import com.example.mealplanner.adapters.CreateStepsAdapter;
+import com.example.mealplanner.adapters.StepsAdapter;
 import com.example.mealplanner.models.Recipe;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -51,6 +57,8 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -60,7 +68,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class CreateRecipeFragment extends Fragment {
 
-    private static final String RECIPE = "recipe";//93840e7eaccdb120c423249c1cddd30f
+    private static final String RECIPE = "recipe";
     private static final String POST_IMAGE_URL = "https://api.imgbb.com/1/upload";
     private static final String missingImageUrl = "https://cdn2.vectorstock.com/i/thumb-large/48/06/image-preview-icon-picture-placeholder-vector-31284806.jpg";
     private static final String TAG = "CreateRecipe";
@@ -69,6 +77,8 @@ public class CreateRecipeFragment extends Fragment {
 
     private AsyncHttpClient client;
     private Recipe recipe;
+    private List<String> steps;
+    private CreateStepsAdapter stepsAdapter;
 
     private ImageButton ibtnBack;
     private EditText etTitle;
@@ -79,6 +89,12 @@ public class CreateRecipeFragment extends Fragment {
     private EditText etTime;
     private AppCompatSpinner spinnerMealType;
     private AppCompatSpinner spinnerCuisineType;
+    private RecyclerView rvIngredients;
+    private FloatingActionButton fabIngredients;
+    private ViewPager vpSteps;
+    private TabLayout tabLayout;
+    private FloatingActionButton fabSteps;
+    private FloatingActionButton fabSave;
 
     private String imageBase64;
     private String imageUrl;
@@ -122,6 +138,8 @@ public class CreateRecipeFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        steps = new ArrayList<>();
+
         ibtnBack = view.findViewById(R.id.ibtnBack);
         etTitle = view.findViewById(R.id.etTitle);
         ivRecipeImage = view.findViewById(R.id.ivRecipeImage);
@@ -131,12 +149,27 @@ public class CreateRecipeFragment extends Fragment {
         etTime = view.findViewById(R.id.etTime);
         spinnerMealType = view.findViewById(R.id.spinnerMealType);
         spinnerCuisineType = view.findViewById(R.id.spinnerCuisineType);
+        rvIngredients = view.findViewById(R.id.rvIngredients);
+        fabIngredients = view.findViewById(R.id.fabIngredients);
+        vpSteps = view.findViewById(R.id.vpSteps);
+        tabLayout = view.findViewById(R.id.tabLayout);
+        fabSteps = view.findViewById(R.id.fabSteps);
+        fabSave = view.findViewById(R.id.fabSave);
 
 
         Glide.with(getContext())
                 .load(missingImageUrl)
                 .transform(new CenterCrop(), new RoundedCorners(1000))
                 .into(ivRecipeImage);
+
+        stepsAdapter = new CreateStepsAdapter(getContext(), steps);
+        vpSteps.setAdapter(stepsAdapter);
+
+        tabLayout.setupWithViewPager(vpSteps, true);
+
+        int pagerPadding = 20;
+        vpSteps.setClipToPadding(false);
+        vpSteps.setPadding(pagerPadding, pagerPadding, pagerPadding, pagerPadding);
 
         setUpSpinners();
         setUpGalleryLauncher();
@@ -238,6 +271,13 @@ public class CreateRecipeFragment extends Fragment {
                 insertOriginalUrl();
             }
         });
+
+        fabSteps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createNewStep();
+            }
+        });
     }
 
     private void checkGalleryPermission() {
@@ -325,6 +365,37 @@ public class CreateRecipeFragment extends Fragment {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void createNewStep(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Step");
+
+        final EditText input = new EditText(getContext());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+
+        builder.setView(input);
+
+        builder.setPositiveButton("save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                steps.add(input.getText().toString());
+                stepsAdapter.notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 
     private void closeFragment() {
