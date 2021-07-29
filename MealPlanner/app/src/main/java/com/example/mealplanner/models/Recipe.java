@@ -52,6 +52,26 @@ public class Recipe extends ParseObject implements IRecipe {
         return recipe;
     }
 
+    public static Recipe createRecipe(String title, String imageUrl, String mealType, String cuisineType, String totalTime, float calories,
+                                      String recipeUrl, List<String> ingredients, List<String> instructions){
+        Recipe recipe = new Recipe();
+
+        recipe.setUser(ParseUser.getCurrentUser());
+        recipe.setTile(title);
+        recipe.setImageUrl(imageUrl);
+        recipe.setDishType(mealType);
+        recipe.setCuisineType(cuisineType);
+        recipe.setTotalTime(Integer.parseInt(totalTime));
+        recipe.setCalories(calories);
+        recipe.setRecipeUrl(recipeUrl);
+        recipe.setIngredients(ingredients);
+        recipe.setInstructions(instructions);
+        recipe.setUserCreated(true);
+        recipe.setSummary("");
+
+        return recipe;
+    }
+
     public ParseUser getUser() {
         return getParseUser(KEY_USER);
     }

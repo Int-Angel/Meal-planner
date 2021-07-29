@@ -52,6 +52,32 @@ public class Ingredient extends ParseObject {
         return ingredients;
     }
 
+    public static Ingredient createIngredientFromAPI(JSONObject jsonObject) throws JSONException {
+        Ingredient ingredient = new Ingredient();
+
+        ingredient.setAisle(jsonObject.getString("aisle"));
+        ingredient.setImage(jsonObject.getString("image"));
+        ingredient.setName(jsonObject.getString("name"));
+        ingredient.setNameClean(jsonObject.getString("originalName"));
+        ingredient.setOriginal(jsonObject.getString("original"));
+
+        ingredient.setAmount(jsonObject.getLong("amount"));
+        ingredient.setUnit(jsonObject.getString("unitShort"));
+        ingredient.setIngredientId(jsonObject.getString("id"));
+
+        return ingredient;
+    }
+
+    public static List<Ingredient> fromJSONArrayFromAPI(JSONArray jsonArray) throws JSONException {
+        List<Ingredient> ingredients = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            ingredients.add(createIngredientFromAPI(jsonArray.getJSONObject(i)));
+        }
+
+        return ingredients;
+    }
+
     public ParseObject getRecipe() {
         return getParseObject(KEY_RECIPE);
     }

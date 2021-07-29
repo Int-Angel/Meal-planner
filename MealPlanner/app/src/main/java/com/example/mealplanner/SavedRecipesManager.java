@@ -96,6 +96,11 @@ public class SavedRecipesManager {
         });
     }
 
+    public static void addRecipe(Recipe recipe) {
+        recipes.add(0, recipe);
+        idSet.add(recipe.getId());
+    }
+
     private static void createRecipeIngredients(Recipe recipe, OnlineRecipe onlineRecipe) {
         try {
             List<Ingredient> ingredients = Ingredient.fromJSONArray(recipe, onlineRecipe.getExtendedIngredients());

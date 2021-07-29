@@ -134,29 +134,6 @@ public class OnlineRecipesFragment extends Fragment {
         return searchUrl;
     }
 
-    private void getRecipes() {
-        client.get(BASE_RECIPES_URL, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int i, Headers headers, JSON json) {
-                Log.i(TAG, "onSuccess");
-
-                try {
-                    JSONArray results = json.jsonObject.getJSONArray("results");
-                    onlineRecipes.clear();
-                    onlineRecipes.addAll(OnlineRecipe.fromJsonArray(results));
-                    checkIfRecipesAreAlreadySaved();
-                } catch (JSONException e) {
-                    Log.e(TAG, "Issue creating recipes", e);
-                }
-            }
-
-            @Override
-            public void onFailure(int i, Headers headers, String s, Throwable throwable) {
-                Log.e(TAG, "onFailure", throwable);
-            }
-        });
-    }
-
     private void getRecipes(String url) {
         client.get(url, new JsonHttpResponseHandler() {
             @Override

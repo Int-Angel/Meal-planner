@@ -26,7 +26,8 @@ import org.jetbrains.annotations.NotNull;
 
 
 public class RecipeFragment extends Fragment implements OnlineRecipesFragment.OnlineRecipesFragmentListener,
-        SavedRecipesFragment.SavedRecipesFragmentListener, RecipeDetailsFragment.RecipeDetailsFragmentListener {
+        SavedRecipesFragment.SavedRecipesFragmentListener, RecipeDetailsFragment.RecipeDetailsFragmentListener,
+        CreateRecipeFragment.CreateRecipeFragmentListener {
 
     private final static String TAG = "RecipeFragment";
     private FilteringViewModel filteringViewModel;
@@ -210,5 +211,10 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
                 .beginTransaction()
                 .add(R.id.flContainer, createRecipeFragment)
                 .commit();
+    }
+
+    @Override
+    public void newRecipeCreated() {
+        savedRecipesFragment.updateRecipeList();
     }
 }

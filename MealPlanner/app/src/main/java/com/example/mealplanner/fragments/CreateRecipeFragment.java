@@ -43,18 +43,26 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
+import com.example.mealplanner.SavedRecipesManager;
 import com.example.mealplanner.SwipeToDeleteCallback;
 import com.example.mealplanner.adapters.CreateStepsAdapter;
 import com.example.mealplanner.adapters.IngredientsAdapter;
 import com.example.mealplanner.adapters.StepsAdapter;
+import com.example.mealplanner.models.Ingredient;
 import com.example.mealplanner.models.Recipe;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -72,13 +80,17 @@ import static android.app.Activity.RESULT_OK;
 
 public class CreateRecipeFragment extends Fragment {
 
+    public interface CreateRecipeFragmentListener{
+        void newRecipeCreated();
+    }
+
     private static final String RECIPE = "recipe";
     private static final String POST_IMAGE_URL = "https://api.imgbb.com/1/upload";
+    private static final String POST_INGREDIENTS = "https://api.spoonacular.com/recipes/parseIngredients?apiKey=728721c3da7543769d5413b35ac70cd7";
     private static final String missingImageUrl = "https://cdn2.vectorstock.com/i/thumb-large/48/06/image-preview-icon-picture-placeholder-vector-31284806.jpg";
     private static final String TAG = "CreateRecipe";
 
-    private CreateIngredientFragment createIngredientFragment;
-
+    private CreateRecipeFragmentListener listener;
     private ActivityResultLauncher<Intent> galleryLauncher;
 
     private AsyncHttpClient client;
@@ -110,6 +122,8 @@ public class CreateRecipeFragment extends Fragment {
     private String cuisineType;
     private List<String> steps;
     private List<String> ingredients;
+
+    private List<Ingredient> recipeIngredients;
 
     public CreateRecipeFragment() {
         // Required empty public constructor
@@ -147,8 +161,11 @@ public class CreateRecipeFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        listener = (CreateRecipeFragmentListener) getParentFragment();
+
         steps = new ArrayList<>();
         ingredients = new ArrayList<>();
+        recipeIngredients = new ArrayList<>();
 
         ibtnBack = view.findViewById(R.id.ibtnBack);
         etTitle = view.findViewById(R.id.etTitle);
@@ -165,7 +182,6 @@ public class CreateRecipeFragment extends Fragment {
         tabLayout = view.findViewById(R.id.tabLayout);
         fabSteps = view.findViewById(R.id.fabSteps);
         fabSave = view.findViewById(R.id.fabSave);
-
 
         Glide.with(getContext())
                 .load(missingImageUrl)
@@ -304,6 +320,13 @@ public class CreateRecipeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 createNewIngredient();
+            }
+        });
+
+        fabSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createRecipe();
             }
         });
     }
@@ -492,5 +515,111 @@ public class CreateRecipeFragment extends Fragment {
                 .beginTransaction()
                 .remove(CreateRecipeFragment.this)
                 .commit();
+    }
+
+    private void createRecipe() {
+        Recipe recipe = Recipe.createRecipe(etTitle.getText().toString(), imageUrl, mealType, cuisineType,
+                etTime.getText().toString(), Float.parseFloat(etCalories.getText().toString()), originalUrl,
+                ingredients, steps);
+
+        recipe.setId(generateRecipeId() + "");
+
+        getIngredientsFromAPI(recipe);
+    }
+
+    private void getIngredientsFromAPI(Recipe recipe) {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("ingredientList", getIngredientsOnePerLine());
+        requestParams.put("servings", 1);
+        requestParams.put("includeNutrition", false);
+
+        client = new AsyncHttpClient();
+        client.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        client.post(getContext(), POST_INGREDIENTS, requestParams, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                String res = new String(responseBody);
+                try {
+                    JSONArray jsonArray = new JSONArray(res);
+                    Log.i(TAG, "onSucess getting ingredients: " + jsonArray.toString());
+
+                    recipeIngredients = Ingredient.fromJSONArrayFromAPI(jsonArray);
+                    saveRecipeAndIngredients(recipe, recipeIngredients);
+                } catch (JSONException e) {
+                    Log.e(TAG, "couldn't create jsonObject from response", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.e(TAG, "Couldn't get ingredients from API", error);
+            }
+        });
+    }
+
+    private void saveRecipeAndIngredients(Recipe recipe, List<Ingredient> ingredientList) {
+        recipe.setIngredientsImagesUrl(getImagesUrlListFromIngredients(ingredientList));
+
+        recipe.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Couldn't save new recipe", e);
+                    return;
+                }
+                for (int i = 0; i < ingredientList.size(); i++) {
+                    ingredientList.get(i).setRecipe(recipe);
+                }
+                SavedRecipesManager.addRecipe(recipe);
+                Log.i(TAG, "Saving ingredients");
+                ParseObject.saveAllInBackground(ingredientList);
+                closeFragment();
+            }
+        });
+    }
+
+    private List<String> getImagesUrlListFromIngredients(List<Ingredient> ingredientList) {
+        List<String> urls = new ArrayList<>();
+
+        for (Ingredient ingredient : ingredientList) {
+            urls.add("https://spoonacular.com/cdn/ingredients_250x250/" + ingredient.getImage());
+        }
+        return urls;
+    }
+
+    private int generateRecipeId() {
+        final int[] id = {0};
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("RecipeIdCounter");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Couldn't get recipe id counter", e);
+                    return;
+                }
+                for (ParseObject object : objects) {
+                    int currentId = (int) object.getNumber("recipeId");
+                    if (currentId < id[0]) {
+                        id[0] = currentId;
+                    }
+                }
+            }
+        });
+
+        ParseObject entity = new ParseObject("RecipeIdCounter");
+        entity.put("recipeId", id[0] - 1);
+        entity.saveInBackground();
+
+        return id[0] - 1;
+    }
+
+    private String getIngredientsOnePerLine() {
+        String res = "";
+
+        for (String ingredient : ingredients) {
+            res += ingredient + "\n";
+        }
+
+        return res;
     }
 }
