@@ -20,6 +20,8 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -41,7 +43,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.R;
+import com.example.mealplanner.SwipeToDeleteCallback;
 import com.example.mealplanner.adapters.CreateStepsAdapter;
+import com.example.mealplanner.adapters.IngredientsAdapter;
 import com.example.mealplanner.adapters.StepsAdapter;
 import com.example.mealplanner.models.Recipe;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -73,12 +77,14 @@ public class CreateRecipeFragment extends Fragment {
     private static final String missingImageUrl = "https://cdn2.vectorstock.com/i/thumb-large/48/06/image-preview-icon-picture-placeholder-vector-31284806.jpg";
     private static final String TAG = "CreateRecipe";
 
+    private CreateIngredientFragment createIngredientFragment;
+
     private ActivityResultLauncher<Intent> galleryLauncher;
 
     private AsyncHttpClient client;
     private Recipe recipe;
-    private List<String> steps;
     private CreateStepsAdapter stepsAdapter;
+    private IngredientsAdapter ingredientsAdapter;
 
     private ImageButton ibtnBack;
     private EditText etTitle;
@@ -97,10 +103,13 @@ public class CreateRecipeFragment extends Fragment {
     private FloatingActionButton fabSave;
 
     private String imageBase64;
+
     private String imageUrl;
     private String originalUrl;
     private String mealType;
     private String cuisineType;
+    private List<String> steps;
+    private List<String> ingredients;
 
     public CreateRecipeFragment() {
         // Required empty public constructor
@@ -139,6 +148,7 @@ public class CreateRecipeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         steps = new ArrayList<>();
+        ingredients = new ArrayList<>();
 
         ibtnBack = view.findViewById(R.id.ibtnBack);
         etTitle = view.findViewById(R.id.etTitle);
@@ -170,6 +180,17 @@ public class CreateRecipeFragment extends Fragment {
         int pagerPadding = 20;
         vpSteps.setClipToPadding(false);
         vpSteps.setPadding(pagerPadding, pagerPadding, pagerPadding, pagerPadding);
+
+        ingredientsAdapter = new IngredientsAdapter(getContext(), ingredients, new IngredientsAdapter.OnLongClickListener() {
+            @Override
+            public void onItemLongClicked(int position) {
+                editIngredient(position);
+            }
+        });
+        rvIngredients.setAdapter(ingredientsAdapter);
+        rvIngredients.setLayoutManager(new LinearLayoutManager(getContext()));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(ingredientsAdapter));
+        itemTouchHelper.attachToRecyclerView(rvIngredients);
 
         setUpSpinners();
         setUpGalleryLauncher();
@@ -221,7 +242,7 @@ public class CreateRecipeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mealType = parent.getItemAtPosition(position).toString();
-                Log.i(TAG,"Meal type selected: " + mealType);
+                Log.i(TAG, "Meal type selected: " + mealType);
             }
 
             @Override
@@ -240,7 +261,7 @@ public class CreateRecipeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 cuisineType = parent.getItemAtPosition(position).toString();
-                Log.i(TAG,"Cuisine type selected: " + cuisineType);
+                Log.i(TAG, "Cuisine type selected: " + cuisineType);
             }
 
             @Override
@@ -276,6 +297,13 @@ public class CreateRecipeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 createNewStep();
+            }
+        });
+
+        fabIngredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createNewIngredient();
             }
         });
     }
@@ -367,7 +395,7 @@ public class CreateRecipeFragment extends Fragment {
         dialog.show();
     }
 
-    private void createNewStep(){
+    private void createNewStep() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Step");
 
@@ -396,6 +424,67 @@ public class CreateRecipeFragment extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
 
+    }
+
+    private void createNewIngredient() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Ingredient");
+
+        final EditText input = new EditText(getContext());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+
+        builder.setView(input);
+
+        builder.setPositiveButton("save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ingredients.add(input.getText().toString());
+                ingredientsAdapter.notifyItemInserted(ingredients.size() - 1);
+            }
+        });
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void editIngredient(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Ingredient");
+
+        final EditText input = new EditText(getContext());
+        input.setText(ingredients.get(position));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+
+        builder.setView(input);
+
+        builder.setPositiveButton("save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ingredients.set(position, input.getText().toString());
+                ingredientsAdapter.notifyItemChanged(position);
+            }
+        });
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void closeFragment() {

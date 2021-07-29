@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,397 +8,411 @@
 
     android:background="@color/white">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cvDetails"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="match_parent">
 
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-
-            app:cardBackgroundColor="@color/blue_1"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="5dp"
-            >
-
-            <RelativeLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvDetails"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="300dp"
 
-                <EditText
-                    android:id="@+id/etTitle"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+
+                app:cardBackgroundColor="@color/blue_1"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="5dp"
+                >
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent">
 
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginStart="130dp"
-                    android:layout_marginTop="60dp"
+                    <EditText
+                        android:id="@+id/etTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
 
-                    android:rotation="0"
-                    android:rotationX="0"
-                    android:rotationY="0"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="130dp"
+                        android:layout_marginTop="60dp"
 
-                    android:hint="Title"
-                    android:textAlignment="viewStart"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    android:textSize="35sp"
-                    android:textStyle="bold" />
+                        android:rotation="0"
+                        android:rotationX="0"
+                        android:rotationY="0"
 
-                <ImageButton
-                    android:id="@+id/ibtnBack"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                        android:hint="Title"
+                        android:textAlignment="viewStart"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:textSize="35sp"
+                        android:textStyle="bold" />
 
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_margin="10dp"
+                    <ImageButton
+                        android:id="@+id/ibtnBack"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
 
-                    android:src="@drawable/ic_round_arrow_back_24"
-                    android:background="@android:color/transparent"
-                    app:tint="@color/white" />
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_margin="10dp"
 
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
+                        android:src="@drawable/ic_round_arrow_back_24"
+                        android:background="@android:color/transparent"
+                        app:tint="@color/white" />
 
-        <ImageView
-            android:id="@+id/ivRecipeImage"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
 
-            android:layout_alignParentStart="true"
+            <ImageView
+                android:id="@+id/ivRecipeImage"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
 
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="65dp"
-            android:layout_marginTop="180dp"
-            android:elevation="7dp"
+                android:layout_alignParentStart="true"
 
-            android:scaleType="fitCenter"
-            tools:src="@tools:sample/avatars" />
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="65dp"
+                android:layout_marginTop="180dp"
+                android:elevation="7dp"
 
-        <ProgressBar
-            android:id="@+id/progress_circular_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                tools:src="@tools:sample/avatars" />
 
-            android:visibility="gone"
-            android:elevation="10dp"
-
-            android:layout_alignTop="@+id/ivRecipeImage"
-            android:layout_toStartOf="@+id/ivRecipeImage"
-            android:layout_marginEnd="-200dp"
-            android:layout_marginTop="80dp"
-            />
-
-
-
-        <ImageButton
-            android:id="@+id/ibtnGoToOriginalUrl"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-
-            android:layout_alignTop="@+id/ivRecipeImage"
-            android:layout_toEndOf="@+id/ivRecipeImage"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="65dp"
-
-            android:elevation="9dp"
-
-            android:background="@drawable/rounded_button_selector"
-            app:srcCompat="@drawable/link_button"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_alignTop="@+id/ibtnGoToOriginalUrl"
-            android:layout_toEndOf="@+id/ibtnGoToOriginalUrl"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="-10dp"
-
-            android:textColor="@color/white"
-            android:elevation="9dp"
-            android:fontFamily="sans-serif-light"
-            android:text="Click to add original Url"
-            />
-
-        <LinearLayout
-            android:id="@+id/llMealDetailsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/ivRecipeImage"
-            android:layout_marginStart="65dp"
-            android:layout_marginTop="10dp"
-
-            >
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/spinnerMealType"
+            <ProgressBar
+                android:id="@+id/progress_circular_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:background="@drawable/rounded_darker"
-                android:fontFamily="sans-serif-light"
-                android:gravity="center"
-                android:padding="7dp"
+                android:visibility="gone"
+                android:elevation="10dp"
 
-                android:textColor="@android:color/black"
+                android:layout_alignTop="@+id/ivRecipeImage"
+                android:layout_toStartOf="@+id/ivRecipeImage"
+                android:layout_marginEnd="-200dp"
+                android:layout_marginTop="80dp"
+                />
 
-                android:textSize="12sp"
-                android:textStyle="normal" />
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/spinnerCuisineType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
 
-                android:layout_marginStart="10dp"
-                android:background="@drawable/rounded_darker"
-                android:fontFamily="sans-serif-light"
-                android:gravity="center"
-                android:padding="7dp"
+            <ImageButton
+                android:id="@+id/ibtnGoToOriginalUrl"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
 
-                android:textColor="@android:color/black"
+                android:layout_alignTop="@+id/ivRecipeImage"
+                android:layout_toEndOf="@+id/ivRecipeImage"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="65dp"
 
-                android:textSize="12sp"
-                android:textStyle="normal" />
+                android:elevation="9dp"
 
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvSummary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:visibility="gone"
-
-            android:layout_below="@+id/llMealDetailsContainer"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="10dp"
-
-            android:text="summary"
-            android:textColor="@android:color/black"
-
-            android:textSize="15sp" />
-
-        <LinearLayout
-            android:id="@+id/llCaloriesContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_below="@+id/tvSummary"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="10dp">
+                android:background="@drawable/rounded_button_selector"
+                app:srcCompat="@drawable/link_button"/>
 
             <TextView
-                android:id="@+id/tvCaloriesTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:fontFamily="sans-serif-light"
-                android:text="Calories: "
+                android:layout_alignTop="@+id/ibtnGoToOriginalUrl"
+                android:layout_toEndOf="@+id/ibtnGoToOriginalUrl"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="-10dp"
 
+                android:textColor="@color/white"
+                android:elevation="9dp"
+                android:fontFamily="sans-serif-light"
+                android:text="Click to add original Url"
+                />
+
+            <LinearLayout
+                android:id="@+id/llMealDetailsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/ivRecipeImage"
+                android:layout_marginStart="65dp"
+                android:layout_marginTop="10dp"
+
+                >
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spinnerMealType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:background="@drawable/rounded_darker"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center"
+                    android:padding="7dp"
+
+                    android:textColor="@android:color/black"
+
+                    android:textSize="12sp"
+                    android:textStyle="normal" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spinnerCuisineType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/rounded_darker"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center"
+                    android:padding="7dp"
+
+                    android:textColor="@android:color/black"
+
+                    android:textSize="12sp"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:visibility="gone"
+
+                android:layout_below="@+id/llMealDetailsContainer"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="130dp"
+                android:layout_marginTop="10dp"
+
+                android:text="summary"
                 android:textColor="@android:color/black"
-                android:textSize="15sp"
+
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:id="@+id/llCaloriesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@+id/tvSummary"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="130dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/tvCaloriesTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="sans-serif-light"
+                    android:text="Calories: "
+
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etCalories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="sans-serif-light"
+                    android:hint="1000"
+
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+
+                    android:inputType="number"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="sans-serif-light"
+                    android:text="cal"
+
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llTimeContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@+id/llCaloriesContainer"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="130dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/tvTimeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="sans-serif-light"
+                    android:text="Time: "
+
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="sans-serif-light"
+                    android:hint="60"
+
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+
+                    android:inputType="number"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:fontFamily="sans-serif-light"
+                    android:text="min"
+
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvIngredientsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@+id/llTimeContainer"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="130dp"
+                android:layout_marginTop="20dp"
+
+                android:fontFamily="sans-serif"
+                android:text="Ingredients: "
+
+                android:textColor="@color/blue_1"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/etCalories"
-                android:layout_width="wrap_content"
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvIngredients"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:fontFamily="sans-serif-light"
-                android:hint="1000"
+                android:layout_below="@+id/tvIngredientsTitle"
+                android:layout_marginStart="65dp"
+                />
 
-                android:textColor="@android:color/black"
-                android:textSize="15sp"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabIngredients"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
 
-                android:inputType="number"
+                android:src="@drawable/ic_round_white_add_24"
+                app:tint="@color/white"
+                app:elevation="3dp"
+
+                android:layout_below="@+id/rvIngredients"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tvStepsTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:fontFamily="sans-serif-light"
-                android:text="cal"
+                android:layout_below="@+id/fabIngredients"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="130dp"
+                android:layout_marginTop="20dp"
 
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-        </LinearLayout>
+                android:text="Steps: "
+                android:textColor="@color/blue_1"
 
-        <LinearLayout
-            android:id="@+id/llTimeContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_below="@+id/llCaloriesContainer"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="10dp">
-
-            <TextView
-                android:id="@+id/tvTimeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:fontFamily="sans-serif-light"
-                android:text="Time: "
-
-                android:textColor="@android:color/black"
-                android:textSize="15sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/etTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/vpSteps"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
 
-                android:fontFamily="sans-serif-light"
-                android:hint="60"
+                android:padding="20dp"
 
-                android:textColor="@android:color/black"
-                android:textSize="15sp"
+                android:layout_below="@+id/tvStepsTitle"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
 
-                android:inputType="number"/>
+                />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:tabGravity="center"
 
-                android:fontFamily="sans-serif-light"
-                android:text="min"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
 
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-        </LinearLayout>
+                app:tabIndicatorHeight="0dp"
+                app:tabBackground="@drawable/tab_selector"
+                android:background="@drawable/ic_rounded_white_bg"
 
-        <TextView
-            android:id="@+id/tvIngredientsTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+                />
 
-            android:layout_below="@+id/llTimeContainer"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="20dp"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabSteps"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
 
-            android:fontFamily="sans-serif"
-            android:text="Ingredients: "
+                android:src="@drawable/ic_round_white_add_24"
+                app:tint="@color/white"
+                app:elevation="3dp"
 
-            android:textColor="@color/blue_1"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+                android:layout_below="@+id/vpSteps"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="26dp"
+                />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabSave"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvIngredients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+                android:src="@drawable/ic_round_check_circle_24"
+                app:tint="@color/white"
+                app:elevation="13dp"
 
-            android:layout_below="@+id/tvIngredientsTitle"
-            />
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="16dp"
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabIngredients"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+                app:backgroundTint="@color/cool_green"
+                />
+        </RelativeLayout>
 
-            android:src="@drawable/ic_round_white_add_24"
-            app:tint="@color/white"
-            app:elevation="3dp"
+    </ScrollView>
 
-            android:layout_below="@+id/rvIngredients"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            />
+    <FrameLayout
+        android:id="@+id/flContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="20dp"
+        />
 
-        <TextView
-            android:id="@+id/tvStepsTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_below="@+id/fabIngredients"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="20dp"
-
-            android:text="Steps: "
-            android:textColor="@color/blue_1"
-
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/vpSteps"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-
-            android:padding="20dp"
-
-            android:layout_below="@+id/tvStepsTitle"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-
-            />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            app:tabGravity="center"
-
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="10dp"
-
-            app:tabIndicatorHeight="0dp"
-            app:tabBackground="@drawable/tab_selector"
-            android:background="@drawable/ic_rounded_white_bg"
-
-            />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabSteps"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-
-            android:src="@drawable/ic_round_white_add_24"
-            app:tint="@color/white"
-            app:elevation="3dp"
-
-            android:layout_below="@+id/vpSteps"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="26dp"
-            />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabSave"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-
-            android:src="@drawable/ic_round_check_circle_24"
-            app:tint="@color/white"
-            app:elevation="13dp"
-
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="16dp"
-
-            app:backgroundTint="@color/cool_green"
-            />
-    </RelativeLayout>
-
-</ScrollView>
+</RelativeLayout>
