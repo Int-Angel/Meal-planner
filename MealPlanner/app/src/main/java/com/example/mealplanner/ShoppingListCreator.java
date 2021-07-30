@@ -25,19 +25,21 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * This class helps to create shopping list and update the items in the database
+ * This class helps to create shopping list items in the database, gets all the recipes and
+ * ingredients from the shoppingList range dates, and generates the shopping list
  */
 public class ShoppingListCreator {
 
-    public interface  ShoppingListCreatorListener{
+    public interface ShoppingListCreatorListener {
         void shoppingListItemsCreated();
     }
-    private final static String TAG = "ShoppingListCreator";
-    private  DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-    private  ShoppingList createdShoppingList;
-    private  ShoppingListCreatorListener listener;
 
-    public ShoppingListCreator(ShoppingListCreatorListener listener){
+    private final static String TAG = "ShoppingListCreator";
+    private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+    private ShoppingList createdShoppingList;
+    private ShoppingListCreatorListener listener;
+
+    public ShoppingListCreator(ShoppingListCreatorListener listener) {
         this.listener = listener;
     }
 
@@ -71,7 +73,7 @@ public class ShoppingListCreator {
      *
      * @param dates
      */
-    private  void queryMealPlanDays(List<Date> dates) {
+    private void queryMealPlanDays(List<Date> dates) {
         List<ParseQuery<MealPlan>> queries = new ArrayList<>();
         try {
             for (int i = 0; i < dates.size(); i++) {
@@ -106,8 +108,8 @@ public class ShoppingListCreator {
     /**
      * Gets all the recipes from the meal plans
      */
-    private  void getAllRecipesFromMealPlans(List<MealPlan> mealPlans) {
-        HashMap<Integer, CreateShoppingListFragment.RecipeQuantity> recipeQuantityHashMap = new HashMap<>();
+    private void getAllRecipesFromMealPlans(List<MealPlan> mealPlans) {
+        HashMap<Integer, RecipeQuantity> recipeQuantityHashMap = new HashMap<>();
 
         for (int i = 0; i < mealPlans.size(); i++) {
 
@@ -117,7 +119,7 @@ public class ShoppingListCreator {
             if (recipeQuantityHashMap.containsKey(id)) {
                 recipeQuantityHashMap.get(id).addQuantity(mealPlans.get(i).getQuantity());
             } else {
-                CreateShoppingListFragment.RecipeQuantity recipeQuantity = new CreateShoppingListFragment.RecipeQuantity(recipe, mealPlans.get(i).getQuantity());
+                RecipeQuantity recipeQuantity = new RecipeQuantity(recipe, mealPlans.get(i).getQuantity());
                 recipeQuantityHashMap.put(id, recipeQuantity);
             }
         }
@@ -130,10 +132,10 @@ public class ShoppingListCreator {
      *
      * @param recipeQuantityHashMap
      */
-    private  void getAllIngredientsFromRecipes(HashMap<Integer, CreateShoppingListFragment.RecipeQuantity> recipeQuantityHashMap) {
+    private void getAllIngredientsFromRecipes(HashMap<Integer, RecipeQuantity> recipeQuantityHashMap) {
 
-        List<CreateShoppingListFragment.RecipeQuantity> recipeQuantities = new ArrayList<>(recipeQuantityHashMap.values());
-        List<Recipe> recipes = CreateShoppingListFragment.RecipeQuantity.getListOfRecipes(recipeQuantities);
+        List<RecipeQuantity> recipeQuantities = new ArrayList<>(recipeQuantityHashMap.values());
+        List<Recipe> recipes = RecipeQuantity.getListOfRecipes(recipeQuantities);
         List<ParseQuery<Ingredient>> queries = new ArrayList<>();
 
         if (recipes.size() == 0) {
@@ -170,7 +172,7 @@ public class ShoppingListCreator {
      *
      * @param recipeQuantityHashMap
      */
-    private  void updateIngredientsAmount(HashMap<Integer, CreateShoppingListFragment.RecipeQuantity> recipeQuantityHashMap, List<Ingredient> ingredients) {
+    private void updateIngredientsAmount(HashMap<Integer, RecipeQuantity> recipeQuantityHashMap, List<Ingredient> ingredients) {
 
         for (Ingredient ingredient : ingredients) {
             Recipe recipe = (Recipe) ingredient.getRecipe();
@@ -220,6 +222,57 @@ public class ShoppingListCreator {
                 listener.shoppingListItemsCreated();
             }
         });
+    }
+
+    /**
+     * Helper class that stores the recipe and the quantity of that recipe
+     */
+    public static class RecipeQuantity {
+        private Recipe recipe;
+        private int quantity;
+
+        /**
+         * Returns just a list of recipes
+         *
+         * @param recipeQuantities
+         * @return
+         */
+        public static List<Recipe> getListOfRecipes(List<RecipeQuantity> recipeQuantities) {
+            List<Recipe> recipes = new ArrayList<>();
+
+            for (RecipeQuantity recipeQuantity : recipeQuantities) {
+                recipes.add(recipeQuantity.getRecipe());
+            }
+
+            return recipes;
+        }
+
+        /**
+         * Constructor
+         *
+         * @param recipe
+         * @param quantity
+         */
+        public RecipeQuantity(Recipe recipe, int quantity) {
+            this.recipe = recipe;
+            this.quantity = quantity;
+        }
+
+        /**
+         * Getters and Setters
+         */
+
+        public void addQuantity(int n) {
+            quantity += n;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public Recipe getRecipe() {
+            return recipe;
+        }
     }
 
 }
