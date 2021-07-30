@@ -31,6 +31,7 @@ import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
 import com.google.android.material.tabs.TabLayout;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
@@ -52,10 +53,10 @@ public class RecipeDetailsFragment extends Fragment {
 
     private static final String TAG = "RecipeDetails";
     private static final String RECIPE = "recipe";
-    private static final String INDEX = "index";
+    private static final String RECIPE_OWNER = "owner";
 
     private IRecipe recipe;
-    private int index;
+    private ParseUser recipeOwner;
     private RecipeDetailsFragmentListener listener;
     private IngredientsImagesAdapter adapter;
     private StepsAdapter stepsAdapter;
@@ -86,14 +87,13 @@ public class RecipeDetailsFragment extends Fragment {
      * New instance method needs the recipe to show all it's details
      *
      * @param recipe
-     * @param index  TODO: remove index NOT NEEDED anymore
      * @return
      */
-    public static RecipeDetailsFragment newInstance(IRecipe recipe, int index) {
+    public static RecipeDetailsFragment newInstance(IRecipe recipe, ParseUser recipeOwner) {
         RecipeDetailsFragment fragment = new RecipeDetailsFragment();
         Bundle args = new Bundle();
         args.putParcelable(RECIPE, Parcels.wrap(recipe));
-        args.putInt(INDEX, index);
+        args.putParcelable(RECIPE_OWNER, recipeOwner);
         fragment.setArguments(args);
         return fragment;
     }
@@ -103,7 +103,7 @@ public class RecipeDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             recipe = Parcels.unwrap(getArguments().getParcelable(RECIPE));
-            index = getArguments().getInt(INDEX);
+            recipeOwner = getArguments().getParcelable(RECIPE_OWNER);
         }
     }
 
@@ -159,7 +159,6 @@ public class RecipeDetailsFragment extends Fragment {
     private void bind() {
 
         if (recipe instanceof Recipe) {
-            //ibtnSaveRecipeDetails.setSelected(true);
             boolean selected = SavedRecipesManager.checkIfRecipeIsSaved(recipe.getId());
             ibtnSaveRecipeDetails.setSelected(selected);
         } else {
@@ -263,7 +262,19 @@ public class RecipeDetailsFragment extends Fragment {
      * Changes the saved recipe save button icon
      */
     private void saveSavedRecipe() {
-        ibtnSaveRecipeDetails.setSelected(!ibtnSaveRecipeDetails.isSelected());
+        if (recipeOwner.equals(ParseUser.getCurrentUser())) {
+            ibtnSaveRecipeDetails.setSelected(!ibtnSaveRecipeDetails.isSelected());
+        } else if (!SavedRecipesManager.checkIfRecipeIsSaved(recipe.getId())) {
+            //copy recipe, change recipe owner, and change current recipe
+            ibtnSaveRecipeDetails.setSelected(true);
+            SavedRecipesManager.copyRecipeToCurrentUser((Recipe) recipe, new SavedRecipesManager.SavedRecipesManagerListener() {
+                @Override
+                public void recipeSaved(Recipe newRecipe) {
+                    recipe = newRecipe;
+                }
+            });
+            recipeOwner = ParseUser.getCurrentUser();
+        }
     }
 
     /**
@@ -271,9 +282,8 @@ public class RecipeDetailsFragment extends Fragment {
      */
     private void removeSavedRecipe() {
         if (recipe instanceof Recipe) {
-            if (!ibtnSaveRecipeDetails.isSelected()) {
+            if (!ibtnSaveRecipeDetails.isSelected() && recipeOwner.equals(ParseUser.getCurrentUser())) {
                 SavedRecipesManager.unSaveRecipeById(recipe.getId());
-                //SavedRecipesManager.unSaveRecipe(index);
                 listener.updateRecipeList();
             }
         }

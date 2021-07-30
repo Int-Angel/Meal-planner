@@ -29,6 +29,10 @@ import java.util.Set;
 //TODO: change to ModelView
 public class SavedRecipesManager {
 
+    public interface SavedRecipesManagerListener {
+        void recipeSaved(Recipe newRecipe);
+    }
+
     private final static String TAG = "SavedRecipesManager";
 
     private static List<Recipe> recipes;
@@ -187,6 +191,7 @@ public class SavedRecipesManager {
     public static void unSaveRecipeById(String id) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Recipe");
         query.whereEqualTo(Recipe.KEY_ID, id);
+        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
         deleteRecipeFromListById(id);
         query.getFirstInBackground(new GetCallback<ParseObject>() {
             @Override
@@ -251,6 +256,58 @@ public class SavedRecipesManager {
                 }
                 Log.i(TAG, "Removing ingredients: " + objects.size());
                 ParseObject.deleteAllInBackground(objects);
+            }
+        });
+    }
+
+    /**
+     * Copies a already saved recipe from other user to into the saved recipes of the current user
+     *
+     * @param newRecipe
+     * @param listener
+     */
+    public static void copyRecipeToCurrentUser(Recipe newRecipe, SavedRecipesManagerListener listener) {
+        Recipe recipe = Recipe.createRecipe(newRecipe);
+        recipes.add(0, recipe);
+        idSet.add(recipe.getId());
+
+        createRecipeIngredientsFromAlreadySavedRecipe(recipe, newRecipe);
+
+        recipe.saveInBackground(new com.parse.SaveCallback() {
+            @Override
+            public void done(com.parse.ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Error while saving recipe!", e);
+                    return;
+                }
+                Log.i(TAG, "Recipe saved!");
+                listener.recipeSaved(recipe);
+            }
+        });
+    }
+
+
+    /**
+     * Generates a list of ingredients from a already saved recipe
+     *
+     * @param newRecipe new recipe
+     * @param oldRecipe already saved recipe
+     */
+    private static void createRecipeIngredientsFromAlreadySavedRecipe(Recipe newRecipe, Recipe oldRecipe) {
+        ParseQuery<Ingredient> query = ParseQuery.getQuery(Ingredient.class);
+        query.whereEqualTo(Ingredient.KEY_RECIPE, oldRecipe);
+        query.findInBackground(new FindCallback<Ingredient>() {
+            @Override
+            public void done(List<Ingredient> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Error while getting recipes from already saved recipe", e);
+                    return;
+                }
+                List<Ingredient> newIngredients = new ArrayList<>(objects);
+                for (Ingredient ingredient : newIngredients) {
+                    ingredient.setRecipe(newRecipe);
+                }
+                ParseObject.saveAllInBackground(newIngredients);
             }
         });
     }

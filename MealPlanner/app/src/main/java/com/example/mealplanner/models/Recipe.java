@@ -100,6 +100,33 @@ public class Recipe extends ParseObject implements IRecipe {
     }
 
     /**
+     * Constructor from a already saved recipe from other user
+     *
+     * @param newRecipe
+     * @return returns a saved recipe object
+     */
+    public static Recipe createRecipe(Recipe newRecipe) {
+        Recipe recipe = new Recipe();
+
+        recipe.setUser(ParseUser.getCurrentUser());
+        recipe.setTile(newRecipe.getTitle());
+        recipe.setImageUrl(newRecipe.getImageUrl());
+        recipe.setDishType(newRecipe.getDishType());
+        recipe.setCuisineType(newRecipe.getCuisineType());
+        recipe.setTotalTime(Integer.parseInt(newRecipe.getTotalTime()));
+        recipe.setCalories(newRecipe.getCaloriesNumber());
+        recipe.setRecipeUrl(newRecipe.getRecipeUrl());
+        recipe.setIngredients(newRecipe.getIngredients());
+        recipe.setId(newRecipe.getId());
+        recipe.setInstructions(newRecipe.getInstructions());
+        recipe.setIngredientsImagesUrl(newRecipe.getIngredientsImagesUrl());
+        recipe.setSummary(newRecipe.getSummary());
+        recipe.setUserCreated(false);
+
+        return recipe;
+    }
+
+    /**
      * Getters and setters
      */
 

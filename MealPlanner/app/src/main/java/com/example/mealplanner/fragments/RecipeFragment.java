@@ -21,6 +21,7 @@ import com.example.mealplanner.FilteringViewModel;
 import com.example.mealplanner.MainActivity;
 import com.example.mealplanner.R;
 import com.example.mealplanner.models.IRecipe;
+import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -183,7 +184,7 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     private void openRecipeDetailsFragment(IRecipe recipe, int index) {
         lastActiveFragment = activeFragment;
         fragmentHeaderContainer.setVisibility(View.GONE);
-        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, index);
+        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, ParseUser.getCurrentUser());
 
         getChildFragmentManager()
                 .beginTransaction()

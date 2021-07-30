@@ -167,7 +167,7 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
      * @param index
      */
     private void openRecipeDetails(IRecipe recipe, int index) {
-        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, index);
+        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, user);
 
         getChildFragmentManager()
                 .beginTransaction()

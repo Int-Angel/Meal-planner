@@ -225,6 +225,7 @@ public class CreateShoppingListFragment extends Fragment {
                         listener.shoppingListCreated(createdShoppingList);
                     }
                 });
+
                 creator.createShoppingListItems(createdShoppingList);
             }
         });

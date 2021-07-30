@@ -300,7 +300,7 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
      */
     private void openRecipeDetailsFragment(IRecipe recipe, int index) {
         appBarLayout.setVisibility(View.GONE);
-        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, index);
+        recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, ParseUser.getCurrentUser());
 
         getChildFragmentManager()
                 .beginTransaction().replace(R.id.flContainer, recipeDetailsFragment).commit();
