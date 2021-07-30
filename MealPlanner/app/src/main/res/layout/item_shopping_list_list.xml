@@ -99,6 +99,7 @@
                 />
 
             <ImageView
+                android:id="@+id/littlecart"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
 
@@ -110,6 +111,21 @@
                 android:rotationY="0"
                 android:src="@drawable/ic_outline_shopping_cart_24"
                 app:tint="@color/cool_blue" />
+
+            <TextView
+                android:id="@+id/tvOutdated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@+id/tvShoppingListNameItem"
+                android:layout_marginTop="-20dp"
+                android:layout_toStartOf="@+id/littlecart"
+                android:layout_marginEnd="10dp"
+
+                android:fontFamily="sans-serif-light"
+                android:text="*Outdated"
+                android:textSize="11sp"
+                android:textStyle="italic" />
 
         </RelativeLayout>
 

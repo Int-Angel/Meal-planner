@@ -36,6 +36,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
      */
     public interface MealPlanAdapterListener {
         void openDetails(IRecipe recipe, int index);
+        void updateShoppingList();
     }
 
     private Context context;
@@ -73,6 +74,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
         meal.deleteInBackground();
         notifyItemRemoved(position);
         Toast.makeText(context, "Meal removed", Toast.LENGTH_SHORT).show(); //Not showing :c
+        listener.updateShoppingList();
     }
 
     /**
@@ -147,6 +149,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
                 bindedMeal.setQuantity(newQuantity);
                 tvQuantity.setText(newQuantity + "");
                 bindedMeal.saveInBackground();
+                listener.updateShoppingList();
             }
         }
 

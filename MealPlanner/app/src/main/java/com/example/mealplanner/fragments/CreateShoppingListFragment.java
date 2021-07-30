@@ -409,7 +409,7 @@ public class CreateShoppingListFragment extends Fragment {
     /**
      * Helper class that stores the recipe and the quantity of that recipe
      */
-    static class RecipeQuantity {
+    public static class RecipeQuantity {
         private Recipe recipe;
         private int quantity;
 

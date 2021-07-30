@@ -157,6 +157,7 @@ public class ShoppingListManagerFragment extends Fragment implements
 
     @Override
     public void closeShoppingList() {
+        queryShoppingLists();
         getChildFragmentManager()
                 .beginTransaction()
                 .remove(shoppingListFragment)

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -25,6 +26,7 @@ import com.codepath.asynchttpclient.AbsCallback;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.mealplanner.R;
+import com.example.mealplanner.ShoppingListCreator;
 import com.example.mealplanner.SwipeToDeleteCallback;
 import com.example.mealplanner.adapters.ShoppingListAdapter;
 import com.example.mealplanner.adapters.ShoppingListAisleAdapter;
@@ -33,8 +35,10 @@ import com.example.mealplanner.models.ShoppingListItem;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import org.jetbrains.annotations.NotNull;
@@ -93,6 +97,7 @@ public class ShoppingListFragment extends Fragment implements
 
     /**
      * This fragment requires the shopping list to show
+     *
      * @param shoppingList
      * @return
      */
@@ -152,8 +157,10 @@ public class ShoppingListFragment extends Fragment implements
         tvDateRange.setText(dateRange);
 
         setUpOnClickListeners();
-
         queryShoppingListItems();
+
+        if (shoppingList.getUpdateMessage())
+            launchOutdatedMessage();
     }
 
     /**
@@ -189,9 +196,10 @@ public class ShoppingListFragment extends Fragment implements
 
     /**
      * open the fragment to edit a shopping list item
+     *
      * @param position item position in the array
      * @param oldAisle aisle before being modified
-     * @param item item to be modified
+     * @param item     item to be modified
      */
     void openEditShoppingListItemFragment(int position, String oldAisle, ShoppingListItem item) {
         createShoppingListItem = CreateNewShoppingListItemFragment.newInstance(shoppingList, item, oldAisle, position);
@@ -204,6 +212,7 @@ public class ShoppingListFragment extends Fragment implements
 
     /**
      * Returns a date in a string format
+     *
      * @param date
      * @return
      */
@@ -229,6 +238,7 @@ public class ShoppingListFragment extends Fragment implements
                 shoppingListItems.clear();
                 shoppingListItems.addAll(objects);
 
+                aislesName.clear();
                 aisles.clear();
                 generateAisles();
             }
@@ -257,6 +267,7 @@ public class ShoppingListFragment extends Fragment implements
 
     /**
      * Add each item to an aisle
+     *
      * @param item
      */
     private void addItemToAisles(ShoppingListItem item) {
@@ -275,12 +286,70 @@ public class ShoppingListFragment extends Fragment implements
 
     /**
      * returns the item aisle
+     *
      * @param item
      * @return
      */
     private String getShoppingListAisle(ShoppingListItem item) {
         String auxAisle = item.getAisle();
         return auxAisle.split(";")[0]; // some items have multiple aisle, I only use the first aisle
+    }
+
+    /**
+     * This method launches a dialog alert to inform teh user that the current shopping list it's outdated
+     */
+    private void launchOutdatedMessage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Outdated shopping list");
+        builder.setMessage("Do you want to update the shopping list with the new changes? all the progress will be lost");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progress_circular.setVisibility(View.VISIBLE);
+                shoppingList.setUpdateMessage(false);
+                shoppingList.saveInBackground();
+                deleteOldShoppingListItems();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                shoppingList.setUpdateMessage(false);
+                shoppingList.saveInBackground();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    /**
+     * Deletes all the current shopping list items
+     */
+    private void deleteOldShoppingListItems(){
+        ParseObject.deleteAllInBackground(shoppingListItems, new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e != null){
+                    Log.e(TAG,"Error while deleting old shopping list items", e);
+                    return;
+                }
+                regenerateShoppingList();
+            }
+        });
+    }
+
+    /**
+     * Re-generates all the shopping list items
+     */
+    private void regenerateShoppingList(){
+        ShoppingListCreator creator = new ShoppingListCreator(new ShoppingListCreator.ShoppingListCreatorListener() {
+            @Override
+            public void shoppingListItemsCreated() {
+                queryShoppingListItems();
+            }
+        });
+        creator.createShoppingListItems(shoppingList);
     }
 
     @Override

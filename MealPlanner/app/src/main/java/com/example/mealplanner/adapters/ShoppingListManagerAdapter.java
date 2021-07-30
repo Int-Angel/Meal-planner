@@ -107,6 +107,7 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
         private TextView tvStartDateItem;
         private TextView tvEndDateItem;
         private TextView tvShoppingListNameItem;
+        private TextView tvOutdated;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -114,6 +115,7 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
             tvStartDateItem = itemView.findViewById(R.id.tvStartDateItem);
             tvEndDateItem = itemView.findViewById(R.id.tvEndDateItem);
             tvShoppingListNameItem = itemView.findViewById(R.id.tvShoppingListNameItem);
+            tvOutdated = itemView.findViewById(R.id.tvOutdated);
 
             itemView.setOnClickListener(this);
         }
@@ -128,6 +130,11 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
             tvStartDateItem.setText(getStringDate(shoppingList.getStartDate()));
             tvEndDateItem.setText(getStringDate(shoppingList.getEndDate()));
             tvShoppingListNameItem.setText(shoppingList.getName());
+
+            if(shoppingList.getUpdateMessage())
+                tvOutdated.setVisibility(View.VISIBLE);
+            else
+                tvOutdated.setVisibility(View.GONE);
         }
 
         private String getStringDate(Date date) {

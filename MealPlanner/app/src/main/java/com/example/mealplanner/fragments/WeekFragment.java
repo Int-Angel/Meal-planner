@@ -26,6 +26,7 @@ import com.example.mealplanner.models.IRecipe;
 import com.example.mealplanner.models.MealPlan;
 import com.example.mealplanner.models.OnlineRecipe;
 import com.example.mealplanner.models.Recipe;
+import com.example.mealplanner.models.ShoppingList;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
@@ -122,6 +123,11 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
             @Override
             public void openDetails(IRecipe recipe, int index) {
                 openRecipeDetailsFragment(recipe, index);
+            }
+
+            @Override
+            public void updateShoppingList() {
+                sendUpdateMessageToShoppingLists();
             }
         });
 
@@ -357,10 +363,53 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
                 Log.i(TAG, "Meal saved :D");
                 mealPlans.add(0, newMeal);
                 adapter.notifyItemInserted(0);
+
+                sendUpdateMessageToShoppingLists();
             });
         } catch (java.text.ParseException e) {
             Log.e(TAG, "Error with the date", e);
         }
+    }
+
+    /**
+     * This method gets all the shopping lists and updates the update message property
+     */
+    private void sendUpdateMessageToShoppingLists() {
+        ParseQuery<ShoppingList> query = ParseQuery.getQuery(ShoppingList.class);
+
+        query.whereEqualTo(ShoppingList.KEY_USER, ParseUser.getCurrentUser());
+
+        query.findInBackground(new FindCallback<ShoppingList>() {
+            @Override
+            public void done(List<ShoppingList> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Error while getting shopping lists", e);
+                    return;
+                }
+                try {
+                    updateAffectedShoppingLists(objects);
+                } catch (java.text.ParseException parseException) {
+                    Log.e(TAG, "Error while updating affected shopping lists");
+                }
+            }
+        });
+    }
+
+    /**
+     * This method checks witch recipes are affected by the change and updates them in the database
+     * @param shoppingLists
+     * @throws java.text.ParseException
+     */
+    private void updateAffectedShoppingLists(List<ShoppingList> shoppingLists) throws java.text.ParseException {
+        List<ShoppingList> affectedShoppingList = new ArrayList<>();
+        for (ShoppingList shoppingList : shoppingLists) {
+            Date currentDate = formatter.parse(formatter.format(calendar.getTime()));
+            if (shoppingList.getStartDate().compareTo(currentDate) * currentDate.compareTo(shoppingList.getEndDate()) >= 0) {
+                shoppingList.setUpdateMessage(true);
+                affectedShoppingList.add(shoppingList);
+            }
+        }
+        ParseObject.saveAllInBackground(affectedShoppingList);
     }
 
     @Override
