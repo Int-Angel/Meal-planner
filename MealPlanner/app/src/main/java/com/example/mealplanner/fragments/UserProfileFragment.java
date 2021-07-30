@@ -34,7 +34,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * External user profile fragment, where the current user can see other users recipes
+ */
 public class UserProfileFragment extends Fragment implements RecipeDetailsFragment.RecipeDetailsFragmentListener {
 
     private static final String TAG = "UserProfileFragment";
@@ -58,6 +60,11 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
         // Required empty public constructor
     }
 
+    /**
+     * This fragment requires the user to be shown
+     * @param user
+     * @return
+     */
     public static UserProfileFragment newInstance(ParseUser user) {
         UserProfileFragment fragment = new UserProfileFragment();
         Bundle args = new Bundle();
@@ -112,6 +119,9 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
         queryRecipes();
     }
 
+    /**
+     * binds the user information to the view
+     */
     private void bind(){
         if (user.getParseFile("image") != null) {
             Glide.with(getContext())
@@ -129,6 +139,9 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
         tvName.setText(user.getString("name") + " " + user.getString("lastname"));
     }
 
+    /**
+     * sets up all the onClickListeners
+     */
     private void setUpOnClickListeners() {
         ibtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +151,9 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
         });
     }
 
+    /**
+     * closes the fragment
+     */
     private void closeFragment() {
         getParentFragmentManager()
                 .beginTransaction()
@@ -145,6 +161,11 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
                 .commit();
     }
 
+    /**
+     * opens the recipe details
+     * @param recipe
+     * @param index
+     */
     private void openRecipeDetails(IRecipe recipe, int index) {
         recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, index);
 
@@ -154,6 +175,9 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
                 .commit();
     }
 
+    /**
+     * gets all the user saved recipes
+     */
     private void queryRecipes() {
         progress_circular.setVisibility(View.VISIBLE);
 

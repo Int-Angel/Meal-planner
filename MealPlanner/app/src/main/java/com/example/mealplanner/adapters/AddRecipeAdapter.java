@@ -27,10 +27,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Adapter to show all the recipes to be added to a meal plan
+ */
 public class AddRecipeAdapter extends RecyclerView.Adapter<AddRecipeAdapter.ViewHolder> {
 
     private static final String TAG = "AddRecipeAdapter";
 
+    /**
+     * Interface to update a meal plan
+     */
     public interface AddRecipeAdapterListener {
         void addToPlan(IRecipe recipe, int index);
     }
@@ -64,6 +70,9 @@ public class AddRecipeAdapter extends RecyclerView.Adapter<AddRecipeAdapter.View
         return recipes.size();
     }
 
+    /**
+     * recipe view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private AddRecipe bindedRecipe;
@@ -95,6 +104,10 @@ public class AddRecipeAdapter extends RecyclerView.Adapter<AddRecipeAdapter.View
             });
         }
 
+        /**
+         * binds the information of a addRecipe to the view
+         * @param addRecipe
+         */
         public void bind(AddRecipe addRecipe) {
             bindedRecipe = addRecipe;
             Recipe recipe = addRecipe.getRecipe();
@@ -116,6 +129,9 @@ public class AddRecipeAdapter extends RecyclerView.Adapter<AddRecipeAdapter.View
 
         }
 
+        /**
+         * adds this recipe to the meal plan
+         */
         private void addToPlan(){
             if(!bindedRecipe.isAdded()){
                 listener.addToPlan(bindedRecipe.getRecipe(), getAdapterPosition());

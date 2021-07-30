@@ -5,9 +5,15 @@ import com.parse.ParseObject;
 
 import java.security.PublicKey;
 
+/**
+ * This class represents independent shopping list items in the database using Parse
+ */
 @ParseClassName("ShoppingListItems")
 public class ShoppingListItem extends ParseObject {
 
+    /**
+     * Database keys
+     */
     public final static String KEY_SHOPPING_LIST = "ShoppingList";
     public final static String KEY_CHECKED = "checked";
     public final static String KEY_NAME = "name";
@@ -17,7 +23,13 @@ public class ShoppingListItem extends ParseObject {
     public final static String KEY_UNIT = "unit";
     public final static String KEY_IMAGE = "image";
 
-
+    /**
+     * Generates a shopping list item from a ingredient
+     *
+     * @param shoppingList shopping list that owns this item
+     * @param ingredient   ingredient to generate the shopping list item
+     * @return
+     */
     public static ShoppingListItem createShoppingListItem(ShoppingList shoppingList, Ingredient ingredient) {
         ShoppingListItem shoppingListItem = new ShoppingListItem();
 
@@ -33,7 +45,17 @@ public class ShoppingListItem extends ParseObject {
         return shoppingListItem;
     }
 
-    public static ShoppingListItem createShoppingListItem(ShoppingList shoppingList, String name, String aisle, float amount, String unit){
+    /**
+     * Generates a shopping list item from independent parameters
+     *
+     * @param shoppingList
+     * @param name
+     * @param aisle
+     * @param amount
+     * @param unit
+     * @return
+     */
+    public static ShoppingListItem createShoppingListItem(ShoppingList shoppingList, String name, String aisle, float amount, String unit) {
         ShoppingListItem shoppingListItem = new ShoppingListItem();
 
         shoppingListItem.setShoppingList(shoppingList);
@@ -48,10 +70,18 @@ public class ShoppingListItem extends ParseObject {
         return shoppingListItem;
     }
 
-    public void addAmount(float n){
+    /**
+     * add n to the amount of the item
+     *
+     * @param n
+     */
+    public void addAmount(float n) {
         put(KEY_AMOUNT, getAmount() + n);
     }
 
+    /**
+     * Getters and setters
+     */
     public ParseObject getShoppingList() {
         return getParseObject(KEY_SHOPPING_LIST);
     }

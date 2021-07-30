@@ -8,12 +8,15 @@ import com.example.mealplanner.adapters.IAdapterSwipeToDelete;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * This class deletes a recyclerview item when the user swipes to one side that item
+ */
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     private IAdapterSwipeToDelete adapter;
 
     public SwipeToDeleteCallback(IAdapterSwipeToDelete adapter) {
-        super(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.adapter = adapter;
     }
 

@@ -22,11 +22,16 @@ import com.example.mealplanner.models.OnlineRecipe;
 
 import java.util.List;
 
-
+/**
+ * Adapter to show IRecipe in a recycler view and open it's details
+ */
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
     private static final String TAG = "RecipeAdapter";
 
+    /**
+     * Interface to open recipe details
+     */
     public interface RecipeAdapterListener {
         void openDetails(IRecipe recipe, int index);
     }
@@ -58,6 +63,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         return recipes.size();
     }
 
+    /**
+     * Recipe view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private IRecipe bindedRecipe;
@@ -91,6 +99,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             });
         }
 
+        /**
+         * Update de view inside of the view holder with this data
+         * @param recipe
+         */
         public void bind(IRecipe recipe) {
             bindedRecipe = recipe;
 
@@ -116,6 +128,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         }
 
+        /**
+         * saves or unsaves a online recipe
+         */
         private void copyRecipe() {
             if(!((OnlineRecipe)bindedRecipe).isSaved()){
                 SavedRecipesManager.saveRecipe((OnlineRecipe) bindedRecipe);
@@ -128,6 +143,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             }
         }
 
+        /**
+         * Opens the recipe details
+         */
         private void openDetails() {
             listener.openDetails(bindedRecipe, getAdapterPosition());
         }

@@ -24,9 +24,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Adapter that shows a list of shopping lists
+ */
 public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingListManagerAdapter.ViewHolder>
         implements IAdapterSwipeToDelete {
 
+    /**
+     * Interface to communicate that the user wants to open the details of a shopping list
+     */
     public interface ShoppingListListAdapterListener {
         void openShoppingList(ShoppingList shoppingList);
     }
@@ -70,6 +76,10 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
         deleteShoppingListItems(list);
     }
 
+    /**
+     * Deletes all the shopping list items from the database
+     * @param shoppingList
+     */
     private void deleteShoppingListItems(ShoppingList shoppingList) {
         ParseQuery<ShoppingListItem> query = ParseQuery.getQuery("ShoppingListItems");
         query.whereEqualTo(ShoppingListItem.KEY_SHOPPING_LIST, shoppingList);
@@ -87,6 +97,9 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
         });
     }
 
+    /**
+     * Shopping list view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ShoppingList bindedShoppingList;
@@ -105,6 +118,10 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
             itemView.setOnClickListener(this);
         }
 
+        /**
+         * Update de view inside of the view holder with this data
+         * @param shoppingList
+         */
         public void bind(ShoppingList shoppingList) {
             bindedShoppingList = shoppingList;
 

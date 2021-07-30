@@ -33,7 +33,9 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Shows all the saved recipes using the SavedRecipesManager
+ */
 public class SavedRecipesFragment extends Fragment {
 
     private final static String TAG = "SavedRecipes";
@@ -102,6 +104,9 @@ public class SavedRecipesFragment extends Fragment {
         searchListener();
     }
 
+    /**
+     * sets up an onClickListener to the fab
+     */
     private void setUpFAB(){
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,10 +116,16 @@ public class SavedRecipesFragment extends Fragment {
         });
     }
 
+    /**
+     * opens the fragment to create a new recipe
+     */
     private void openCreateNewRecipe(){
         listener.openCreateNewFragment();
     }
 
+    /**
+     * Listens if the users search something in the search bar
+     */
     private void searchListener() {
         filteringViewModel.getQueryName().observe(getViewLifecycleOwner(), query -> {
             queryName = query;
@@ -126,6 +137,9 @@ public class SavedRecipesFragment extends Fragment {
         });
     }
 
+    /**
+     * Updates the saved recipes list
+     */
     public void updateRecipeList() {
         recipes.clear();
         recipes.addAll(SavedRecipesManager.getRecipes());
@@ -140,6 +154,9 @@ public class SavedRecipesFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Gets the saved recipes based in the filters and search bar
+     */
     private void getCustomRecipes() {
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
         query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());

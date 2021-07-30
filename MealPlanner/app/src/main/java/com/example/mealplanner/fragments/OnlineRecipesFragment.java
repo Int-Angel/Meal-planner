@@ -35,7 +35,9 @@ import java.util.Set;
 
 import okhttp3.Headers;
 
-
+/**
+ * This fragment shows all the online recipes and it's affected by the filtersFragment
+ */
 public class OnlineRecipesFragment extends Fragment {
 
     public interface OnlineRecipesFragmentListener {
@@ -99,16 +101,24 @@ public class OnlineRecipesFragment extends Fragment {
         searchListener();
     }
 
+    /**
+     * updates the list if the users search something in the search bar
+     */
     private void searchListener() {
         filteringViewModel.getQueryName().observe(getViewLifecycleOwner(), query -> {
             this.query = query;
             getRecipes(buildSearchUrl());
         });
-        filteringViewModel.getActiveCuisines().observe(getViewLifecycleOwner(), observer ->{
+        filteringViewModel.getActiveCuisines().observe(getViewLifecycleOwner(), observer -> {
             getRecipes(buildSearchUrl());
         });
     }
 
+    /**
+     * Generates a search url based on the active filters
+     *
+     * @return
+     */
     private String buildSearchUrl() {
         searchUrl = BASE_RECIPES_URL;
         if (!query.equals("") && !query.equals(" ") && !query.equals("null")) {
@@ -134,6 +144,11 @@ public class OnlineRecipesFragment extends Fragment {
         return searchUrl;
     }
 
+    /**
+     * gets a list of online recipes from the API using a search url
+     *
+     * @param url
+     */
     private void getRecipes(String url) {
         client.get(url, new JsonHttpResponseHandler() {
             @Override
@@ -157,6 +172,9 @@ public class OnlineRecipesFragment extends Fragment {
         });
     }
 
+    /**
+     * Checks if the recipes from the list are already saved and changes it's icon
+     */
     private void checkIfRecipesAreAlreadySaved() {
         for (String s : savedRecipesUri) {
             Log.i("Check", s);

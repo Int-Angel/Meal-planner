@@ -44,7 +44,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-
+/**
+ * This fragment allows the user to select a range of dates and generates a shopping list
+ * from that range of dates
+ */
 public class CreateShoppingListFragment extends Fragment {
 
     public interface CreateShoppingListFragmentListener {
@@ -107,6 +110,9 @@ public class CreateShoppingListFragment extends Fragment {
         setUpDateRangePicker();
     }
 
+    /**
+     * Sets up the onClickListeners
+     */
     private void setUpOnClickListeners() {
         ibtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,6 +140,9 @@ public class CreateShoppingListFragment extends Fragment {
         });
     }
 
+    /**
+     * Configures the date range picker
+     */
     private void setUpDateRangePicker() {
         dateRangePicker =
                 MaterialDatePicker.Builder.dateRangePicker()
@@ -162,6 +171,13 @@ public class CreateShoppingListFragment extends Fragment {
         });
     }
 
+    /**
+     * The date range pickers returns the date that the user selected - 1 day, and this method
+     * fixes that adding 1 to the selected dates
+     *
+     * @param startDate
+     * @param endDate
+     */
     private void updateDateRange(Long startDate, Long endDate) {
         startDayCalendar.setTimeInMillis(startDate);
         startDayCalendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -169,10 +185,18 @@ public class CreateShoppingListFragment extends Fragment {
         endDayCalendar.add(Calendar.DAY_OF_MONTH, 1);
     }
 
+    /**
+     * opens the date picker
+     */
     private void openDatePicker() {
         dateRangePicker.show(getChildFragmentManager(), TAG);
     }
 
+    /**
+     * Creates the shopping list from the the range of dates selected
+     *
+     * @throws ParseException
+     */
     private void createShoppingList() throws ParseException {
         progressBar.setVisibility(View.VISIBLE);
 
@@ -198,6 +222,11 @@ public class CreateShoppingListFragment extends Fragment {
         });
     }
 
+    /**
+     * Gets all the dates to generate all the shopping list items from the date range
+     *
+     * @param shoppingList
+     */
     private void createShoppingListItems(ShoppingList shoppingList) {
 
         Date current = shoppingList.getStartDate();
@@ -216,6 +245,11 @@ public class CreateShoppingListFragment extends Fragment {
         queryMealPlanDays(dates);
     }
 
+    /**
+     * Gets all the meal plans from a list of dates, from the database
+     *
+     * @param dates
+     */
     private void queryMealPlanDays(List<Date> dates) {
         List<ParseQuery<MealPlan>> queries = new ArrayList<>();
         try {
@@ -247,7 +281,9 @@ public class CreateShoppingListFragment extends Fragment {
         });
     }
 
-
+    /**
+     * Gets all the recipes from the meal plans
+     */
     private void getAllRecipesFromMealPlans() {
         HashMap<Integer, RecipeQuantity> recipeQuantityHashMap = new HashMap<>();
 
@@ -267,13 +303,18 @@ public class CreateShoppingListFragment extends Fragment {
         getAllIngredientsFromRecipes(recipeQuantityHashMap);
     }
 
+    /**
+     * Gets all the ingredients from all the recipes
+     *
+     * @param recipeQuantityHashMap
+     */
     private void getAllIngredientsFromRecipes(HashMap<Integer, RecipeQuantity> recipeQuantityHashMap) {
 
         List<RecipeQuantity> recipeQuantities = new ArrayList<>(recipeQuantityHashMap.values());
         List<Recipe> recipes = RecipeQuantity.getListOfRecipes(recipeQuantities);
         List<ParseQuery<Ingredient>> queries = new ArrayList<>();
 
-        if(recipes.size() == 0){
+        if (recipes.size() == 0) {
             progressBar.setVisibility(View.GONE);
             listener.shoppingListCreated(createdShoppingList);
             return;
@@ -303,23 +344,32 @@ public class CreateShoppingListFragment extends Fragment {
         });
     }
 
+    /**
+     * It multiplies the amount of a ingredient by the quantity of recipes of that day
+     * (example 3 chicken tacos, multiplies 3 times all the chicken tacos ingredients)
+     *
+     * @param recipeQuantityHashMap
+     */
     private void updateIngredientsAmount(HashMap<Integer, RecipeQuantity> recipeQuantityHashMap) {
 
-        for(Ingredient ingredient: ingredients){
+        for (Ingredient ingredient : ingredients) {
             Recipe recipe = (Recipe) ingredient.getRecipe();
             int id = Integer.parseInt(recipe.getId());
 
-            if(recipeQuantityHashMap.containsKey(id)){
+            if (recipeQuantityHashMap.containsKey(id)) {
                 int amount = recipeQuantityHashMap.get(id).getQuantity();
                 ingredient.setAmount(ingredient.getAmount() * amount * 1.0f);
-            }else{
-                Log.e(TAG,"Ingredient without recipe");
+            } else {
+                Log.e(TAG, "Ingredient without recipe");
             }
         }
 
         generateShoppingListFromIngredients();
     }
 
+    /**
+     * Generates all the shopping list items and saves them in the database
+     */
     private void generateShoppingListFromIngredients() {
 
         HashMap<Integer, ShoppingListItem> items = new HashMap<>();
@@ -356,10 +406,19 @@ public class CreateShoppingListFragment extends Fragment {
     }
 
 
+    /**
+     * Helper class that stores the recipe and the quantity of that recipe
+     */
     static class RecipeQuantity {
         private Recipe recipe;
         private int quantity;
 
+        /**
+         * Returns just a list of recipes
+         *
+         * @param recipeQuantities
+         * @return
+         */
         public static List<Recipe> getListOfRecipes(List<RecipeQuantity> recipeQuantities) {
             List<Recipe> recipes = new ArrayList<>();
 
@@ -370,10 +429,20 @@ public class CreateShoppingListFragment extends Fragment {
             return recipes;
         }
 
+        /**
+         * Constructor
+         *
+         * @param recipe
+         * @param quantity
+         */
         public RecipeQuantity(Recipe recipe, int quantity) {
             this.recipe = recipe;
             this.quantity = quantity;
         }
+
+        /**
+         * Getters and Setters
+         */
 
         public void addQuantity(int n) {
             quantity += n;

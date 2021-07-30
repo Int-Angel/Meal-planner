@@ -25,9 +25,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Adapter to show all the recipes of a meal plan
+ */
 public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHolder>
         implements IAdapterSwipeToDelete {
 
+    /**
+     * Interface to open a recipe details
+     */
     public interface MealPlanAdapterListener {
         void openDetails(IRecipe recipe, int index);
     }
@@ -69,6 +75,9 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
         Toast.makeText(context, "Meal removed", Toast.LENGTH_SHORT).show(); //Not showing :c
     }
 
+    /**
+     * meal plan view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private MealPlan bindedMeal;
@@ -89,6 +98,10 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
             ivRecipeImageItem = itemView.findViewById(R.id.ivRecipeImageItem);
         }
 
+        /**
+         * Update de view inside of the view holder with this data
+         * @param meal
+         */
         public void bind(MealPlan meal) {
             bindedMeal = meal;
             tvRecipeTitleItem.setText(meal.getRecipe().getString(Recipe.KEY_TITLE));
@@ -103,6 +116,9 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
             setUpOnClickListeners();
         }
 
+        /**
+         * sets up all the view holder onClickListeners
+         */
         private void setUpOnClickListeners() {
             ibtnAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -121,6 +137,10 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
             itemView.setOnClickListener(this);
         }
 
+        /**
+         * Updates the quantity of the recipe
+         * @param n
+         */
         private void changeQuantity(int n) {
             int newQuantity = bindedMeal.getQuantity() + n;
             if (newQuantity >= 1) {
@@ -130,6 +150,9 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
             }
         }
 
+        /**
+         * opens the recipe details
+         */
         private void openRecipeDetails() {
             IRecipe recipe = SavedRecipesManager.getRecipeById(bindedMeal.getRecipe().getString(Recipe.KEY_ID));
             listener.openDetails(recipe, getAdapterPosition());

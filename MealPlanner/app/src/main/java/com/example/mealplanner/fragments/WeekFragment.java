@@ -46,7 +46,9 @@ import java.util.Locale;
 
 import static android.view.View.GONE;
 
-
+/**
+ * This fragments allows the user to add recipes to a selected date
+ */
 public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecipeListener,
         RecipeDetailsFragment.RecipeDetailsFragmentListener {
 
@@ -133,6 +135,9 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         queryRecipesDay();
     }
 
+    /**
+     * Gets all the recipes tha are already on the selected day
+     */
     private void queryRecipesDay() {
         progress_circular.setVisibility(View.VISIBLE);
         tvNoPlan.setVisibility(GONE);
@@ -167,6 +172,10 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         });
     }
 
+    /**
+     * Updates the recipe after the user changes the recipe from the calendar, this method calls
+     * queryRecipeDay() to update the recipes
+     */
     private void updateDateOnScreen() {
         tvYear.setText(calendar.get(Calendar.YEAR) + "");
         tvDayNumber.setText(calendar.get(Calendar.DAY_OF_MONTH) + "");
@@ -182,17 +191,31 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         queryRecipesDay();
     }
 
+    /**
+     * Checks if the selected date is today
+     *
+     * @param calendar selected date
+     * @return
+     */
     private boolean isToday(Calendar calendar) {
         Calendar today = Calendar.getInstance();
         return calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
                 && calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR);
     }
 
+    /**
+     * changes the current date by n days
+     *
+     * @param n
+     */
     private void changeDate(int n) {
         calendar.add(Calendar.DAY_OF_MONTH, n);
         updateDateOnScreen();
     }
 
+    /**
+     * opens the big calendar view
+     */
     private void openCalendarView() {
         calendarExpanded = true;
 
@@ -207,6 +230,9 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         calendarView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * closes the big calendar view
+     */
     private void closeCalendarView() {
         calendarExpanded = false;
 
@@ -221,6 +247,10 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         calendarView.setVisibility(GONE);
     }
 
+    /**
+     * manages the big calendar, checks if the user wants to close or open the calendar based on
+     * it's current state
+     */
     private void manageCalendar() {
         if (calendarExpanded)
             closeCalendarView();
@@ -228,6 +258,9 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
             openCalendarView();
     }
 
+    /**
+     * open a list of saved recipes to add to the current date selected
+     */
     private void openSavedRecipes() {
         savedRecipesContainer.setVisibility(View.VISIBLE);
 
@@ -237,6 +270,12 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
                 .beginTransaction().replace(R.id.savedRecipesContainer, addRecipeFragment).commit();
     }
 
+    /**
+     * get all the recipes from a list of mealPlans
+     *
+     * @param mealPlans
+     * @return
+     */
     private List<Recipe> getRecipesFromMealPlan(List<MealPlan> mealPlans) {
         List<Recipe> recipes = new ArrayList<>();
 
@@ -247,6 +286,12 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         return recipes;
     }
 
+    /**
+     * opens the recipe details
+     *
+     * @param recipe
+     * @param index
+     */
     private void openRecipeDetailsFragment(IRecipe recipe, int index) {
         appBarLayout.setVisibility(View.GONE);
         recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipe, index);
@@ -255,6 +300,9 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
                 .beginTransaction().replace(R.id.flContainer, recipeDetailsFragment).commit();
     }
 
+    /**
+     * closes the fragment
+     */
     private void closeRecipeDetailsFragment() {
         appBarLayout.setVisibility(View.VISIBLE);
 

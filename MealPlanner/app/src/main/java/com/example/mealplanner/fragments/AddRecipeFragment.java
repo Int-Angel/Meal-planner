@@ -33,7 +33,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
+/**
+ * Fragment that shows all the saved recipes to add to a meal plan day
+ */
 public class AddRecipeFragment extends Fragment {
 
     private final static String TAG = "AddRecipeFragment";
@@ -56,6 +58,11 @@ public class AddRecipeFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * It needs all the already saved recipes to change it's icon
+     * @param alreadyAddedRecipes
+     * @return
+     */
     public static AddRecipeFragment newInstance(List<Recipe> alreadyAddedRecipes) {
         AddRecipeFragment addRecipeFragment = new AddRecipeFragment();
 
@@ -112,6 +119,11 @@ public class AddRecipeFragment extends Fragment {
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
+    /**
+     * Generates all the addRecipe list to change the icon based in the already added recipes of
+     * that day
+     * @return
+     */
     private List<AddRecipe> generateAddRecipeList() {
         List<AddRecipe> addRecipes = new ArrayList<>();
         Set<Integer> alreadyAdded = generateIdAddedRecipesSet();
@@ -129,6 +141,10 @@ public class AddRecipeFragment extends Fragment {
         return addRecipes;
     }
 
+    /**
+     * Generates a id set for the already added recipes
+     * @return
+     */
     private Set<Integer> generateIdAddedRecipesSet() {
         Set<Integer> set = new HashSet<>();
 
@@ -140,6 +156,9 @@ public class AddRecipeFragment extends Fragment {
         return set;
     }
 
+    /**
+     * Close the fragment
+     */
     private void closeFragment() {
         getParentFragmentManager().beginTransaction().remove(this).commit();
     }

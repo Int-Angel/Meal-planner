@@ -17,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Shows all the steps created by the user, allows the user to delete steps
+ */
 public class CreateStepsAdapter extends PagerAdapter {
     Context context;
     List<String> steps;

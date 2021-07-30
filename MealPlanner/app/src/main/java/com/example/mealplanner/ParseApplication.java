@@ -10,6 +10,9 @@ import com.example.mealplanner.models.ShoppingListItem;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+/**
+ * Class application, configurates the Parse database
+ */
 public class ParseApplication extends Application {
 
     @Override

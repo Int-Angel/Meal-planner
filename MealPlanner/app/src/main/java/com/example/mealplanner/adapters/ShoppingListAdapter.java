@@ -18,9 +18,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Adapter to show all the shopping list items inside an aisle
+ */
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ViewHolder>
         implements IAdapterSwipeToDelete {
 
+    /**
+     * Interface to communicate that a item has been deleted or edited
+     */
     public interface ShoppingListAdapterListener {
         void deletedItem(int position);
 
@@ -65,6 +71,9 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         listener.deletedItem(position);
     }
 
+    /**
+     * Shopping list item view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private ShoppingListItem bindedItem;
@@ -89,6 +98,10 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             });
         }
 
+        /**
+         * Update de view inside of the view holder with this data
+         * @param item
+         */
         public void bind(ShoppingListItem item) {
             bindedItem = item;
 
@@ -104,6 +117,10 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             });
         }
 
+        /**
+         * Updates the isChecked property of an item
+         * @param isChecked
+         */
         private void updateItemChecked(boolean isChecked) {
             bindedItem.setChecked(isChecked);
             bindedItem.saveInBackground();

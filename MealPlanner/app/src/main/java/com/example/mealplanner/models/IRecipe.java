@@ -2,6 +2,9 @@ package com.example.mealplanner.models;
 
 import java.util.List;
 
+/**
+ * Interface implemented by Recipe and OnlineRecipe, it contains based recipe methods
+ */
 public interface IRecipe {
 
     public String getTitle();

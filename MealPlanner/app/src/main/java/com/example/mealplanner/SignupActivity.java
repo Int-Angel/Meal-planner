@@ -16,6 +16,9 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+/**
+ * This class allows the user to create a new account to use the app
+ */
 public class SignupActivity extends AppCompatActivity {
 
     private final static String TAG = "SignupActivity";
@@ -42,6 +45,9 @@ public class SignupActivity extends AppCompatActivity {
         setupButtonsListeners();
     }
 
+    /**
+     * this method creates the OnClickListeners for the buttons in this activity
+     */
     private void setupButtonsListeners() {
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +68,14 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method creates the new account for the user
+     *
+     * @param username
+     * @param password
+     * @param name
+     * @param lastname
+     */
     private void singUpUser(String username, String password, String name, String lastname) {
         ParseUser user = new ParseUser();
         user.setUsername(username);
@@ -90,6 +104,9 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This methods opens the main activity when the user has created an account
+     */
     private void goMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

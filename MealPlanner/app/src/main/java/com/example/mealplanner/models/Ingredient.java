@@ -10,10 +10,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a ingredient, it's used to generate the shopping list
+ */
 @ParseClassName("Ingredient")
 public class Ingredient extends ParseObject {
 
-    public final static String KEY_RECIPE = "recipe";
+    /**
+     * All the database keys
+     */
+    public final static String KEY_RECIPE = "recipe"; // recipe that owns this ingredients
     public final static String KEY_AISLE = "aisle";
     public final static String KEY_IMAGE = "image";
     public final static String KEY_NAME = "name";
@@ -23,6 +29,14 @@ public class Ingredient extends ParseObject {
     public final static String KEY_UNIT = "unit";
     public final static String KEY_INGREDIENT_ID = "ingredientId";
 
+    /**
+     * Creates an ingredient based on a jsonObject and a Recipe
+     *
+     * @param recipe     recipe that owns the ingredient
+     * @param jsonObject jsonObject that contains the ingredient
+     * @return returns the ingredient form the jsonObject
+     * @throws JSONException
+     */
     public static Ingredient createIngredient(Recipe recipe, JSONObject jsonObject) throws JSONException {
         Ingredient ingredient = new Ingredient();
 
@@ -42,6 +56,14 @@ public class Ingredient extends ParseObject {
         return ingredient;
     }
 
+    /**
+     * Returns a list of ingredients that are contained inside a jsonArray
+     *
+     * @param recipe    recipe that owns the ingredients
+     * @param jsonArray jsonArray that contains the ingredients
+     * @return returns a list of ingredients
+     * @throws JSONException
+     */
     public static List<Ingredient> fromJSONArray(Recipe recipe, JSONArray jsonArray) throws JSONException {
         List<Ingredient> ingredients = new ArrayList<>();
 
@@ -52,6 +74,14 @@ public class Ingredient extends ParseObject {
         return ingredients;
     }
 
+    /**
+     * This method creates a ingredients from a different jsonObject, it's used when the user
+     * creates his own recipe
+     *
+     * @param jsonObject jsonObject with the ingredient information
+     * @return returns the ingredient
+     * @throws JSONException
+     */
     public static Ingredient createIngredientFromAPI(JSONObject jsonObject) throws JSONException {
         Ingredient ingredient = new Ingredient();
 
@@ -68,6 +98,14 @@ public class Ingredient extends ParseObject {
         return ingredient;
     }
 
+    /**
+     * Generates a list of ingredients from a different jsonArray,, it's used when the user
+     * creates his own recipe
+     *
+     * @param jsonArray jsonArray with the ingredients information
+     * @return returns a list of ingredients
+     * @throws JSONException
+     */
     public static List<Ingredient> fromJSONArrayFromAPI(JSONArray jsonArray) throws JSONException {
         List<Ingredient> ingredients = new ArrayList<>();
 
@@ -77,6 +115,10 @@ public class Ingredient extends ParseObject {
 
         return ingredients;
     }
+
+    /**
+     * Getters and setters
+     */
 
     public ParseObject getRecipe() {
         return getParseObject(KEY_RECIPE);

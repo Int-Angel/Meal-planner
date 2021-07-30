@@ -30,7 +30,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Shows all the shopping lists that user has saved.
+ */
 public class ShoppingListManagerFragment extends Fragment implements
         CreateShoppingListFragment.CreateShoppingListFragmentListener,
         ShoppingListFragment.ShoppingListFragmentListener {
@@ -83,6 +85,9 @@ public class ShoppingListManagerFragment extends Fragment implements
         queryShoppingLists();
     }
 
+    /**
+     * Sets up all the onClickListeners
+     */
     private void setUpOnClickListeners() {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,11 +97,17 @@ public class ShoppingListManagerFragment extends Fragment implements
         });
     }
 
+    /**
+     * Opens the fragment to create a new shopping list
+     */
     private void createNewShoppingList() {
         getChildFragmentManager()
                 .beginTransaction().replace(R.id.flContainer, createShoppingListFragment).commit();
     }
 
+    /**
+     * Gets all the shopping lists from the database
+     */
     private void queryShoppingLists() {
         ParseQuery<ShoppingList> query = ParseQuery.getQuery(ShoppingList.class);
 
@@ -117,7 +128,11 @@ public class ShoppingListManagerFragment extends Fragment implements
         });
     }
 
-    private void openShoppingListDetails(ShoppingList shoppingList){
+    /**
+     * Open the shopping list details to show all it's items
+     * @param shoppingList
+     */
+    private void openShoppingListDetails(ShoppingList shoppingList) {
         shoppingListFragment = ShoppingListFragment.newInstance(shoppingList);
         getChildFragmentManager()
                 .beginTransaction()

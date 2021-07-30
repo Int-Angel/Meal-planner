@@ -40,6 +40,9 @@ import java.io.File;
 import static android.app.Activity.RESULT_OK;
 
 
+/**
+ * Current user profile fragment, shows all his information
+ */
 public class ProfileFragment extends Fragment {
 
     private final static String TAG = "ProfileFragment";
@@ -81,26 +84,32 @@ public class ProfileFragment extends Fragment {
         setUpListeners();
     }
 
-    private void bind(){
+    /**
+     * Binds the user information to the view
+     */
+    private void bind() {
         swIsPublic.setChecked(ParseUser.getCurrentUser().getBoolean("isPublic"));
         tvUsername.setText(ParseUser.getCurrentUser().getUsername());
         tvName.setText(ParseUser.getCurrentUser().getString("name"));
         tvLastname.setText(ParseUser.getCurrentUser().getString("lastname"));
 
-        if(ParseUser.getCurrentUser().getParseFile("image") != null){
+        if (ParseUser.getCurrentUser().getParseFile("image") != null) {
             Glide.with(getContext())
                     .load(ParseUser.getCurrentUser().getParseFile("image").getUrl())
-                    .transform(new CenterCrop(),new RoundedCorners(1000))
+                    .transform(new CenterCrop(), new RoundedCorners(1000))
                     .into(ivProfileImage);
-        }else{
+        } else {
             Glide.with(getContext())
                     .load("https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png")
-                    .transform(new CenterCrop(),new RoundedCorners(1000))
+                    .transform(new CenterCrop(), new RoundedCorners(1000))
                     .into(ivProfileImage);
         }
     }
 
-    private void setUpListeners(){
+    /**
+     * Sets up all the onClickListeners
+     */
+    private void setUpListeners() {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,14 +132,17 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void changeProfileImage(){
+    /**
+     * Updates the user image in the database
+     */
+    private void changeProfileImage() {
         ParseUser currentUser = ParseUser.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             currentUser.put("image", new ParseFile(photoFile));
             currentUser.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
-                    if(e != null){
+                    if (e != null) {
                         Log.e(TAG, "Error while saving profile picture", e);
                         return;
                     }
@@ -140,7 +152,10 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void logout(){
+    /**
+     * Logout the user
+     */
+    private void logout() {
         ParseUser.logOut();
 
         Intent intent = new Intent(getContext(), LoginActivity.class);
@@ -148,6 +163,9 @@ public class ProfileFragment extends Fragment {
         getActivity().finish();
     }
 
+    /**
+     * Launches the camera to allow the user to take a picture for his new image profile
+     */
     private void launchCamera() {
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -170,7 +188,12 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    // Returns the File for a photo stored on disk given the fileName
+    /**
+     * Returns the File for a photo stored on disk given the fileName
+     *
+     * @param fileName
+     * @return
+     */
     public File getPhotoFileUri(String fileName) {
         // Get safe storage directory for photos
         // Use `getExternalFilesDir` on Context to access package-specific directories.
@@ -186,6 +209,13 @@ public class ProfileFragment extends Fragment {
         return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
+    /**
+     * Gets the picture taken by the user
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -198,7 +228,7 @@ public class ProfileFragment extends Fragment {
 
                 Glide.with(getContext())
                         .load(takenImage)
-                        .transform(new CenterCrop(),new RoundedCorners(1000))
+                        .transform(new CenterCrop(), new RoundedCorners(1000))
                         .into(ivProfileImage);
 
                 changeProfileImage();

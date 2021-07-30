@@ -6,22 +6,30 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
+/**
+ * This class it's used for communication between the recipe fragments and the filter fragment,
+ * all the filters are saved here in this class.
+ */
 public class FilteringViewModel extends ViewModel {
 
-    private MutableLiveData<String> queryName = new MutableLiveData<>();
+    private MutableLiveData<String> queryName = new MutableLiveData<>(); // title of the recipe to search
 
-    private MutableLiveData<Boolean> activeCuisines = new MutableLiveData<>();
-    private MutableLiveData<List<String>> cuisines = new MutableLiveData<>();
+    private MutableLiveData<Boolean> activeCuisines = new MutableLiveData<>(); // is active the cuisine filter?
+    private MutableLiveData<List<String>> cuisines = new MutableLiveData<>(); // list of cuisines selected
 
-    private MutableLiveData<Boolean> activeMealTypes = new MutableLiveData<>();
+    private MutableLiveData<Boolean> activeMealTypes = new MutableLiveData<>(); // is active the meal type filter?
     private MutableLiveData<String> mealType = new MutableLiveData<>(); // Just one, API doesn't support more
 
-    private MutableLiveData<Boolean> activeMaxTimeReady = new MutableLiveData<>();
-    private MutableLiveData<Integer> maxTimeReady = new MutableLiveData<>();
+    private MutableLiveData<Boolean> activeMaxTimeReady = new MutableLiveData<>(); // is active the time filter?
+    private MutableLiveData<Integer> maxTimeReady = new MutableLiveData<>(); // max time to get ready a meal
 
-    private MutableLiveData<Boolean> activeCalories = new MutableLiveData<>();
+    private MutableLiveData<Boolean> activeCalories = new MutableLiveData<>(); // is active the calories filter?
     private MutableLiveData<Integer> minCalories = new MutableLiveData<>();
     private MutableLiveData<Integer> maxCalories = new MutableLiveData<>();
+
+    /**
+     * Setters and getters
+     */
 
     public void setQueryName(String query) {
         queryName.setValue(query);

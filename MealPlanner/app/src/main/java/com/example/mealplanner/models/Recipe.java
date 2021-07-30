@@ -13,9 +13,16 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a saved recipe from the user that it's saved in the database using
+ * Parse
+ */
 @ParseClassName("Recipe")
 public class Recipe extends ParseObject implements IRecipe {
 
+    /**
+     * All database keys
+     */
     public final static String KEY_USER = "user";
     public final static String KEY_TITLE = "title";
     public final static String KEY_IMAGE_URL = "imageUrl";
@@ -31,6 +38,12 @@ public class Recipe extends ParseObject implements IRecipe {
     public final static String KEY_INGREDIENTS_IMAGES_URL = "ingredientsImagesUrl";
     public final static String KEY_USER_CREATED = "userCreated";
 
+    /**
+     * Constructor from a online recipe
+     *
+     * @param onlineRecipe
+     * @return returns a saved recipe object
+     */
     public static Recipe createRecipe(OnlineRecipe onlineRecipe) {
         Recipe recipe = new Recipe();
 
@@ -52,8 +65,22 @@ public class Recipe extends ParseObject implements IRecipe {
         return recipe;
     }
 
+    /**
+     * Creates a recipe from all the properties separated
+     *
+     * @param title
+     * @param imageUrl
+     * @param mealType
+     * @param cuisineType
+     * @param totalTime
+     * @param calories
+     * @param recipeUrl
+     * @param ingredients
+     * @param instructions
+     * @return
+     */
     public static Recipe createRecipe(String title, String imageUrl, String mealType, String cuisineType, String totalTime, float calories,
-                                      String recipeUrl, List<String> ingredients, List<String> instructions){
+                                      String recipeUrl, List<String> ingredients, List<String> instructions) {
         Recipe recipe = new Recipe();
 
         recipe.setUser(ParseUser.getCurrentUser());
@@ -71,6 +98,10 @@ public class Recipe extends ParseObject implements IRecipe {
 
         return recipe;
     }
+
+    /**
+     * Getters and setters
+     */
 
     public ParseUser getUser() {
         return getParseUser(KEY_USER);
@@ -234,11 +265,11 @@ public class Recipe extends ParseObject implements IRecipe {
         return listIngredientsImagesUrl;
     }
 
-    public void setIngredientsImagesUrl(JSONArray ingredientsImagesUrlJSONArray){
+    public void setIngredientsImagesUrl(JSONArray ingredientsImagesUrlJSONArray) {
         put(KEY_INGREDIENTS_IMAGES_URL, ingredientsImagesUrlJSONArray);
     }
 
-    public void setIngredientsImagesUrl(List<String> ingredientsImagesUrl){
+    public void setIngredientsImagesUrl(List<String> ingredientsImagesUrl) {
         JSONArray jsonArray = new JSONArray(ingredientsImagesUrl);
         setIngredientsImagesUrl(jsonArray);
     }
@@ -257,15 +288,15 @@ public class Recipe extends ParseObject implements IRecipe {
         return getString(KEY_SUMMARY);
     }
 
-    public void setSummary(String summary){
+    public void setSummary(String summary) {
         put(KEY_SUMMARY, summary);
     }
 
-    public boolean getUserCreated(){
+    public boolean getUserCreated() {
         return getBoolean(KEY_USER_CREATED);
     }
 
-    public void setUserCreated(boolean userCreated){
+    public void setUserCreated(boolean userCreated) {
         put(KEY_USER_CREATED, userCreated);
     }
 }

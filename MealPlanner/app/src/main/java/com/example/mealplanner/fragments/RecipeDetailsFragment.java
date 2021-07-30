@@ -36,9 +36,14 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-
+/**
+ * Shows the details of a recipe
+ */
 public class RecipeDetailsFragment extends Fragment {
 
+    /**
+     * Interface to communicate that the recipe has been saved or unsaved
+     */
     public interface RecipeDetailsFragmentListener {
         void backButtonPressed();
 
@@ -77,6 +82,13 @@ public class RecipeDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * New instance method needs the recipe to show all it's details
+     *
+     * @param recipe
+     * @param index  TODO: remove index NOT NEEDED anymore
+     * @return
+     */
     public static RecipeDetailsFragment newInstance(IRecipe recipe, int index) {
         RecipeDetailsFragment fragment = new RecipeDetailsFragment();
         Bundle args = new Bundle();
@@ -141,6 +153,9 @@ public class RecipeDetailsFragment extends Fragment {
         setupOnClickListeners();
     }
 
+    /**
+     * Binds all the recipe information to the view
+     */
     private void bind() {
 
         if (recipe instanceof Recipe) {
@@ -180,6 +195,9 @@ public class RecipeDetailsFragment extends Fragment {
         tvIngredients.setText(tempIngredients.toString());
     }
 
+    /**
+     * Sets up all the onClickListeners
+     */
     private void setupOnClickListeners() {
         ibtnBackOnlineDetails.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,6 +221,11 @@ public class RecipeDetailsFragment extends Fragment {
         });
     }
 
+    /**
+     * Opens the original recipe url
+     *
+     * @param url
+     */
     private void goToUrl(String url) {
         if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://" + url;
@@ -210,6 +233,9 @@ public class RecipeDetailsFragment extends Fragment {
         startActivity(intent);
     }
 
+    /**
+     * saves of unsaves a online or saved recipe
+     */
     private void copyRecipe() {
         if (this.recipe instanceof OnlineRecipe) {
             saveOnlineRecipe();
@@ -218,6 +244,9 @@ public class RecipeDetailsFragment extends Fragment {
         }
     }
 
+    /**
+     * Saves an online recipe or unsaves it
+     */
     private void saveOnlineRecipe() {
         if (!((OnlineRecipe) recipe).isSaved()) {
             SavedRecipesManager.saveRecipe((OnlineRecipe) recipe);
@@ -230,10 +259,16 @@ public class RecipeDetailsFragment extends Fragment {
         }
     }
 
+    /**
+     * Changes the saved recipe save button icon
+     */
     private void saveSavedRecipe() {
         ibtnSaveRecipeDetails.setSelected(!ibtnSaveRecipeDetails.isSelected());
     }
 
+    /**
+     * Removes a saved recipe from the list if its unsaved
+     */
     private void removeSavedRecipe() {
         if (recipe instanceof Recipe) {
             if (!ibtnSaveRecipeDetails.isSelected()) {

@@ -24,7 +24,10 @@ import com.example.mealplanner.models.IRecipe;
 
 import org.jetbrains.annotations.NotNull;
 
-
+/**
+ * Parent fragment for SavedRecipesFragment and OnlineRecipesFragment, this fragments switches
+ * from saved to online recipes and updates them based on the filters
+ */
 public class RecipeFragment extends Fragment implements OnlineRecipesFragment.OnlineRecipesFragmentListener,
         SavedRecipesFragment.SavedRecipesFragmentListener, RecipeDetailsFragment.RecipeDetailsFragmentListener,
         CreateRecipeFragment.CreateRecipeFragmentListener {
@@ -85,6 +88,9 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         setUpOnClickListeners();
     }
 
+    /**
+     * Sets up all the onClickListeners
+     */
     private void setUpOnClickListeners() {
         rbSavedRecipes.setOnClickListener(this::onRadioButtonClicked);
         rbOnlineRecipes.setOnClickListener(this::onRadioButtonClicked);
@@ -119,10 +125,21 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         });
     }
 
-    private void updateQuery(String query){
+    /**
+     * Saves the search bar query into the ViewModel
+     *
+     * @param query
+     */
+    private void updateQuery(String query) {
         filteringViewModel.setQueryName(query);
     }
 
+    /**
+     * Gets called when the user wants to change from saved recipes to online recipes or the other
+     * way
+     *
+     * @param view
+     */
     private void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
         switch (view.getId()) {
@@ -137,6 +154,11 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         }
     }
 
+    /**
+     * Changes the fragment based on the fragment selection
+     *
+     * @param fragmentSelection could be saved recipes or online recipes
+     */
     private void changeFragment(MainActivity.FragmentSelection fragmentSelection) {
         lastActiveFragment = activeFragment;
         activeFragment = fragmentSelection;
@@ -152,6 +174,12 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
                 .beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
+    /**
+     * Opens the details of a clicked recipe
+     *
+     * @param recipe
+     * @param index
+     */
     private void openRecipeDetailsFragment(IRecipe recipe, int index) {
         lastActiveFragment = activeFragment;
         fragmentHeaderContainer.setVisibility(View.GONE);
@@ -159,17 +187,20 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
 
         getChildFragmentManager()
                 .beginTransaction()
-                .replace(R.id.flContainer, recipeDetailsFragment)
+                .add(R.id.flContainer, recipeDetailsFragment)
                 .commit();
     }
 
-    private void openFilters(){
-        if(filtersFragment.isAdded()){
+    /**
+     * Opens the filters
+     */
+    private void openFilters() {
+        if (filtersFragment.isAdded()) {
             getParentFragmentManager()
                     .beginTransaction()
                     .show(filtersFragment)
                     .commit();
-        }else {
+        } else {
             getParentFragmentManager()
                     .beginTransaction()
                     .add(R.id.flContainer, filtersFragment)
@@ -177,7 +208,11 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         }
     }
 
+    /**
+     * Closes the recipe details
+     */
     private void closeDetailsFragment() {
+        savedRecipesFragment.updateRecipeList();
         changeFragment(lastActiveFragment);
     }
 
@@ -189,7 +224,7 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     @Override
     public void backButtonPressed() {
         Log.i(TAG, "BACK");
-        //onBackPressed();
+
         closeDetailsFragment();
     }
 
@@ -206,8 +241,8 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     @Override
     public void openCreateNewFragment() {
         createRecipeFragment = CreateRecipeFragment.newInstance();
-
-        getParentFragmentManager()
+        fragmentHeaderContainer.setVisibility(View.GONE);
+        getChildFragmentManager()
                 .beginTransaction()
                 .add(R.id.flContainer, createRecipeFragment)
                 .commit();
@@ -216,5 +251,14 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
     @Override
     public void newRecipeCreated() {
         savedRecipesFragment.updateRecipeList();
+    }
+
+    @Override
+    public void closeCreateNewRecipe() {
+        fragmentHeaderContainer.setVisibility(View.VISIBLE);
+        getChildFragmentManager()
+                .beginTransaction()
+                .remove(createRecipeFragment)
+                .commit();
     }
 }

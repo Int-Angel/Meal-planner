@@ -23,9 +23,15 @@ import com.parse.SaveCallback;
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
-
+/**
+ * This fragment allows the user to creates a new item for a shopping list, or edit a item from
+ * a shopping list
+ */
 public class CreateNewShoppingListItemFragment extends Fragment {
 
+    /**
+     * Interface to update the shopping list after this fragment is closed
+     */
     public interface CreateNewItemListener {
         void closeCreateNewItemFragment();
 
@@ -58,6 +64,15 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * New instance used to edit a shopping list item
+     *
+     * @param shoppingList
+     * @param item
+     * @param oldAisle
+     * @param position
+     * @return
+     */
     public static CreateNewShoppingListItemFragment newInstance(ShoppingList shoppingList, ShoppingListItem item, String oldAisle, int position) {
         CreateNewShoppingListItemFragment fragment = new CreateNewShoppingListItemFragment();
         Bundle args = new Bundle();
@@ -69,6 +84,11 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * New instance used to create a new shopping list item
+     * @param shoppingList
+     * @return
+     */
     public static CreateNewShoppingListItemFragment newInstance(ShoppingList shoppingList) {
         CreateNewShoppingListItemFragment fragment = new CreateNewShoppingListItemFragment();
         Bundle args = new Bundle();
@@ -114,6 +134,9 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         setUpOnClickListeners();
     }
 
+    /**
+     * Binds the information of a shopping list item into the view, if it's not empty
+     */
     private void bind() {
         etItem.setText(item.getName());
         etAmount.setText(item.getAmount() + "");
@@ -121,6 +144,9 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         etAisle.setText(item.getAisle());
     }
 
+    /**
+     * Creates a new shopping list item and it's added to the database
+     */
     private void createNewItem() {
         String name = etItem.getText().toString();
         String unit = etUnit.getText().toString();
@@ -146,6 +172,9 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         });
     }
 
+    /**
+     * Updates a shopping list item in the database
+     */
     void updateItem() {
         item.deleteInBackground();
 
@@ -174,6 +203,9 @@ public class CreateNewShoppingListItemFragment extends Fragment {
         });
     }
 
+    /**
+     * sets all the onClickListeners
+     */
     private void setUpOnClickListeners() {
         ibtnClose.setOnClickListener(new View.OnClickListener() {
             @Override

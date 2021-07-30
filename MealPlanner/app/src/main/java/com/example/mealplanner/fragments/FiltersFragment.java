@@ -30,7 +30,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This fragment contains all the recipe filters and stores the filters in a ModelView
+ */
 public class FiltersFragment extends Fragment {
 
     private final static String TAG = "FiltersFragment";
@@ -95,6 +97,9 @@ public class FiltersFragment extends Fragment {
         setUpOnClickListeners();
     }
 
+    /**
+     * Sets up all the onClickListeners
+     */
     private void setUpOnClickListeners() {
 
         cbCuisines.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -144,6 +149,9 @@ public class FiltersFragment extends Fragment {
         });
     }
 
+    /**
+     * Saves all the filters in the ViesModel
+     */
     private void applyFilters() {
         filteringViewModel.setCuisines(FilterCheckBox.getSelectedItems(cuisines));
         if (FilterCheckBox.getSelectedItems(mealType).size() > 0)
@@ -162,18 +170,19 @@ public class FiltersFragment extends Fragment {
         closeFilters();
     }
 
+    /**
+     * Close the fragment
+     */
     private void closeFilters() {
-        /*getParentFragmentManager()
-                .beginTransaction()
-                .remove(FiltersFragment.this)
-                .commit();*/
-
         getParentFragmentManager()
                 .beginTransaction()
                 .hide(FiltersFragment.this)
                 .commit();
     }
 
+    /**
+     * Generates a list of FilterCheckBoxes for the cuisines
+     */
     private void initializeCuisines() {
         cuisines = new ArrayList<>();
 
@@ -206,6 +215,9 @@ public class FiltersFragment extends Fragment {
         cuisines.add(new FilterCheckBox("Vietnamese"));
     }
 
+    /**
+     * Generates a list of FilterCheckBoxes for the meal types
+     */
     private void initializeMealType() {
         mealType = new ArrayList<>();
 
@@ -228,6 +240,5 @@ public class FiltersFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-
     }
 }

@@ -16,6 +16,9 @@ import java.util.List;
 
 import okhttp3.Headers;
 
+/**
+ * This class represents a online recipe that the API returns
+ */
 @Parcel
 public class OnlineRecipe implements IRecipe {
 
@@ -36,10 +39,12 @@ public class OnlineRecipe implements IRecipe {
     private boolean isSaved;
     private String summary;
     private List<String> instructions;
-    @Transient
+    @Transient // Parcel ignores this property
     private JSONArray extendedIngredients;
 
-
+    /**
+     * Constructors
+     */
     public OnlineRecipe() {
     }
 
@@ -86,6 +91,11 @@ public class OnlineRecipe implements IRecipe {
         getInstructionsFromJson(jsonObject);
     }
 
+    /**
+     * Gets all the ingredients from a jsonObject
+     *
+     * @param jsonObject
+     */
     private void getIngredientsFromJson(JSONObject jsonObject) {
         ingredients = new ArrayList<>();
         ingredientsImagesUrl = new ArrayList<>();
@@ -103,6 +113,11 @@ public class OnlineRecipe implements IRecipe {
         }
     }
 
+    /**
+     * get all the recipe instructions form a jsonObject
+     *
+     * @param jsonObject
+     */
     private void getInstructionsFromJson(JSONObject jsonObject) {
         instructions = new ArrayList<>();
         try {
@@ -117,7 +132,11 @@ public class OnlineRecipe implements IRecipe {
         }
     }
 
-    public JSONArray getExtendedIngredients(){
+    /**
+     * Getters and Setters
+     */
+
+    public JSONArray getExtendedIngredients() {
         return extendedIngredients;
     }
 
@@ -194,6 +213,13 @@ public class OnlineRecipe implements IRecipe {
         isSaved = saved;
     }
 
+    /**
+     * Generates a list of onlineRecipes from a jsonArray
+     *
+     * @param jsonArray contains the online recipes
+     * @return returns the list of online recipes
+     * @throws JSONException
+     */
     public static List<OnlineRecipe> fromJsonArray(JSONArray jsonArray) throws JSONException {
         List<OnlineRecipe> recipes = new ArrayList<>();
 

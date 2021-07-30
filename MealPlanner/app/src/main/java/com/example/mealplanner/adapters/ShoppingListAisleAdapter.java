@@ -24,8 +24,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Adapter to show all the shopping list aisle, this adapter uses ShoppingListAdapter to show all
+ * the shopping list items inside an aisle
+ */
 public class ShoppingListAisleAdapter extends RecyclerView.Adapter<ShoppingListAisleAdapter.ViewHolder> {
 
+    /**
+     * Interface to communicate that a item needs to be edited
+     */
     public interface ShoppingListAisleAdapterListener {
         void editItem(int position, String oldAisle, ShoppingListItem item);
     }
@@ -63,6 +70,9 @@ public class ShoppingListAisleAdapter extends RecyclerView.Adapter<ShoppingListA
         return aislesName.size();
     }
 
+    /**
+     * Shopping list aisle view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private List<ShoppingListItem> bindedShoppingListItems;
@@ -79,6 +89,11 @@ public class ShoppingListAisleAdapter extends RecyclerView.Adapter<ShoppingListA
 
         }
 
+        /**
+         * Update de view inside of the view holder with this data
+         * @param aisle
+         * @param shoppingListItems
+         */
         public void bind(String aisle, List<ShoppingListItem> shoppingListItems) {
             bindedShoppingListItems = shoppingListItems;
 

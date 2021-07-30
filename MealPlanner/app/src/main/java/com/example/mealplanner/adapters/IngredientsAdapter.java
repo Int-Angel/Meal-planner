@@ -13,7 +13,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder> implements IAdapterSwipeToDelete {
+/**
+ * Adapter that shows all the ingredients of a recipe in the CreateRecipeFragment class
+ */
+public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder>
+        implements IAdapterSwipeToDelete {
 
     public interface OnLongClickListener {
         void onItemLongClicked(int position);
@@ -53,6 +57,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         notifyItemRemoved(position);
     }
 
+    /**
+     * ingredient view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvItem;
@@ -62,7 +69,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             tvItem = itemView.findViewById(android.R.id.text1);
         }
 
-        //Update de view inside of the view holder with this data
+        /**
+         * Update de view inside of the view holder with this data
+         * @param item
+         */
         public void bind(String item) {
             tvItem.setText("• " + item);
             tvItem.setOnLongClickListener(new View.OnLongClickListener() {

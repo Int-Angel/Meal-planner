@@ -57,8 +57,11 @@ import okhttp3.Call;
 import okhttp3.Headers;
 import okhttp3.Response;
 
-
-public class ShoppingListFragment extends Fragment implements CreateNewShoppingListItemFragment.CreateNewItemListener {
+/**
+ * Shows the shopping list items from a shopping list
+ */
+public class ShoppingListFragment extends Fragment implements
+        CreateNewShoppingListItemFragment.CreateNewItemListener {
 
     public interface ShoppingListFragmentListener {
         void closeShoppingList();
@@ -88,6 +91,11 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         // Required empty public constructor
     }
 
+    /**
+     * This fragment requires the shopping list to show
+     * @param shoppingList
+     * @return
+     */
     public static ShoppingListFragment newInstance(ShoppingList shoppingList) {
         ShoppingListFragment fragment = new ShoppingListFragment();
         Bundle args = new Bundle();
@@ -148,6 +156,9 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         queryShoppingListItems();
     }
 
+    /**
+     * Sets up all the onClickListeners
+     */
     private void setUpOnClickListeners() {
         ibtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,6 +175,9 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         });
     }
 
+    /**
+     * Opens the fragment to create a new shopping list item for this shopping list
+     */
     void openCreateShoppingListItemFragment() {
         createShoppingListItem = CreateNewShoppingListItemFragment.newInstance(shoppingList);
 
@@ -173,6 +187,12 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
                 .commit();
     }
 
+    /**
+     * open the fragment to edit a shopping list item
+     * @param position item position in the array
+     * @param oldAisle aisle before being modified
+     * @param item item to be modified
+     */
     void openEditShoppingListItemFragment(int position, String oldAisle, ShoppingListItem item) {
         createShoppingListItem = CreateNewShoppingListItemFragment.newInstance(shoppingList, item, oldAisle, position);
 
@@ -182,10 +202,18 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
                 .commit();
     }
 
+    /**
+     * Returns a date in a string format
+     * @param date
+     * @return
+     */
     private String getStringDate(Date date) {
         return DateFormat.format("MMM.dd", date).toString();
     }
 
+    /**
+     * Gets all the shopping list items form the database
+     */
     private void queryShoppingListItems() {
         ParseQuery<ShoppingListItem> query = ParseQuery.getQuery(ShoppingListItem.class);
         query.whereEqualTo(ShoppingListItem.KEY_SHOPPING_LIST, shoppingList);
@@ -207,6 +235,9 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         });
     }
 
+    /**
+     * Generates a list of aisles to split the shopping list items into aisles
+     */
     private void generateAisles() {
 
         for (ShoppingListItem item : shoppingListItems) {
@@ -224,6 +255,10 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Add each item to an aisle
+     * @param item
+     */
     private void addItemToAisles(ShoppingListItem item) {
         String aisleNameStr = getShoppingListAisle(item);
         if (aisles.containsKey(aisleNameStr)) {
@@ -238,6 +273,11 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * returns the item aisle
+     * @param item
+     * @return
+     */
     private String getShoppingListAisle(ShoppingListItem item) {
         String auxAisle = item.getAisle();
         return auxAisle.split(";")[0]; // some items have multiple aisle, I only use the first aisle
@@ -261,7 +301,7 @@ public class ShoppingListFragment extends Fragment implements CreateNewShoppingL
     public void shoppingItemEdited(ShoppingListItem item, int position, String oldAisle) {
         addItemToAisles(item);
         aisles.get(oldAisle).remove(position);
-        if(aisles.get(oldAisle).size() == 0){
+        if (aisles.get(oldAisle).size() == 0) {
             aislesName.remove(position);
             aisles.remove(oldAisle);
         }

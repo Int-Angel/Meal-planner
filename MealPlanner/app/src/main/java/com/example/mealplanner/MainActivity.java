@@ -17,8 +17,15 @@ import com.example.mealplanner.fragments.WeekFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+/**
+ * MainActivity that contains all the fragments and it's in charge of the bottom navigation of the
+ * app
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * All possible fragments to be open from this activity
+     */
     public enum FragmentSelection {
         HOME, RECIPES, SOCIAL, PROFILE, WEEK, SHOPPING_LIST, SAVED_RECIPES, ONLINE_RECIPES;
     }
@@ -57,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
         SavedRecipesManager.querySavedRecipes();
     }
 
+    /**
+     * sets up the OnItemSelectedListener of the bottom navigation bar
+     */
     private void setBottomNavigationListener() {
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -67,7 +77,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Returns the fragment that should be open based on the menuItem selected in the bottom
+     * navigation bar
+     *
+     * @param item
+     * @return
+     */
     private FragmentSelection getFragmentSelectionFromMenu(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_plan:
@@ -84,6 +100,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Changes the fragment on screen based on the fragmentSelected parameter
+     * @param fragmentSelected fragment to be open
+     */
     private void changeFragment(FragmentSelection fragmentSelected) {
         //if (activeFragment == fragmentSelected) return;
 

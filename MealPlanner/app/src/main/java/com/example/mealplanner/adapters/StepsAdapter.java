@@ -16,6 +16,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * View pager adapter to show the recipe steps inside the recipe details fragment
+ */
 public class StepsAdapter extends PagerAdapter {
     Context context;
     List<String> steps;

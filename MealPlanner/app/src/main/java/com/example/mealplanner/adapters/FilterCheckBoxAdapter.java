@@ -17,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Adapter to show all the filters in a recyclerview
+ */
 public class FilterCheckBoxAdapter extends RecyclerView.Adapter<FilterCheckBoxAdapter.ViewHolder> {
 
     private Context context;
@@ -45,6 +48,9 @@ public class FilterCheckBoxAdapter extends RecyclerView.Adapter<FilterCheckBoxAd
         return filterCheckBoxes.size();
     }
 
+    /**
+     * Filter view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private FilterCheckBox bindedItem;
@@ -62,6 +68,10 @@ public class FilterCheckBoxAdapter extends RecyclerView.Adapter<FilterCheckBoxAd
             });
         }
 
+        /**
+         * binds the filter information with the view
+         * @param item
+         */
         public void bind(FilterCheckBox item) {
             bindedItem = item;
 

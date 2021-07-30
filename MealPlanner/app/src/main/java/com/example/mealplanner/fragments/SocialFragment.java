@@ -28,7 +28,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Shows a list of users and the user can click on them to open their profile
+ */
 public class SocialFragment extends Fragment {
 
     private final static String TAG = "SocialFragment";
@@ -80,6 +82,9 @@ public class SocialFragment extends Fragment {
         queryUsers();
     }
 
+    /**
+     * Configures the search bar
+     */
     private void setUpSearchBar() {
         search_users.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -107,6 +112,9 @@ public class SocialFragment extends Fragment {
         });
     }
 
+    /**
+     * gets a list of users based on the search bar, if it's empty gets all the user
+     */
     private void queryUsers() {
         progress_circular.setVisibility(View.VISIBLE);
         ParseQuery<ParseUser> query = ParseUser.getQuery();
@@ -136,6 +144,11 @@ public class SocialFragment extends Fragment {
         });
     }
 
+    /**
+     * opens the user details fragment
+     *
+     * @param user
+     */
     private void openUserDetailsFragment(ParseUser user) {
 
         userProfileFragment = UserProfileFragment.newInstance(user);

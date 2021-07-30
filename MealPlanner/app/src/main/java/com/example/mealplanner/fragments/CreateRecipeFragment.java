@@ -77,11 +77,18 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 import static android.app.Activity.RESULT_OK;
 
-
+/**
+ * This fragment allows the user to create a new recipe and it's added to the database
+ */
 public class CreateRecipeFragment extends Fragment {
 
-    public interface CreateRecipeFragmentListener{
+    /**
+     * Interface to update the saved recipes list
+     */
+    public interface CreateRecipeFragmentListener {
         void newRecipeCreated();
+
+        void closeCreateNewRecipe();
     }
 
     private static final String RECIPE = "recipe";
@@ -113,9 +120,11 @@ public class CreateRecipeFragment extends Fragment {
     private TabLayout tabLayout;
     private FloatingActionButton fabSteps;
     private FloatingActionButton fabSave;
+    private ProgressBar progressBar;
 
     private String imageBase64;
 
+    // Recipe properties
     private String imageUrl;
     private String originalUrl;
     private String mealType;
@@ -129,6 +138,11 @@ public class CreateRecipeFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * New instance used to edit a recipe
+     * @param recipe
+     * @return
+     */
     public static CreateRecipeFragment newInstance(Recipe recipe) {
         CreateRecipeFragment fragment = new CreateRecipeFragment();
         Bundle args = new Bundle();
@@ -137,6 +151,10 @@ public class CreateRecipeFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * New instance used to create a new recipe
+     * @return
+     */
     public static CreateRecipeFragment newInstance() {
         CreateRecipeFragment fragment = new CreateRecipeFragment();
         return fragment;
@@ -182,6 +200,7 @@ public class CreateRecipeFragment extends Fragment {
         tabLayout = view.findViewById(R.id.tabLayout);
         fabSteps = view.findViewById(R.id.fabSteps);
         fabSave = view.findViewById(R.id.fabSave);
+        progressBar = view.findViewById(R.id.progress_circular_creating);
 
         Glide.with(getContext())
                 .load(missingImageUrl)
@@ -213,6 +232,9 @@ public class CreateRecipeFragment extends Fragment {
         setUpOnClickListeners();
     }
 
+    /**
+     * Prepares the gallery launcher and continues the image process
+     */
     private void setUpGalleryLauncher() {
         galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -238,6 +260,11 @@ public class CreateRecipeFragment extends Fragment {
                 });
     }
 
+    /**
+     * Returns the image as a base64 string
+     * @param bitmap
+     * @return
+     */
     private String bitmapToBase64(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
@@ -247,6 +274,9 @@ public class CreateRecipeFragment extends Fragment {
         return encoded;
     }
 
+    /**
+     * Prepares the spinners
+     */
     private void setUpSpinners() {
         ArrayAdapter<CharSequence> mealTypeSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.meal_types_array, android.R.layout.simple_spinner_item);
@@ -287,6 +317,9 @@ public class CreateRecipeFragment extends Fragment {
         });
     }
 
+    /**
+     * Sets up the onClickListeners
+     */
     private void setUpOnClickListeners() {
         ibtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -331,6 +364,9 @@ public class CreateRecipeFragment extends Fragment {
         });
     }
 
+    /**
+     * Checks if the application has the permission to open the gallery and ask permission
+     */
     private void checkGalleryPermission() {
         if (ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -342,12 +378,19 @@ public class CreateRecipeFragment extends Fragment {
         }
     }
 
+    /**
+     * Starts the gallery to get an image
+     */
     private void startGallery() {
         Intent cameraIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         cameraIntent.setType("image/*");
         galleryLauncher.launch(cameraIntent);
     }
 
+    /**
+     * Upload the selected image from teh galery to the server using imgbb API and gets the image
+     * url
+     */
     private void loadImage() {
 
         progressBarImage.setVisibility(View.VISIBLE);
@@ -387,6 +430,9 @@ public class CreateRecipeFragment extends Fragment {
         });
     }
 
+    /**
+     * Opens an alert dialog to insert the original url from the recipe
+     */
     private void insertOriginalUrl() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Original Url");
@@ -418,6 +464,9 @@ public class CreateRecipeFragment extends Fragment {
         dialog.show();
     }
 
+    /**
+     * Opens an alert dialog to create a new step for teh recipe
+     */
     private void createNewStep() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Step");
@@ -449,6 +498,9 @@ public class CreateRecipeFragment extends Fragment {
 
     }
 
+    /**
+     * Opens a alert dialog to create a new ingredient
+     */
     private void createNewIngredient() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Ingredient");
@@ -479,6 +531,10 @@ public class CreateRecipeFragment extends Fragment {
         dialog.show();
     }
 
+    /**
+     * Opens a alert dialog to edit a ingredient from the recipe
+     * @param position
+     */
     private void editIngredient(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Ingredient");
@@ -510,23 +566,54 @@ public class CreateRecipeFragment extends Fragment {
         dialog.show();
     }
 
+    /**
+     * closes the fragment
+     */
     private void closeFragment() {
-        getParentFragmentManager()
-                .beginTransaction()
-                .remove(CreateRecipeFragment.this)
-                .commit();
+        listener.closeCreateNewRecipe();
     }
 
+    /**
+     * creates the recipe in the database
+     */
     private void createRecipe() {
-        Recipe recipe = Recipe.createRecipe(etTitle.getText().toString(), imageUrl, mealType, cuisineType,
-                etTime.getText().toString(), Float.parseFloat(etCalories.getText().toString()), originalUrl,
+        progressBar.setVisibility(View.VISIBLE);
+
+        String title = "no title";
+        if (!etTitle.getText().toString().equals(""))
+            title = etTitle.getText().toString();
+
+        String calories = "";
+        if (!etCalories.getText().toString().equals(""))
+            calories = etCalories.getText().toString();
+
+        String time = "0";
+        if (!etTime.getText().toString().equals(""))
+            time = etTime.getText().toString();
+
+        float caloriesNum = 0;
+        if (!calories.isEmpty())
+            caloriesNum = Float.parseFloat(calories);
+
+        if (imageUrl == null)
+            imageUrl = missingImageUrl;
+
+        if (originalUrl == null)
+            originalUrl = "www.google.com";
+
+        Recipe recipe = Recipe.createRecipe(title, imageUrl, mealType, cuisineType,
+                time, caloriesNum, originalUrl,
                 ingredients, steps);
 
-        recipe.setId(generateRecipeId() + "");
+        generateRecipeId(recipe);
 
         getIngredientsFromAPI(recipe);
     }
 
+    /**
+     * Gets all the ingredients information from the API
+     * @param recipe recipe that owns the ingredients
+     */
     private void getIngredientsFromAPI(Recipe recipe) {
         RequestParams requestParams = new RequestParams();
         requestParams.put("ingredientList", getIngredientsOnePerLine());
@@ -557,6 +644,11 @@ public class CreateRecipeFragment extends Fragment {
         });
     }
 
+    /**
+     * Saves the ingredients an the recipe in teh database after getting all the information
+     * @param recipe
+     * @param ingredientList
+     */
     private void saveRecipeAndIngredients(Recipe recipe, List<Ingredient> ingredientList) {
         recipe.setIngredientsImagesUrl(getImagesUrlListFromIngredients(ingredientList));
 
@@ -573,11 +665,18 @@ public class CreateRecipeFragment extends Fragment {
                 SavedRecipesManager.addRecipe(recipe);
                 Log.i(TAG, "Saving ingredients");
                 ParseObject.saveAllInBackground(ingredientList);
+                listener.newRecipeCreated();
+                progressBar.setVisibility(View.GONE);
                 closeFragment();
             }
         });
     }
 
+    /**
+     * Returns a list of images url from a list of ingredients
+     * @param ingredientList
+     * @return
+     */
     private List<String> getImagesUrlListFromIngredients(List<Ingredient> ingredientList) {
         List<String> urls = new ArrayList<>();
 
@@ -587,8 +686,11 @@ public class CreateRecipeFragment extends Fragment {
         return urls;
     }
 
-    private int generateRecipeId() {
-        final int[] id = {0};
+    /**
+     * Generates a recipe id for the new recipe
+     * @param recipe
+     */
+    private void generateRecipeId(Recipe recipe) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("RecipeIdCounter");
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -597,22 +699,27 @@ public class CreateRecipeFragment extends Fragment {
                     Log.e(TAG, "Couldn't get recipe id counter", e);
                     return;
                 }
+                int id = 0;
                 for (ParseObject object : objects) {
                     int currentId = (int) object.getNumber("recipeId");
-                    if (currentId < id[0]) {
-                        id[0] = currentId;
+                    if (currentId < id) {
+                        id = currentId;
                     }
                 }
+                recipe.setId((id - 1) + "");
+
+                ParseObject entity = new ParseObject("RecipeIdCounter");
+                entity.put("recipeId", id - 1);
+                entity.saveInBackground();
             }
         });
 
-        ParseObject entity = new ParseObject("RecipeIdCounter");
-        entity.put("recipeId", id[0] - 1);
-        entity.saveInBackground();
-
-        return id[0] - 1;
     }
 
+    /**
+     * Prepares the ingredients to be sent to the API
+     * @return
+     */
     private String getIngredientsOnePerLine() {
         String res = "";
 

@@ -19,6 +19,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Adapter to show a list of ingredient images in a recyclerview
+ */
 public class IngredientsImagesAdapter extends RecyclerView.Adapter<IngredientsImagesAdapter.ViewHolder> {
 
     private final static String TAG = "IngredientsImagesAdapter";
@@ -49,6 +52,9 @@ public class IngredientsImagesAdapter extends RecyclerView.Adapter<IngredientsIm
         return ingredientsImageUrl.size();
     }
 
+    /**
+     * images view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView ivIngredientImageItem;
@@ -61,6 +67,10 @@ public class IngredientsImagesAdapter extends RecyclerView.Adapter<IngredientsIm
             tvIngredientItem = itemView.findViewById(R.id.tvIngredientItem);
         }
 
+        /**
+         * Update de view inside of the view holder with this data
+         * @param imageUrl
+         */
         public void bind(String imageUrl){
             tvIngredientItem.setText(getIngredientName(imageUrl));
 
@@ -70,6 +80,11 @@ public class IngredientsImagesAdapter extends RecyclerView.Adapter<IngredientsIm
                     .into(ivIngredientImageItem);
         }
 
+        /**
+         * gets the ingredient name using the image url
+         * @param url
+         * @return
+         */
         private String getIngredientName(String url){
             String[] parts = url.split("/");
             int lastPos = parts.length - 1;

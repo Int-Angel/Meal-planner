@@ -20,8 +20,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Adapter that shows a list of users
+ */
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
 
+    /**
+     * Interface to open a user profile
+     */
     public interface UsersAdapterListener {
         void openUserDetails(ParseUser user);
     }
@@ -54,6 +60,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         return users.size();
     }
 
+    /**
+     * User view holder
+     */
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView ivProfileImage;
@@ -70,6 +79,11 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             itemView.setOnClickListener(this);
         }
 
+        /**
+         * Update de view inside of the view holder with this data
+         *
+         * @param user
+         */
         public void bind(ParseUser user) {
             if (user.getParseFile("image") != null) {
                 Glide.with(context)

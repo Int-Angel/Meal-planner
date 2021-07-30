@@ -15,6 +15,9 @@ import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+/**
+ * The user can login from this activity
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private final static String TAG = "LoginActivity";
@@ -29,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if(ParseUser.getCurrentUser() != null){
+        if (ParseUser.getCurrentUser() != null) {
             // default ACLs for User object
             ParseACL parseACL = new ParseACL(ParseUser.getCurrentUser());
             parseACL.setPublicReadAccess(true);
@@ -46,6 +49,9 @@ public class LoginActivity extends AppCompatActivity {
         setupButtonsListeners();
     }
 
+    /**
+     * this method creates the OnClickListeners for the buttons in this activity
+     */
     private void setupButtonsListeners() {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +68,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method logins the user using the username and the password of the user
+     * @param username
+     * @param password
+     */
     private void loginUser(String username, String password) {
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
@@ -83,11 +94,17 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method opens the sign up activity
+     */
     private void goSignupActivity() {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * This methods opens the main activity
+     */
     private void goMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
