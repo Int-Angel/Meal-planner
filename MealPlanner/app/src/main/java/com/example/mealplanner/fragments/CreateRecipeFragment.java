@@ -140,6 +140,7 @@ public class CreateRecipeFragment extends Fragment {
 
     /**
      * New instance used to edit a recipe
+     *
      * @param recipe
      * @return
      */
@@ -153,6 +154,7 @@ public class CreateRecipeFragment extends Fragment {
 
     /**
      * New instance used to create a new recipe
+     *
      * @return
      */
     public static CreateRecipeFragment newInstance() {
@@ -262,6 +264,7 @@ public class CreateRecipeFragment extends Fragment {
 
     /**
      * Returns the image as a base64 string
+     *
      * @param bitmap
      * @return
      */
@@ -533,6 +536,7 @@ public class CreateRecipeFragment extends Fragment {
 
     /**
      * Opens a alert dialog to edit a ingredient from the recipe
+     *
      * @param position
      */
     private void editIngredient(int position) {
@@ -556,11 +560,7 @@ public class CreateRecipeFragment extends Fragment {
             }
         });
 
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
+        builder.setNegativeButton("cancel", null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -612,6 +612,7 @@ public class CreateRecipeFragment extends Fragment {
 
     /**
      * Gets all the ingredients information from the API
+     *
      * @param recipe recipe that owns the ingredients
      */
     private void getIngredientsFromAPI(Recipe recipe) {
@@ -646,6 +647,7 @@ public class CreateRecipeFragment extends Fragment {
 
     /**
      * Saves the ingredients an the recipe in teh database after getting all the information
+     *
      * @param recipe
      * @param ingredientList
      */
@@ -674,6 +676,7 @@ public class CreateRecipeFragment extends Fragment {
 
     /**
      * Returns a list of images url from a list of ingredients
+     *
      * @param ingredientList
      * @return
      */
@@ -688,6 +691,7 @@ public class CreateRecipeFragment extends Fragment {
 
     /**
      * Generates a recipe id for the new recipe
+     *
      * @param recipe
      */
     private void generateRecipeId(Recipe recipe) {
@@ -718,6 +722,7 @@ public class CreateRecipeFragment extends Fragment {
 
     /**
      * Prepares the ingredients to be sent to the API
+     *
      * @return
      */
     private String getIngredientsOnePerLine() {

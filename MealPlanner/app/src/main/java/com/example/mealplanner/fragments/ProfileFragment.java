@@ -1,5 +1,6 @@
 package com.example.mealplanner.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
@@ -19,7 +21,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +33,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.LoginActivity;
 import com.example.mealplanner.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -57,6 +62,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvLastname;
     private Switch swIsPublic;
     private Button btnLogout;
+    private FloatingActionButton fab;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -79,6 +85,7 @@ public class ProfileFragment extends Fragment {
         tvLastname = view.findViewById(R.id.tvLastname);
         swIsPublic = view.findViewById(R.id.swIsPublic);
         btnLogout = view.findViewById(R.id.btnLogout);
+        fab = view.findViewById(R.id.fab);
 
         bind();
         setUpListeners();
@@ -120,7 +127,7 @@ public class ProfileFragment extends Fragment {
         swIsPublic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                updatePrivateProfile(isChecked);
             }
         });
 
@@ -128,6 +135,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 launchCamera();
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialogUpdateInformation();
             }
         });
     }
@@ -147,6 +161,108 @@ public class ProfileFragment extends Fragment {
                         return;
                     }
                     Log.i(TAG, "Profile picture saved");
+                }
+            });
+        }
+    }
+
+    /**
+     * Updates the isPublic property of a user in the database
+     *
+     * @param isPublic
+     */
+    private void updatePrivateProfile(boolean isPublic) {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            currentUser.put("isPublic", isPublic);
+            currentUser.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error while saving user isPublic property", e);
+                        return;
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Open a dialog alert and the user can insert a new name and lastname
+     */
+    private void openDialogUpdateInformation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Change information");
+
+        LinearLayout.LayoutParams lpLinearLayout = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+
+        final LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setLayoutParams(lpLinearLayout);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+
+        final EditText etName = new EditText(getContext());
+        etName.setText(tvName.getText().toString());
+        etName.setHint("Name");
+        etName.setLayoutParams(lp);
+
+        final EditText etLastname = new EditText(getContext());
+        etLastname.setText(tvLastname.getText().toString());
+        etLastname.setHint("Lastname");
+        etLastname.setLayoutParams(lp);
+
+        linearLayout.addView(etName);
+        linearLayout.addView(etLastname);
+
+        builder.setView(linearLayout);
+
+        builder.setPositiveButton("save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newName = etName.getText().toString();
+                String newLastName = etLastname.getText().toString();
+
+                if (!newName.equals("") && !newLastName.equals("")) {
+                    tvName.setText(newName);
+                    tvLastname.setText(newLastName);
+                    saveNewName(newName, newLastName);
+                }
+            }
+        });
+
+        builder.setNegativeButton("cancel", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    /**
+     * Saves the new information of the user in the database
+     *
+     * @param newName
+     * @param newLastname
+     */
+    private void saveNewName(String newName, String newLastname) {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            currentUser.put("name", newName);
+            currentUser.put("lastname", newLastname);
+            currentUser.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error while saving user information", e);
+                        return;
+                    }
                 }
             });
         }

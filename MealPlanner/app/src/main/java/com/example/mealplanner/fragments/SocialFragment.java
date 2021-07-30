@@ -119,6 +119,9 @@ public class SocialFragment extends Fragment {
         progress_circular.setVisibility(View.VISIBLE);
         ParseQuery<ParseUser> query = ParseUser.getQuery();
 
+        query.whereEqualTo("isPublic", true);
+        query.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
+
         if (!queryUsername.equals("")) {
             query.whereEqualTo("username", queryUsername);
         }
