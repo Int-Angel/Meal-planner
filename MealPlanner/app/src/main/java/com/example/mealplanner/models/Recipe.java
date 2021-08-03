@@ -191,14 +191,7 @@ public class Recipe extends ParseObject implements IRecipe {
     @Override
     public String getCalories() {
         float caloriesNumber = getCaloriesNumber();
-        String calories;
-
-        if (caloriesNumber / 1000f >= 1f) {
-            calories = String.format("%.1f", caloriesNumber / 1000f) + " kcal";
-        } else {
-            calories = String.format("%.1f", caloriesNumber) + " cal";
-        }
-        return calories;
+        return String.format("%.1f", caloriesNumber) + " kcal";
     }
 
     public void setCalories(float calories) {

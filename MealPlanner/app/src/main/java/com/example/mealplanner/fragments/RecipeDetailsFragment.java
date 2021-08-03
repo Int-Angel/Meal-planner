@@ -38,6 +38,10 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import me.relex.circleindicator.CircleIndicator;
+import me.relex.circleindicator.CircleIndicator2;
+import me.relex.circleindicator.CircleIndicator3;
+
 /**
  * Shows the details of a recipe
  */
@@ -78,7 +82,7 @@ public class RecipeDetailsFragment extends Fragment {
     private TextView tvIngredientsTitle;
     private RecyclerView rvIngredientsImages;
     private ViewPager vpSteps;
-    private TabLayout tabLayout;
+    private CircleIndicator circleIndicator;
     private LottieAnimationView animationViewLike;
 
 
@@ -138,14 +142,15 @@ public class RecipeDetailsFragment extends Fragment {
         ibtnGoToOriginalUrl = view.findViewById(R.id.ibtnGoToOriginalUrl);
         rvIngredientsImages = view.findViewById(R.id.rvIngredientsImages);
         vpSteps = view.findViewById(R.id.vpSteps);
-        tabLayout = view.findViewById(R.id.tabLayout);
+        circleIndicator = view.findViewById(R.id.circleIndicator);
         animationViewLike = view.findViewById(R.id.animationViewLike);
 
         listener = (RecipeDetailsFragmentListener) getParentFragment();
 
         stepsAdapter = new StepsAdapter(getContext(), recipe.getInstructions());
         vpSteps.setAdapter(stepsAdapter);
-        tabLayout.setupWithViewPager(vpSteps, true);
+        circleIndicator.setViewPager(vpSteps);
+        stepsAdapter.registerDataSetObserver(circleIndicator.getDataSetObserver());
 
         int pagerPadding = 20;
         vpSteps.setClipToPadding(false);
