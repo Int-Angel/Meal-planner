@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * All possible fragments to be open from this activity
      */
-    public enum FragmentSelection {
-        HOME, RECIPES, SOCIAL, PROFILE, WEEK, SHOPPING_LIST, SAVED_RECIPES, ONLINE_RECIPES;
+    private enum FragmentSelection {
+        RECIPES, SOCIAL, PROFILE, WEEK, SHOPPING_LIST
     }
 
     private final static String TAG = "MainActivity";
@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
 
     private FragmentSelection activeFragment;
-    private FragmentSelection lastActiveFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         setBottomNavigationListener();
         bottomNavigationView.setSelectedItemId(R.id.action_plan);
-        activeFragment = FragmentSelection.HOME;
+        activeFragment = FragmentSelection.WEEK;
 
         filteringViewModel = new ViewModelProvider(this).get(FilteringViewModel.class);
         filteringViewModel.setActiveCuisines(false);
@@ -105,10 +104,7 @@ public class MainActivity extends AppCompatActivity {
      * @param fragmentSelected fragment to be open
      */
     private void changeFragment(FragmentSelection fragmentSelected) {
-        //if (activeFragment == fragmentSelected) return;
-
         Fragment fragment;
-        lastActiveFragment = activeFragment;
         activeFragment = fragmentSelected;
 
         switch (fragmentSelected) {

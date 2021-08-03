@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -77,6 +78,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         private TextView tvCuisineTypeItem;
         private TextView tvMealTypeItem;
         private CardView cvItemContainer;
+        private LottieAnimationView animationViewLike;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,6 +90,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             tvCuisineTypeItem = itemView.findViewById(R.id.tvCuisineTypeItem);
             tvMealTypeItem = itemView.findViewById(R.id.tvMealTypeItem);
             cvItemContainer = itemView.findViewById(R.id.cvItemContainer);
+            animationViewLike = itemView.findViewById(R.id.animationViewLike);
 
             ivRecipeImageItem.setOnClickListener(this);
             cvItemContainer.setOnClickListener(this);
@@ -111,7 +114,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 ibtnSaveRecipeItem.setSelected(((OnlineRecipe) recipe).isSaved());
             } else {
                 ibtnSaveRecipeItem.setVisibility(View.GONE);
+                animationViewLike.setVisibility(View.GONE);
             }
+
+            tvMealTypeItem.setText(recipe.getDishType());
 
             Glide.with(context)
                     .load(recipe.getImageUrl())
@@ -136,10 +142,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 SavedRecipesManager.saveRecipe((OnlineRecipe) bindedRecipe);
                 ibtnSaveRecipeItem.setSelected(true);
                 ((OnlineRecipe)bindedRecipe).setSaved(true);
+
+                animationViewLike.setVisibility(View.VISIBLE);
+                animationViewLike.playAnimation();
             }else{
                 SavedRecipesManager.unSaveRecipeById(bindedRecipe.getId());
                 ibtnSaveRecipeItem.setSelected(false);
                 ((OnlineRecipe)bindedRecipe).setSaved(false);
+                animationViewLike.setVisibility(View.GONE);
             }
         }
 

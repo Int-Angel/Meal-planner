@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -77,6 +78,7 @@ public class RecipeDetailsFragment extends Fragment {
     private RecyclerView rvIngredientsImages;
     private ViewPager vpSteps;
     private TabLayout tabLayout;
+    private LottieAnimationView animationViewLike;
 
 
     public RecipeDetailsFragment() {
@@ -134,6 +136,7 @@ public class RecipeDetailsFragment extends Fragment {
         rvIngredientsImages = view.findViewById(R.id.rvIngredientsImages);
         vpSteps = view.findViewById(R.id.vpSteps);
         tabLayout = view.findViewById(R.id.tabLayout);
+        animationViewLike = view.findViewById(R.id.animationViewLike);
 
         listener = (RecipeDetailsFragmentListener) getParentFragment();
 
@@ -251,22 +254,36 @@ public class RecipeDetailsFragment extends Fragment {
             SavedRecipesManager.saveRecipe((OnlineRecipe) recipe);
             ibtnSaveRecipeDetails.setSelected(true);
             ((OnlineRecipe) recipe).setSaved(true);
+
+            animationViewLike.setVisibility(View.VISIBLE);
+            animationViewLike.playAnimation();
         } else {
             SavedRecipesManager.unSaveRecipeById(recipe.getId());
             ibtnSaveRecipeDetails.setSelected(false);
             ((OnlineRecipe) recipe).setSaved(false);
+
+            animationViewLike.setVisibility(View.GONE);
         }
+        listener.updateRecipeList();
     }
 
     /**
-     * Changes the saved recipe save button icon
+     * Copies a saved recipe from other user
      */
     private void saveSavedRecipe() {
         if (recipeOwner.equals(ParseUser.getCurrentUser())) {
             ibtnSaveRecipeDetails.setSelected(!ibtnSaveRecipeDetails.isSelected());
+            if (ibtnSaveRecipeDetails.isSelected()) {
+                animationViewLike.setVisibility(View.VISIBLE);
+                animationViewLike.playAnimation();
+            } else {
+                animationViewLike.setVisibility(View.GONE);
+            }
         } else if (!SavedRecipesManager.checkIfRecipeIsSaved(recipe.getId())) {
             //copy recipe, change recipe owner, and change current recipe
             ibtnSaveRecipeDetails.setSelected(true);
+            animationViewLike.setVisibility(View.VISIBLE);
+            animationViewLike.playAnimation();
             SavedRecipesManager.copyRecipeToCurrentUser((Recipe) recipe, new SavedRecipesManager.SavedRecipesManagerListener() {
                 @Override
                 public void recipeSaved(Recipe newRecipe) {

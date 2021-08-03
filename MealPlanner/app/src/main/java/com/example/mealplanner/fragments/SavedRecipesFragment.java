@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.mealplanner.FilteringViewModel;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
@@ -54,6 +55,8 @@ public class SavedRecipesFragment extends Fragment {
     private List<IRecipe> recipes;
     private RecipeAdapter adapter;
     private FloatingActionButton fab;
+    private LottieAnimationView animation_progress;
+    private LottieAnimationView animationView;
 
     private SavedRecipesFragmentListener listener;
 
@@ -94,6 +97,8 @@ public class SavedRecipesFragment extends Fragment {
         tvNoSavedRecipes = view.findViewById(R.id.tvNoSavedRecipes);
         progressBar = view.findViewById(R.id.progress_circular);
         fab = view.findViewById(R.id.fab);
+        animation_progress = view.findViewById(R.id.animation_progress);
+        animationView = view.findViewById(R.id.animationView);
 
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
@@ -144,11 +149,14 @@ public class SavedRecipesFragment extends Fragment {
         recipes.clear();
         recipes.addAll(SavedRecipesManager.getRecipes());
         progressBar.setVisibility(View.GONE);
+        animation_progress.setVisibility(View.GONE);
 
         if (recipes.size() == 0) {
             tvNoSavedRecipes.setVisibility(View.VISIBLE);
+            animationView.setVisibility(View.VISIBLE);
         } else {
             tvNoSavedRecipes.setVisibility(View.GONE);
+            animationView.setVisibility(View.GONE);
         }
 
         adapter.notifyDataSetChanged();
@@ -192,11 +200,14 @@ public class SavedRecipesFragment extends Fragment {
                 recipes.addAll(objects);
 
                 progressBar.setVisibility(View.GONE);
+                animation_progress.setVisibility(View.GONE);
 
                 if (recipes.size() == 0) {
                     tvNoSavedRecipes.setVisibility(View.VISIBLE);
+                    animationView.setVisibility(View.VISIBLE);
                 } else {
                     tvNoSavedRecipes.setVisibility(View.GONE);
+                    animationView.setVisibility(View.GONE);
                 }
 
                 adapter.notifyDataSetChanged();

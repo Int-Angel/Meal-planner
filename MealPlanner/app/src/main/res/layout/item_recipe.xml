@@ -140,5 +140,24 @@
         android:elevation="9dp"
         app:srcCompat="@drawable/heart_button" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationViewLike"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+
+        android:visibility="gone"
+
+        app:lottie_rawRes="@raw/like"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="9dp"
+
+        android:elevation="11dp"
+        />
+
 
 </RelativeLayout>

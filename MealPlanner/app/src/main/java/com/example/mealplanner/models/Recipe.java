@@ -218,6 +218,11 @@ public class Recipe extends ParseObject implements IRecipe {
         return getJSONArray(KEY_INSTRUCTIONS);
     }
 
+    /**
+     * This method transforms the instructions JSON Array to a list of string
+     *
+     * @return
+     */
     @Override
     public List<String> getInstructions() {
         JSONArray instructions = getInstructionsJSONArray();
@@ -238,6 +243,11 @@ public class Recipe extends ParseObject implements IRecipe {
         put(KEY_INSTRUCTIONS, instructions);
     }
 
+    /**
+     * This method transforms a list of instructions to a JSON Array and saves the instructions
+     *
+     * @param instructions
+     */
     public void setInstructions(List<String> instructions) {
         JSONArray instructionsJSONArray = new JSONArray(instructions);
         setInstructions(instructionsJSONArray);
@@ -247,6 +257,11 @@ public class Recipe extends ParseObject implements IRecipe {
         return getJSONArray(KEY_INGREDIENTS);
     }
 
+    /**
+     * Returns the instruction in a List of strings
+     *
+     * @return
+     */
     @Override
     public List<String> getIngredients() {
         JSONArray ingredients = getIngredientsJSONArray();

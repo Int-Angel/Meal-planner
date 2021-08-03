@@ -127,6 +127,18 @@
                 android:textSize="11sp"
                 android:textStyle="italic" />
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animationView"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+
+                app:lottie_rawRes="@raw/simple_radar_blink_animation_for_lottie"
+
+                android:layout_margin="5dp"
+                />
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

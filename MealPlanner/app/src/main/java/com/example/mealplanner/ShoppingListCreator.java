@@ -26,25 +26,35 @@ import java.util.List;
 
 /**
  * This class helps to create shopping list items in the database, gets all the recipes and
- * ingredients from the shoppingList range dates, and generates the shopping list
+ * ingredients from the meal plan, and generates the shopping list
  */
 public class ShoppingListCreator {
 
+    /**
+     * Interface used to communicate that the shopping list has been created
+     */
     public interface ShoppingListCreatorListener {
         void shoppingListItemsCreated();
     }
 
     private final static String TAG = "ShoppingListCreator";
+
     private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private ShoppingList createdShoppingList;
     private ShoppingListCreatorListener listener;
 
+    /**
+     * Constructor needs a interface ShoppingListCreatorListener
+     *
+     * @param listener
+     */
     public ShoppingListCreator(ShoppingListCreatorListener listener) {
         this.listener = listener;
     }
 
     /**
-     * Gets all the dates to generate all the shopping list items from the date range
+     * Gets all the dates to generate all the shopping list items from the date range, and starts
+     * the creation process
      *
      * @param shoppingList
      */
@@ -194,6 +204,7 @@ public class ShoppingListCreator {
      */
     private void generateShoppingListFromIngredients(List<Ingredient> ingredients) {
 
+        // <recipe Id, item>
         HashMap<Integer, ShoppingListItem> items = new HashMap<>();
 
         if (createdShoppingList.getObjectId() == null) {

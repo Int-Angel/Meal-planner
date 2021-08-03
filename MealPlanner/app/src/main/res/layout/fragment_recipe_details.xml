@@ -98,6 +98,25 @@
             android:background="@drawable/rounded_button_selector"
             app:srcCompat="@drawable/heart_button" />
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationViewLike"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="false"
+
+            android:visibility="gone"
+
+            app:lottie_rawRes="@raw/like"
+
+            android:layout_alignTop="@+id/ivRecipeImage"
+            android:layout_toEndOf="@+id/ivRecipeImage"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+
+            android:elevation="11dp"
+            />
+
         <ImageButton
             android:id="@+id/ibtnGoToOriginalUrl"
             android:layout_width="50dp"

@@ -29,6 +29,9 @@ import java.util.Set;
 //TODO: change to ModelView
 public class SavedRecipesManager {
 
+    /**
+     * Interface to communicate that the recipe has been saved
+     */
     public interface SavedRecipesManagerListener {
         void recipeSaved(Recipe newRecipe);
     }

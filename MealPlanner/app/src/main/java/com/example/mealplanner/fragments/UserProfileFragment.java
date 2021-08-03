@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -55,6 +56,7 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
     private RecyclerView rvRecipes;
     private ProgressBar progress_circular;
     private TextView tvNoSavedRecipes;
+    private LottieAnimationView animationView;
 
     public UserProfileFragment() {
         // Required empty public constructor
@@ -62,6 +64,7 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
 
     /**
      * This fragment requires the user to be shown
+     *
      * @param user
      * @return
      */
@@ -103,6 +106,7 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
         rvRecipes = view.findViewById(R.id.rvRecipes);
         progress_circular = view.findViewById(R.id.progress_circular);
         tvNoSavedRecipes = view.findViewById(R.id.tvNoSavedRecipes);
+        animationView = view.findViewById(R.id.animationView);
 
         adapter = new RecipeAdapter(getContext(), recipes, new RecipeAdapter.RecipeAdapterListener() {
             @Override
@@ -122,7 +126,7 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
     /**
      * binds the user information to the view
      */
-    private void bind(){
+    private void bind() {
         if (user.getParseFile("image") != null) {
             Glide.with(getContext())
                     .load(user.getParseFile("image").getUrl())
@@ -163,6 +167,7 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
 
     /**
      * opens the recipe details
+     *
      * @param recipe
      * @param index
      */
@@ -200,8 +205,10 @@ public class UserProfileFragment extends Fragment implements RecipeDetailsFragme
 
                 if (objects.size() == 0) {
                     tvNoSavedRecipes.setVisibility(View.VISIBLE);
+                    animationView.setVisibility(View.VISIBLE);
                 } else {
                     tvNoSavedRecipes.setVisibility(View.GONE);
+                    animationView.setVisibility(View.GONE);
                 }
             }
         });

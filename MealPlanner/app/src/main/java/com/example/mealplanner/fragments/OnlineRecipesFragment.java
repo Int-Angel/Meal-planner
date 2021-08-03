@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.mealplanner.FilteringViewModel;
@@ -53,6 +54,7 @@ public class OnlineRecipesFragment extends Fragment {
 
     private RecyclerView rvRecipes;
     private ProgressBar progressBar;
+    private LottieAnimationView animation_progress;
     private List<IRecipe> onlineRecipes;
     private Set<String> savedRecipesUri;
     private RecipeAdapter adapter;
@@ -90,6 +92,7 @@ public class OnlineRecipesFragment extends Fragment {
         listener = (OnlineRecipesFragmentListener) getParentFragment();
 
         progressBar = view.findViewById(R.id.progress_circular);
+        animation_progress = view.findViewById(R.id.animation_progress);
 
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
@@ -184,6 +187,14 @@ public class OnlineRecipesFragment extends Fragment {
             ((OnlineRecipe) onlineRecipes.get(i)).setSaved(savedRecipesUri.contains(uri));
         }
         progressBar.setVisibility(View.GONE);
+        animation_progress.setVisibility(View.GONE);
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Updates the list of recipes
+     */
+    public void updateRecipeList(){
         adapter.notifyDataSetChanged();
     }
 

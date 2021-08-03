@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.mealplanner.R;
 import com.example.mealplanner.models.ShoppingList;
 import com.example.mealplanner.models.ShoppingListItem;
@@ -78,6 +79,7 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
 
     /**
      * Deletes all the shopping list items from the database
+     *
      * @param shoppingList
      */
     private void deleteShoppingListItems(ShoppingList shoppingList) {
@@ -108,6 +110,7 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
         private TextView tvEndDateItem;
         private TextView tvShoppingListNameItem;
         private TextView tvOutdated;
+        private LottieAnimationView animationView;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -116,12 +119,14 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
             tvEndDateItem = itemView.findViewById(R.id.tvEndDateItem);
             tvShoppingListNameItem = itemView.findViewById(R.id.tvShoppingListNameItem);
             tvOutdated = itemView.findViewById(R.id.tvOutdated);
+            animationView = itemView.findViewById(R.id.animationView);
 
             itemView.setOnClickListener(this);
         }
 
         /**
          * Update de view inside of the view holder with this data
+         *
          * @param shoppingList
          */
         public void bind(ShoppingList shoppingList) {
@@ -131,10 +136,13 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
             tvEndDateItem.setText(getStringDate(shoppingList.getEndDate()));
             tvShoppingListNameItem.setText(shoppingList.getName());
 
-            if(shoppingList.getUpdateMessage())
+            if (shoppingList.getUpdateMessage()) {
                 tvOutdated.setVisibility(View.VISIBLE);
-            else
+                animationView.setVisibility(View.VISIBLE);
+            } else {
                 tvOutdated.setVisibility(View.GONE);
+                animationView.setVisibility(View.GONE);
+            }
         }
 
         private String getStringDate(Date date) {

@@ -95,10 +95,8 @@ public class SignupActivity extends AppCompatActivity {
                 // default ACLs for User object
                 ParseACL parseACL = new ParseACL(ParseUser.getCurrentUser());
                 parseACL.setPublicReadAccess(true);
-
                 ParseUser.getCurrentUser().setACL(parseACL);
 
-                //Toast.makeText(SignupActivity.this, "successful sign up",Toast.LENGTH_SHORT).show();
                 goMainActivity();
             }
         });

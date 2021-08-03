@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SwipeToDeleteCallback;
 import com.example.mealplanner.adapters.MealPlanAdapter;
@@ -77,6 +78,8 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
     private View view_current_day;
     private CalendarView calendarView;
     private FrameLayout savedRecipesContainer;
+    private LottieAnimationView animationView;
+    private LottieAnimationView animation_progress;
 
     private boolean calendarExpanded;
 
@@ -115,6 +118,8 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         calendarView = view.findViewById(R.id.calendarView);
         savedRecipesContainer = view.findViewById(R.id.savedRecipesContainer);
         tvNoPlan = view.findViewById(R.id.tvNoPlan);
+        animationView = view.findViewById(R.id.animationView);
+        animation_progress = view.findViewById(R.id.animation_progress);
 
         calendarView.setVisibility(GONE);
         savedRecipesContainer.setVisibility(GONE);
@@ -145,8 +150,10 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
      * Gets all the recipes tha are already on the selected day
      */
     private void queryRecipesDay() {
-        progress_circular.setVisibility(View.VISIBLE);
+        progress_circular.setVisibility(GONE);
+        animation_progress.setVisibility(View.VISIBLE);
         tvNoPlan.setVisibility(GONE);
+        animationView.setVisibility(GONE);
 
         ParseQuery<MealPlan> query = ParseQuery.getQuery(MealPlan.class);
 
@@ -170,8 +177,14 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
                 mealPlans.clear();
                 mealPlans.addAll(objects);
                 progress_circular.setVisibility(GONE);
-                if (mealPlans.size() == 0)
+                animation_progress.setVisibility(GONE);
+                if (mealPlans.size() == 0){
                     tvNoPlan.setVisibility(View.VISIBLE);
+                    animationView.setVisibility(View.VISIBLE);
+                }else{
+                    tvNoPlan.setVisibility(View.GONE);
+                    animationView.setVisibility(View.GONE);
+                }
 
                 adapter.notifyDataSetChanged();
             }

@@ -165,6 +165,21 @@
         android:text="There's nothing here!"
         />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+
+        app:lottie_rawRes="@raw/astronaut_light_theme"
+
+        android:layout_below="@+id/tvNoSavedRecipes"
+        android:layout_marginTop="20dp"
+
+        android:visibility="gone"
+        />
+
     <FrameLayout
         android:id="@+id/flContainer"
         android:layout_width="match_parent"

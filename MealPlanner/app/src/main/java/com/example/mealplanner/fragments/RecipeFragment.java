@@ -33,17 +33,25 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         SavedRecipesFragment.SavedRecipesFragmentListener, RecipeDetailsFragment.RecipeDetailsFragmentListener,
         CreateRecipeFragment.CreateRecipeFragmentListener {
 
+    /**
+     * saved recipes fragment and online recipes fragment
+     */
+    public enum FragmentSelection {
+        SAVED_RECIPES, ONLINE_RECIPES
+    }
+
     private final static String TAG = "RecipeFragment";
     private FilteringViewModel filteringViewModel;
 
+    // Fragments
     private final SavedRecipesFragment savedRecipesFragment = new SavedRecipesFragment();
     private final OnlineRecipesFragment onlineRecipesFragment = new OnlineRecipesFragment();
     private final FiltersFragment filtersFragment = new FiltersFragment();
     private RecipeDetailsFragment recipeDetailsFragment;
     private CreateRecipeFragment createRecipeFragment;
 
-    private MainActivity.FragmentSelection activeFragment;
-    private MainActivity.FragmentSelection lastActiveFragment;
+    private FragmentSelection activeFragment;
+    private FragmentSelection lastActiveFragment;
 
     private RadioButton rbSavedRecipes;
     private RadioButton rbOnlineRecipes;
@@ -81,7 +89,7 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         searchView = view.findViewById(R.id.search_recipes);
         ibtnFilter = view.findViewById(R.id.ibtnFilter);
 
-        activeFragment = MainActivity.FragmentSelection.SAVED_RECIPES;
+        activeFragment = FragmentSelection.SAVED_RECIPES;
 
         getChildFragmentManager()
                 .beginTransaction().replace(R.id.flContainer, savedRecipesFragment).commit();
@@ -146,11 +154,11 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
         switch (view.getId()) {
             case R.id.rbSavedRecipes:
                 if (checked)
-                    changeFragment(MainActivity.FragmentSelection.SAVED_RECIPES);
+                    changeFragment(FragmentSelection.SAVED_RECIPES);
                 break;
             case R.id.rbOnlineRecipes:
                 if (checked)
-                    changeFragment(MainActivity.FragmentSelection.ONLINE_RECIPES);
+                    changeFragment(FragmentSelection.ONLINE_RECIPES);
                 break;
         }
     }
@@ -160,13 +168,13 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
      *
      * @param fragmentSelection could be saved recipes or online recipes
      */
-    private void changeFragment(MainActivity.FragmentSelection fragmentSelection) {
+    private void changeFragment(FragmentSelection fragmentSelection) {
         lastActiveFragment = activeFragment;
         activeFragment = fragmentSelection;
         fragmentHeaderContainer.setVisibility(View.VISIBLE);
         Fragment fragment;
 
-        if (fragmentSelection == MainActivity.FragmentSelection.SAVED_RECIPES)
+        if (fragmentSelection == FragmentSelection.SAVED_RECIPES)
             fragment = savedRecipesFragment;
         else
             fragment = onlineRecipesFragment;
@@ -231,7 +239,11 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
 
     @Override
     public void updateRecipeList() {
-        savedRecipesFragment.updateRecipeList();
+        if (activeFragment == FragmentSelection.ONLINE_RECIPES) {
+            onlineRecipesFragment.updateRecipeList();
+        } else {
+            savedRecipesFragment.updateRecipeList();
+        }
     }
 
     @Override

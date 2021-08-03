@@ -11,7 +11,7 @@ import com.parse.Parse;
 import com.parse.ParseObject;
 
 /**
- * Class application, configurates the Parse database
+ * Class application, configure the database
  */
 public class ParseApplication extends Application {
 
