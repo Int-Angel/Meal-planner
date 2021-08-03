@@ -37,9 +37,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         void openDetails(IRecipe recipe, int index);
     }
 
-    private Context context;
-    private List<IRecipe> recipes;
-    private RecipeAdapterListener listener;
+    private final Context context;
+    private final List<IRecipe> recipes;
+    private final RecipeAdapterListener listener;
 
     public RecipeAdapter(Context context, List<IRecipe> recipes, RecipeAdapterListener listener) {
         this.context = context;
@@ -139,14 +139,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
          */
         private void copyRecipe() {
             if(!((OnlineRecipe)bindedRecipe).isSaved()){
-                SavedRecipesManager.saveRecipe((OnlineRecipe) bindedRecipe);
+                SavedRecipesManager.getInstance().saveRecipe((OnlineRecipe) bindedRecipe);
                 ibtnSaveRecipeItem.setSelected(true);
                 ((OnlineRecipe)bindedRecipe).setSaved(true);
 
                 animationViewLike.setVisibility(View.VISIBLE);
                 animationViewLike.playAnimation();
             }else{
-                SavedRecipesManager.unSaveRecipeById(bindedRecipe.getId());
+                SavedRecipesManager.getInstance().unSaveRecipeById(bindedRecipe.getId());
                 ibtnSaveRecipeItem.setSelected(false);
                 ((OnlineRecipe)bindedRecipe).setSaved(false);
                 animationViewLike.setVisibility(View.GONE);

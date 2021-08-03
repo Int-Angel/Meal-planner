@@ -37,10 +37,10 @@ public class ShoppingListAisleAdapter extends RecyclerView.Adapter<ShoppingListA
         void editItem(int position, String oldAisle, ShoppingListItem item);
     }
 
-    private ShoppingListAisleAdapterListener listener;
-    private Context context;
-    private HashMap<String, List<ShoppingListItem>> aisles;
-    private List<String> aislesName;
+    private final ShoppingListAisleAdapterListener listener;
+    private final Context context;
+    private final HashMap<String, List<ShoppingListItem>> aisles;
+    private final List<String> aislesName;
 
     public ShoppingListAisleAdapter(Context context, HashMap<String, List<ShoppingListItem>> aisles, List<String> aislesName, ShoppingListAisleAdapterListener listener) {
         this.context = context;

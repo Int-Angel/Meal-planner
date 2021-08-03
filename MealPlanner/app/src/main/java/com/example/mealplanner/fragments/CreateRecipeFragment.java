@@ -664,7 +664,7 @@ public class CreateRecipeFragment extends Fragment {
                 for (int i = 0; i < ingredientList.size(); i++) {
                     ingredientList.get(i).setRecipe(recipe);
                 }
-                SavedRecipesManager.addRecipe(recipe);
+                SavedRecipesManager.getInstance().addRecipe(recipe);
                 Log.i(TAG, "Saving ingredients");
                 ParseObject.saveAllInBackground(ingredientList);
                 listener.newRecipeCreated();

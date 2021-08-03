@@ -40,9 +40,9 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
 
     private final static String TAG = "ShoppingListListAdapter";
 
-    private Context context;
-    private List<ShoppingList> shoppingLists;
-    private ShoppingListListAdapterListener listener;
+    private final Context context;
+    private final List<ShoppingList> shoppingLists;
+    private final ShoppingListListAdapterListener listener;
 
     public ShoppingListManagerAdapter(Context context, List<ShoppingList> shoppingLists, ShoppingListListAdapterListener listener) {
         this.context = context;

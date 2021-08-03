@@ -99,7 +99,7 @@ public class OnlineRecipesFragment extends Fragment {
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
 
         savedRecipesUri = new HashSet<>();
-        savedRecipesUri = SavedRecipesManager.getIdSet();
+        savedRecipesUri = SavedRecipesManager.getInstance().getIdSet();
         getRecipes(buildSearchUrl());
         searchListener();
     }
@@ -194,7 +194,7 @@ public class OnlineRecipesFragment extends Fragment {
     /**
      * Updates the list of recipes
      */
-    public void updateRecipeList(){
+    public void updateRecipeList() {
         adapter.notifyDataSetChanged();
     }
 

@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
         filteringViewModel.setActiveMealTypes(false);
         filteringViewModel.setActiveMaxTimeReady(false);
         filteringViewModel.setActiveCalories(false);
-        SavedRecipesManager.querySavedRecipes();
+
+        SavedRecipesManager.getInstance();
     }
 
     /**
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Changes the fragment on screen based on the fragmentSelected parameter
+     *
      * @param fragmentSelected fragment to be open
      */
     private void changeFragment(FragmentSelection fragmentSelected) {

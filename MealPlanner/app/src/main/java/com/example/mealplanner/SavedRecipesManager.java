@@ -26,7 +26,6 @@ import java.util.Set;
 /**
  * SavedRecipesManager manages the saved recipes from the user, it can read and save new recipes
  */
-//TODO: change to ModelView
 public class SavedRecipesManager {
 
     /**
@@ -38,12 +37,38 @@ public class SavedRecipesManager {
 
     private final static String TAG = "SavedRecipesManager";
 
-    private static List<Recipe> recipes;
-    private static Set<String> idSet; // a set that contains all the id recipes
+    private static SavedRecipesManager instance;
 
-    static {
+    private List<Recipe> recipes;
+    private Set<String> idSet; // a set that contains all the id recipes
+
+    /**
+     * Private constructor because it's a singleton
+     */
+    private SavedRecipesManager() {
         recipes = new ArrayList<>();
         idSet = new HashSet<>();
+
+        querySavedRecipes();
+    }
+
+    /**
+     * Returns the instance of this saved recipes manager
+     *
+     * @return
+     */
+    public static SavedRecipesManager getInstance() {
+        if (instance == null)
+            instance = new SavedRecipesManager();
+
+        return instance;
+    }
+
+    /**
+     * Clear the instance of the saved recipes manager
+     */
+    public static void clear() {
+        instance = null;
     }
 
     /**
@@ -51,7 +76,7 @@ public class SavedRecipesManager {
      * from the current user and generates the idSet to check witch recipes are already saved
      * in the online recipes fragment
      */
-    public static void querySavedRecipes() {
+    public void querySavedRecipes() {
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
 
         query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
@@ -73,7 +98,7 @@ public class SavedRecipesManager {
     /**
      * This method creates the idSet from the recipe list
      */
-    private static void createIdSet() {
+    private void createIdSet() {
         idSet.clear();
         for (int i = 0; i < recipes.size(); i++) {
             idSet.add(recipes.get(i).getId());
@@ -86,7 +111,7 @@ public class SavedRecipesManager {
      * @param id recipe id
      * @return
      */
-    public static Recipe getRecipeById(String id) {
+    public Recipe getRecipeById(String id) {
         for (int i = 0; i < recipes.size(); i++) {
             if (recipes.get(i).getId().equals(id))
                 return recipes.get(i);
@@ -99,7 +124,7 @@ public class SavedRecipesManager {
      *
      * @return
      */
-    public static List<Recipe> getRecipes() {
+    public List<Recipe> getRecipes() {
         return recipes;
     }
 
@@ -108,7 +133,7 @@ public class SavedRecipesManager {
      *
      * @return
      */
-    public static Set<String> getIdSet() {
+    public Set<String> getIdSet() {
         return idSet;
     }
 
@@ -117,7 +142,7 @@ public class SavedRecipesManager {
      *
      * @param onlineRecipe online recipe that will be used to create a saved recipe
      */
-    public static void saveRecipe(OnlineRecipe onlineRecipe) {
+    public void saveRecipe(OnlineRecipe onlineRecipe) {
         Recipe recipe = Recipe.createRecipe(onlineRecipe);
         recipes.add(0, recipe);
         idSet.add(recipe.getId());
@@ -141,7 +166,7 @@ public class SavedRecipesManager {
      *
      * @param recipe
      */
-    public static void addRecipe(Recipe recipe) {
+    public void addRecipe(Recipe recipe) {
         recipes.add(0, recipe);
         idSet.add(recipe.getId());
     }
@@ -152,7 +177,7 @@ public class SavedRecipesManager {
      * @param recipe       it's the recipe that owns the ingredients, will be used as reference
      * @param onlineRecipe it's the online recipe that provides the ingredients list
      */
-    private static void createRecipeIngredients(Recipe recipe, OnlineRecipe onlineRecipe) {
+    private void createRecipeIngredients(Recipe recipe, OnlineRecipe onlineRecipe) {
         try {
             List<Ingredient> ingredients = Ingredient.fromJSONArray(recipe, onlineRecipe.getExtendedIngredients());
 
@@ -176,7 +201,7 @@ public class SavedRecipesManager {
      *
      * @param id id recipe from the recipe to be removed
      */
-    private static void deleteRecipeFromListById(String id) {
+    private void deleteRecipeFromListById(String id) {
         for (int i = 0; i < recipes.size(); i++) {
             if (recipes.get(i).getId().equals(id)) {
                 idSet.remove(recipes.get(i).getId());
@@ -191,7 +216,7 @@ public class SavedRecipesManager {
      *
      * @param id
      */
-    public static void unSaveRecipeById(String id) {
+    public void unSaveRecipeById(String id) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Recipe");
         query.whereEqualTo(Recipe.KEY_ID, id);
         query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
@@ -226,7 +251,7 @@ public class SavedRecipesManager {
      *
      * @param recipe
      */
-    private static void deleteMealPlansWithRecipe(Recipe recipe) {
+    private void deleteMealPlansWithRecipe(Recipe recipe) {
         ParseQuery<MealPlan> query = ParseQuery.getQuery("Week");
         query.whereEqualTo(MealPlan.KEY_RECIPE, recipe);
         query.findInBackground(new FindCallback<MealPlan>() {
@@ -247,7 +272,7 @@ public class SavedRecipesManager {
      *
      * @param recipe
      */
-    private static void deleteIngredientsWithRecipe(Recipe recipe) {
+    private void deleteIngredientsWithRecipe(Recipe recipe) {
         ParseQuery<Ingredient> query = ParseQuery.getQuery("Ingredient");
         query.whereEqualTo(Ingredient.KEY_RECIPE, recipe);
         query.findInBackground(new FindCallback<Ingredient>() {
@@ -269,7 +294,7 @@ public class SavedRecipesManager {
      * @param newRecipe
      * @param listener
      */
-    public static void copyRecipeToCurrentUser(Recipe newRecipe, SavedRecipesManagerListener listener) {
+    public void copyRecipeToCurrentUser(Recipe newRecipe, SavedRecipesManagerListener listener) {
         Recipe recipe = Recipe.createRecipe(newRecipe);
         recipes.add(0, recipe);
         idSet.add(recipe.getId());
@@ -296,7 +321,7 @@ public class SavedRecipesManager {
      * @param newRecipe new recipe
      * @param oldRecipe already saved recipe
      */
-    private static void createRecipeIngredientsFromAlreadySavedRecipe(Recipe newRecipe, Recipe oldRecipe) {
+    private void createRecipeIngredientsFromAlreadySavedRecipe(Recipe newRecipe, Recipe oldRecipe) {
         ParseQuery<Ingredient> query = ParseQuery.getQuery(Ingredient.class);
         query.whereEqualTo(Ingredient.KEY_RECIPE, oldRecipe);
         query.findInBackground(new FindCallback<Ingredient>() {
@@ -321,7 +346,7 @@ public class SavedRecipesManager {
      * @param idRecipe id of the recipe to check
      * @return returns true if the recipe it's saved and false otherwise
      */
-    public static boolean checkIfRecipeIsSaved(String idRecipe) {
+    public boolean checkIfRecipeIsSaved(String idRecipe) {
         return idSet.contains(idRecipe);
     }
 }

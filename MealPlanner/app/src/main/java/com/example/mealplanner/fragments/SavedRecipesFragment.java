@@ -147,7 +147,7 @@ public class SavedRecipesFragment extends Fragment {
      */
     public void updateRecipeList() {
         recipes.clear();
-        recipes.addAll(SavedRecipesManager.getRecipes());
+        recipes.addAll(SavedRecipesManager.getInstance().getRecipes());
         progressBar.setVisibility(View.GONE);
         animation_progress.setVisibility(View.GONE);
 

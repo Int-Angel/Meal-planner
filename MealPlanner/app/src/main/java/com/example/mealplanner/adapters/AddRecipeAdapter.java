@@ -41,9 +41,9 @@ public class AddRecipeAdapter extends RecyclerView.Adapter<AddRecipeAdapter.View
         void addToPlan(IRecipe recipe, int index);
     }
 
-    private Context context;
-    private List<AddRecipe> recipes;
-    private AddRecipeAdapterListener listener;
+    private final Context context;
+    private final List<AddRecipe> recipes;
+    private final AddRecipeAdapterListener listener;
 
     public AddRecipeAdapter(Context context, List<AddRecipe> recipes, AddRecipeAdapterListener listener) {
         this.context = context;

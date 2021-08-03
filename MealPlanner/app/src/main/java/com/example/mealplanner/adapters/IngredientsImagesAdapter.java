@@ -26,8 +26,8 @@ public class IngredientsImagesAdapter extends RecyclerView.Adapter<IngredientsIm
 
     private final static String TAG = "IngredientsImagesAdapter";
 
-    private Context context;
-    private List<String> ingredientsImageUrl;
+    private final Context context;
+    private final List<String> ingredientsImageUrl;
 
     public IngredientsImagesAdapter(Context context, List<String> ingredientsImageUrl) {
         this.context = context;

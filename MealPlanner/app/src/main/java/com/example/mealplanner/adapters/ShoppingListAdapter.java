@@ -33,9 +33,9 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         void editItem(int position, String oldAisle, ShoppingListItem item);
     }
 
-    private Context context;
-    private List<ShoppingListItem> items;
-    private ShoppingListAdapterListener listener;
+    private final Context context;
+    private final List<ShoppingListItem> items;
+    private final ShoppingListAdapterListener listener;
 
     public ShoppingListAdapter(Context context, List<ShoppingListItem> items, ShoppingListAdapterListener listener) {
         this.context = context;

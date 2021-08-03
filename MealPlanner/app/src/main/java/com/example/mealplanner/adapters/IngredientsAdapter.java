@@ -23,9 +23,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         void onItemLongClicked(int position);
     }
 
-    private Context context;
-    private List<String> ingredients;
-    private OnLongClickListener onLongClickListener;
+    private final Context context;
+    private final List<String> ingredients;
+    private final OnLongClickListener onLongClickListener;
 
     public IngredientsAdapter(Context context, List<String> ingredients, OnLongClickListener onLongClickListener) {
         this.context = context;

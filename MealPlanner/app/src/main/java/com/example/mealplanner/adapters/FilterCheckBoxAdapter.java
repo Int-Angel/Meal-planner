@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class FilterCheckBoxAdapter extends RecyclerView.Adapter<FilterCheckBoxAdapter.ViewHolder> {
 
-    private Context context;
-    private List<FilterCheckBox> filterCheckBoxes;
+    private final Context context;
+    private final List<FilterCheckBox> filterCheckBoxes;
 
     public FilterCheckBoxAdapter(Context context, List<FilterCheckBox> filterCheckBoxes){
         this.context = context;

@@ -36,12 +36,13 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
      */
     public interface MealPlanAdapterListener {
         void openDetails(IRecipe recipe, int index);
+
         void updateShoppingList();
     }
 
-    private Context context;
-    private List<MealPlan> mealPlan;
-    private MealPlanAdapterListener listener;
+    private final Context context;
+    private final List<MealPlan> mealPlan;
+    private final MealPlanAdapterListener listener;
 
     public MealPlanAdapter(Context context, List<MealPlan> mealPlan, MealPlanAdapterListener listener) {
         this.context = context;
@@ -102,6 +103,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
 
         /**
          * Update de view inside of the view holder with this data
+         *
          * @param meal
          */
         public void bind(MealPlan meal) {
@@ -141,6 +143,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
 
         /**
          * Updates the quantity of the recipe
+         *
          * @param n
          */
         private void changeQuantity(int n) {
@@ -157,7 +160,7 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.ViewHo
          * opens the recipe details
          */
         private void openRecipeDetails() {
-            IRecipe recipe = SavedRecipesManager.getRecipeById(bindedMeal.getRecipe().getString(Recipe.KEY_ID));
+            IRecipe recipe = SavedRecipesManager.getInstance().getRecipeById(bindedMeal.getRecipe().getString(Recipe.KEY_ID));
             listener.openDetails(recipe, getAdapterPosition());
         }
 

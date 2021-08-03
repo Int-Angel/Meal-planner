@@ -60,6 +60,7 @@ public class AddRecipeFragment extends Fragment {
 
     /**
      * It needs all the already saved recipes to change it's icon
+     *
      * @param alreadyAddedRecipes
      * @return
      */
@@ -103,7 +104,7 @@ public class AddRecipeFragment extends Fragment {
         });
 
         recipes = new ArrayList<>();
-        recipes = SavedRecipesManager.getRecipes();
+        recipes = SavedRecipesManager.getInstance().getRecipes();
 
         addRecipes = new ArrayList<>();
         addRecipes = generateAddRecipeList();
@@ -122,6 +123,7 @@ public class AddRecipeFragment extends Fragment {
     /**
      * Generates all the addRecipe list to change the icon based in the already added recipes of
      * that day
+     *
      * @return
      */
     private List<AddRecipe> generateAddRecipeList() {
@@ -143,6 +145,7 @@ public class AddRecipeFragment extends Fragment {
 
     /**
      * Generates a id set for the already added recipes
+     *
      * @return
      */
     private Set<Integer> generateIdAddedRecipesSet() {

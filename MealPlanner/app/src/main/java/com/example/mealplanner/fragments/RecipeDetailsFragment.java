@@ -61,6 +61,7 @@ public class RecipeDetailsFragment extends Fragment {
     private RecipeDetailsFragmentListener listener;
     private IngredientsImagesAdapter adapter;
     private StepsAdapter stepsAdapter;
+    private SavedRecipesManager savedRecipesManager;
 
     private TextView tvTitle;
     private ImageButton ibtnBackOnlineDetails;
@@ -120,6 +121,8 @@ public class RecipeDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        savedRecipesManager = SavedRecipesManager.getInstance();
+
         tvTitle = view.findViewById(R.id.tvTitle);
         ibtnBackOnlineDetails = view.findViewById(R.id.ibtnBackOnlineDetails);
         ibtnSaveRecipeDetails = view.findViewById(R.id.ibtnSaveRecipeDetails);
@@ -162,7 +165,7 @@ public class RecipeDetailsFragment extends Fragment {
     private void bind() {
 
         if (recipe instanceof Recipe) {
-            boolean selected = SavedRecipesManager.checkIfRecipeIsSaved(recipe.getId());
+            boolean selected = savedRecipesManager.checkIfRecipeIsSaved(recipe.getId());
             ibtnSaveRecipeDetails.setSelected(selected);
         } else {
             ibtnSaveRecipeDetails.setSelected(((OnlineRecipe) recipe).isSaved());
@@ -251,14 +254,14 @@ public class RecipeDetailsFragment extends Fragment {
      */
     private void saveOnlineRecipe() {
         if (!((OnlineRecipe) recipe).isSaved()) {
-            SavedRecipesManager.saveRecipe((OnlineRecipe) recipe);
+            savedRecipesManager.saveRecipe((OnlineRecipe) recipe);
             ibtnSaveRecipeDetails.setSelected(true);
             ((OnlineRecipe) recipe).setSaved(true);
 
             animationViewLike.setVisibility(View.VISIBLE);
             animationViewLike.playAnimation();
         } else {
-            SavedRecipesManager.unSaveRecipeById(recipe.getId());
+            savedRecipesManager.unSaveRecipeById(recipe.getId());
             ibtnSaveRecipeDetails.setSelected(false);
             ((OnlineRecipe) recipe).setSaved(false);
 
@@ -279,12 +282,12 @@ public class RecipeDetailsFragment extends Fragment {
             } else {
                 animationViewLike.setVisibility(View.GONE);
             }
-        } else if (!SavedRecipesManager.checkIfRecipeIsSaved(recipe.getId())) {
+        } else if (!savedRecipesManager.checkIfRecipeIsSaved(recipe.getId())) {
             //copy recipe, change recipe owner, and change current recipe
             ibtnSaveRecipeDetails.setSelected(true);
             animationViewLike.setVisibility(View.VISIBLE);
             animationViewLike.playAnimation();
-            SavedRecipesManager.copyRecipeToCurrentUser((Recipe) recipe, new SavedRecipesManager.SavedRecipesManagerListener() {
+            savedRecipesManager.copyRecipeToCurrentUser((Recipe) recipe, new SavedRecipesManager.SavedRecipesManagerListener() {
                 @Override
                 public void recipeSaved(Recipe newRecipe) {
                     recipe = newRecipe;
@@ -300,7 +303,7 @@ public class RecipeDetailsFragment extends Fragment {
     private void removeSavedRecipe() {
         if (recipe instanceof Recipe) {
             if (!ibtnSaveRecipeDetails.isSelected() && recipeOwner.equals(ParseUser.getCurrentUser())) {
-                SavedRecipesManager.unSaveRecipeById(recipe.getId());
+                savedRecipesManager.unSaveRecipeById(recipe.getId());
                 listener.updateRecipeList();
             }
         }

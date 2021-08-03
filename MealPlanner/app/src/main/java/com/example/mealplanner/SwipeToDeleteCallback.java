@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
-    private IAdapterSwipeToDelete adapter;
+    private final IAdapterSwipeToDelete adapter;
 
     /**
      * Constructor needs a recyclerView adapter that implements IAdapterSwipeToDelete interface

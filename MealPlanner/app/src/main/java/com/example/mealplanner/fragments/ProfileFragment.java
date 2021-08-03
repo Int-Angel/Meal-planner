@@ -33,6 +33,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.mealplanner.LoginActivity;
 import com.example.mealplanner.R;
+import com.example.mealplanner.SavedRecipesManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -273,6 +274,8 @@ public class ProfileFragment extends Fragment {
      */
     private void logout() {
         ParseUser.logOut();
+
+        SavedRecipesManager.clear();
 
         Intent intent = new Intent(getContext(), LoginActivity.class);
         getContext().startActivity(intent);

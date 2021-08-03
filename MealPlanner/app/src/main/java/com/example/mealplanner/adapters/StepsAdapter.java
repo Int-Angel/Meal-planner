@@ -20,8 +20,8 @@ import java.util.List;
  * View pager adapter to show the recipe steps inside the recipe details fragment
  */
 public class StepsAdapter extends PagerAdapter {
-    Context context;
-    List<String> steps;
+    private final Context context;
+    private final List<String> steps;
 
     public StepsAdapter(Context context, List<String> steps){
         this.context = context;
