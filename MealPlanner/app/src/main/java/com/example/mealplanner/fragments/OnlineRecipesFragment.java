@@ -112,7 +112,7 @@ public class OnlineRecipesFragment extends Fragment {
             this.query = query;
             getRecipes(buildSearchUrl());
         });
-        filteringViewModel.getActiveCuisines().observe(getViewLifecycleOwner(), observer -> {
+        filteringViewModel.getApplyChanges().observe(getViewLifecycleOwner(), observer -> {
             getRecipes(buildSearchUrl());
         });
     }

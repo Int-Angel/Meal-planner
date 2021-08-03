@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         activeFragment = FragmentSelection.WEEK;
 
         filteringViewModel = new ViewModelProvider(this).get(FilteringViewModel.class);
+        filteringViewModel.setApplyChanges(false);
         filteringViewModel.setActiveCuisines(false);
         filteringViewModel.setActiveMealTypes(false);
         filteringViewModel.setActiveMaxTimeReady(false);

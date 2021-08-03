@@ -11,6 +11,7 @@ import java.util.List;
  * all the filters are saved here in this class.
  */
 public class FilteringViewModel extends ViewModel {
+    private MutableLiveData<Boolean> applyChanges = new MutableLiveData<>(); // doesn't matter the value, it only works to notify other fragments
 
     private MutableLiveData<String> queryName = new MutableLiveData<>(); // title of the recipe to search
 
@@ -30,6 +31,14 @@ public class FilteringViewModel extends ViewModel {
     /**
      * Setters and getters
      */
+
+    public void setApplyChanges(Boolean v) {
+        applyChanges.setValue(v);
+    }
+
+    public LiveData<Boolean> getApplyChanges() {
+        return applyChanges;
+    }
 
     public void setQueryName(String query) {
         queryName.setValue(query);

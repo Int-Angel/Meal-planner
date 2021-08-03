@@ -137,7 +137,8 @@ public class SavedRecipesFragment extends Fragment {
             getCustomRecipes();
             //getRecipes(query);
         });
-        filteringViewModel.getActiveCuisines().observe(getViewLifecycleOwner(), observer -> {
+
+        filteringViewModel.getApplyChanges().observe(getViewLifecycleOwner(), observer -> {
             getCustomRecipes();
         });
     }

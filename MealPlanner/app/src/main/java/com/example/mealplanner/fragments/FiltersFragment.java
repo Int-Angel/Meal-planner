@@ -167,6 +167,9 @@ public class FiltersFragment extends Fragment {
         filteringViewModel.setActiveMaxTimeReady(cbMaxTime.isChecked());
         filteringViewModel.setActiveMealTypes(cbMealTypes.isChecked());
 
+        boolean currentValue = filteringViewModel.getApplyChanges().getValue();
+        filteringViewModel.setApplyChanges(!currentValue);
+
         closeFilters();
     }
 
