@@ -66,4 +66,6 @@ dependencies {
     implementation "com.airbnb.android:lottie:4.0.0"
 
     implementation 'me.relex:circleindicator:2.1.6'
+
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 }

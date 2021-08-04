@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,6 +59,7 @@ public class SavedRecipesFragment extends Fragment {
     private FloatingActionButton fab;
     private LottieAnimationView animation_progress;
     private LottieAnimationView animationView;
+    private SwipeRefreshLayout swipeContainer;
 
     private SavedRecipesFragmentListener listener;
 
@@ -100,10 +102,24 @@ public class SavedRecipesFragment extends Fragment {
         fab = view.findViewById(R.id.fab);
         animation_progress = view.findViewById(R.id.animation_progress);
         animationView = view.findViewById(R.id.animationView);
+        swipeContainer = view.findViewById(R.id.swipeContainer);
 
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateRecipeList();
+            }
+        });
 
         setUpFAB();
         updateRecipeList();
@@ -154,6 +170,7 @@ public class SavedRecipesFragment extends Fragment {
             recipes.clear();
             recipes.addAll(SavedRecipesManager.getInstance().getRecipes());
             adapter.notifyDataSetChanged();
+            swipeContainer.setRefreshing(false);
         }
     }
 
@@ -219,6 +236,7 @@ public class SavedRecipesFragment extends Fragment {
                     animationView.setVisibility(View.GONE);
                 }
 
+                swipeContainer.setRefreshing(false);
                 adapter.notifyDataSetChanged();
             }
         });
