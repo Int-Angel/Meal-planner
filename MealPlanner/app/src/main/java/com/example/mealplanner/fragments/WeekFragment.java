@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,6 +81,7 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
     private FrameLayout savedRecipesContainer;
     private LottieAnimationView animationView;
     private LottieAnimationView animation_progress;
+    private SwipeRefreshLayout swipeContainer;
 
     private boolean calendarExpanded;
 
@@ -120,6 +122,7 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         tvNoPlan = view.findViewById(R.id.tvNoPlan);
         animationView = view.findViewById(R.id.animationView);
         animation_progress = view.findViewById(R.id.animation_progress);
+        swipeContainer = view.findViewById(R.id.swipeContainer);
 
         calendarView.setVisibility(GONE);
         savedRecipesContainer.setVisibility(GONE);
@@ -141,6 +144,19 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
         itemTouchHelper.attachToRecyclerView(rvRecipes);
 
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                queryRecipesDay();
+            }
+        });
+
         setUpOnClickListeners();
         updateDateOnScreen();
         queryRecipesDay();
@@ -154,6 +170,8 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         animation_progress.setVisibility(View.VISIBLE);
         tvNoPlan.setVisibility(GONE);
         animationView.setVisibility(GONE);
+        mealPlans.clear();
+        adapter.notifyDataSetChanged();
 
         ParseQuery<MealPlan> query = ParseQuery.getQuery(MealPlan.class);
 
@@ -187,6 +205,7 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
                 }
 
                 adapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
             }
         });
     }
