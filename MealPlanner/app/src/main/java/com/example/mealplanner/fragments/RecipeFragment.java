@@ -221,12 +221,12 @@ public class RecipeFragment extends Fragment implements OnlineRecipesFragment.On
      * Closes the recipe details
      */
     private void closeDetailsFragment() {
-        if (lastActiveFragment == FragmentSelection.ONLINE_RECIPES) {
+        changeFragment(lastActiveFragment);
+        if (activeFragment == FragmentSelection.ONLINE_RECIPES) {
             onlineRecipesFragment.updateRecipeList();
         } else {
             savedRecipesFragment.updateRecipeList();
         }
-        changeFragment(lastActiveFragment);
     }
 
     @Override

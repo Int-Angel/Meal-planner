@@ -2,7 +2,7 @@
 <resources>
     <array name="initial_slider_values">
         <item>0</item>
-        <item>2000.0</item>
+        <item>800</item>
     </array>
 
     <string-array name="meal_types_array">

@@ -130,7 +130,9 @@
         app:values="@array/initial_slider_values"
 
         android:valueFrom="0.0"
-        android:valueTo="2000.0"
+        android:valueTo="800.0"
+
+        app:minSeparation="1dp"
 
         android:visibility="gone"
         />

@@ -43,6 +43,7 @@ public class SavedRecipesFragment extends Fragment {
 
     public interface SavedRecipesFragmentListener {
         void openSavedRecipeDetailsFragment(IRecipe recipe, int index);
+
         void openCreateNewFragment();
     }
 
@@ -112,7 +113,7 @@ public class SavedRecipesFragment extends Fragment {
     /**
      * sets up an onClickListener to the fab
      */
-    private void setUpFAB(){
+    private void setUpFAB() {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +125,7 @@ public class SavedRecipesFragment extends Fragment {
     /**
      * opens the fragment to create a new recipe
      */
-    private void openCreateNewRecipe(){
+    private void openCreateNewRecipe() {
         listener.openCreateNewFragment();
     }
 
@@ -147,18 +148,38 @@ public class SavedRecipesFragment extends Fragment {
      * Updates the saved recipes list
      */
     public void updateRecipeList() {
-        getCustomRecipes();
+        if (filterActive()) {
+            getCustomRecipes();
+        } else {
+            recipes.clear();
+            recipes.addAll(SavedRecipesManager.getInstance().getRecipes());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private boolean filterActive() {
+        boolean activeCalories = filteringViewModel.getActiveCalories().getValue();
+        boolean activeCuisine = filteringViewModel.getActiveCuisines().getValue();
+        boolean activeTime = filteringViewModel.getActiveMaxTimeReady().getValue();
+        boolean activeMeal = filteringViewModel.getActiveMealTypes().getValue();
+        return activeCalories || activeCuisine || activeTime || activeMeal;
     }
 
     /**
      * Gets the saved recipes based in the filters and search bar
      */
     private void getCustomRecipes() {
+
+        animation_progress.setVisibility(View.VISIBLE);
+        recipes.clear();
+        adapter.notifyDataSetChanged();
+
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
         query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
 
-        if (!queryName.equals("") && !queryName.equals(" ") && !queryName.equals("null"))
+        if (!queryName.equals("") && !queryName.equals(" ") && !queryName.equals("null")) {
             query.whereFullText(Recipe.KEY_TITLE, queryName);
+        }
 
         if (filteringViewModel.getActiveCuisines().getValue()) {
             query.whereContainedIn(Recipe.KEY_CUISINE_TYPE, filteringViewModel.getCuisines().getValue());
@@ -173,8 +194,8 @@ public class SavedRecipesFragment extends Fragment {
         }
 
         if (filteringViewModel.getActiveCalories().getValue()) {
-            query.whereGreaterThan(Recipe.KEY_CALORIES, filteringViewModel.getMinCalories());
-            query.whereLessThanOrEqualTo(Recipe.KEY_CALORIES, filteringViewModel.getMaxCalories());
+            query.whereGreaterThanOrEqualTo(Recipe.KEY_CALORIES, filteringViewModel.getMinCalories().getValue());
+            query.whereLessThanOrEqualTo(Recipe.KEY_CALORIES, filteringViewModel.getMaxCalories().getValue());
         }
 
         query.findInBackground(new FindCallback<Recipe>() {
@@ -201,7 +222,6 @@ public class SavedRecipesFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
-
     }
 
     @Override
