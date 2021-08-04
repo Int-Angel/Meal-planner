@@ -18,6 +18,8 @@ import com.example.mealplanner.fragments.WeekFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.ArrayList;
+
 /**
  * MainActivity that contains all the fragments and it's in charge of the bottom navigation of the
  * app
@@ -56,6 +58,14 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_plan);
         activeFragment = FragmentSelection.WEEK;
 
+        initializeFilters();
+        SavedRecipesManager.getInstance();
+    }
+
+    /**
+     * Initialize the filter view model
+     */
+    private void initializeFilters() {
         filteringViewModel = new ViewModelProvider(this).get(FilteringViewModel.class);
         filteringViewModel.setApplyChanges(false);
         filteringViewModel.setActiveCuisines(false);
@@ -63,7 +73,11 @@ public class MainActivity extends AppCompatActivity {
         filteringViewModel.setActiveMaxTimeReady(false);
         filteringViewModel.setActiveCalories(false);
 
-        SavedRecipesManager.getInstance();
+        filteringViewModel.setMinCalories(0);
+        filteringViewModel.setMaxCalories(800);
+        filteringViewModel.setMaxTimeReady(500);
+        filteringViewModel.setCuisines(new ArrayList<>());
+        filteringViewModel.setMealTypes("");
     }
 
     /**
@@ -133,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.flContainer, fragment)
                 .commit();
-
 
 
     }

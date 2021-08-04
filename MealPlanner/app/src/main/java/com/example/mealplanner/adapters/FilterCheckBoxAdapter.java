@@ -1,6 +1,7 @@
 package com.example.mealplanner.adapters;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,12 @@ public class FilterCheckBoxAdapter extends RecyclerView.Adapter<FilterCheckBoxAd
 
     private final Context context;
     private final List<FilterCheckBox> filterCheckBoxes;
+    private final boolean onlyOne;
 
-    public FilterCheckBoxAdapter(Context context, List<FilterCheckBox> filterCheckBoxes){
+    public FilterCheckBoxAdapter(Context context, List<FilterCheckBox> filterCheckBoxes, boolean onlyOne) {
         this.context = context;
         this.filterCheckBoxes = filterCheckBoxes;
+        this.onlyOne = onlyOne;
     }
 
     @NonNull
@@ -64,12 +67,35 @@ public class FilterCheckBoxAdapter extends RecyclerView.Adapter<FilterCheckBoxAd
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     bindedItem.setSelected(isChecked);
+                    if (onlyOne)
+                        deselectAllOthers();
                 }
             });
         }
 
         /**
+         * Deselects all other filters
+         */
+        private void deselectAllOthers() {
+            for (int i = 0; i < filterCheckBoxes.size(); i++) {
+                if (i != getAdapterPosition() && filterCheckBoxes.get(i).isSelected()) {
+                    filterCheckBoxes.get(i).setSelected(false);
+                    Handler handler = new Handler();
+                    int finalI = i;
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyItemChanged(finalI);
+                        }
+                    };
+                    handler.post(runnable);
+                }
+            }
+        }
+
+        /**
          * binds the filter information with the view
+         *
          * @param item
          */
         public void bind(FilterCheckBox item) {

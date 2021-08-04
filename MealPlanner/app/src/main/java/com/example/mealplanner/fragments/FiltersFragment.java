@@ -28,7 +28,9 @@ import com.google.android.material.slider.Slider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This fragment contains all the recipe filters and stores the filters in a ModelView
@@ -85,8 +87,8 @@ public class FiltersFragment extends Fragment {
         rSlCalories = view.findViewById(R.id.rSlCalories);
         btnApply = view.findViewById(R.id.btnApply);
 
-        cuisinesAdapter = new FilterCheckBoxAdapter(getContext(), cuisines);
-        mealTypesAdapter = new FilterCheckBoxAdapter(getContext(), mealType);
+        cuisinesAdapter = new FilterCheckBoxAdapter(getContext(), cuisines, false);
+        mealTypesAdapter = new FilterCheckBoxAdapter(getContext(), mealType, true);
 
         rvCuisines.setAdapter(cuisinesAdapter);
         rvCuisines.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
@@ -95,6 +97,35 @@ public class FiltersFragment extends Fragment {
         rvMealTypes.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
         setUpOnClickListeners();
+        bind();
+
+    }
+
+    /**
+     * Loads the filter state
+     */
+    private void bind() {
+        slMaxTime.setValue(filteringViewModel.getMaxTimeReady().getValue());
+
+        List<Float> caloriesValues = new ArrayList<>();
+        caloriesValues.add((float) filteringViewModel.getMinCalories().getValue());
+        caloriesValues.add((float) filteringViewModel.getMaxCalories().getValue());
+        rSlCalories.setValues(caloriesValues);
+
+        Set<String> cuisineSet = new HashSet<>(filteringViewModel.getCuisines().getValue());
+        for (FilterCheckBox cuisine : cuisines) {
+            if (cuisineSet.contains(cuisine.getName()))
+                cuisine.setSelected(true);
+        }
+
+        String mealSelected = filteringViewModel.getMealTypes().getValue();
+        for(FilterCheckBox meal : mealType){
+            if(meal.getName().equals(mealSelected))
+                meal.setSelected(true);
+        }
+
+        mealTypesAdapter.notifyDataSetChanged();
+        cuisinesAdapter.notifyDataSetChanged();
     }
 
     /**
