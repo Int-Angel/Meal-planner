@@ -163,6 +163,10 @@ public class AddRecipeFragment extends Fragment {
      * Close the fragment
      */
     private void closeFragment() {
-        getParentFragmentManager().beginTransaction().remove(this).commit();
+        getParentFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.bottom_down,R.anim.bottom_down)
+                .remove(this)
+                .commit();
     }
 }

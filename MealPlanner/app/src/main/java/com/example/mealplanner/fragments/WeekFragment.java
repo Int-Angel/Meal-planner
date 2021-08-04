@@ -286,7 +286,10 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
         addRecipeFragment = AddRecipeFragment.newInstance(getRecipesFromMealPlan(mealPlans));
 
         getChildFragmentManager()
-                .beginTransaction().replace(R.id.savedRecipesContainer, addRecipeFragment).commit();
+                .beginTransaction()
+                .setCustomAnimations(R.anim.bottom_up, R.anim.bottom_down)
+                .replace(R.id.savedRecipesContainer, addRecipeFragment)
+                .commit();
     }
 
     /**

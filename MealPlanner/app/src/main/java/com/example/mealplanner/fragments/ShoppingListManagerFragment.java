@@ -101,8 +101,14 @@ public class ShoppingListManagerFragment extends Fragment implements
      * Opens the fragment to create a new shopping list
      */
     private void createNewShoppingList() {
-        getChildFragmentManager()
-                .beginTransaction().replace(R.id.flContainer, createShoppingListFragment).commit();
+        /*getChildFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.bottom_up, R.anim.bottom_down)
+                .replace(R.id.flContainer, createShoppingListFragment)
+                .commit();*/
+
+        createShoppingListFragment
+                .show(getChildFragmentManager(),"hola");
     }
 
     /**
@@ -144,6 +150,7 @@ public class ShoppingListManagerFragment extends Fragment implements
     public void closeCreateShoppingListFragment() {
         getChildFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(R.anim.bottom_down, R.anim.bottom_down)
                 .remove(createShoppingListFragment)
                 .commit();
     }

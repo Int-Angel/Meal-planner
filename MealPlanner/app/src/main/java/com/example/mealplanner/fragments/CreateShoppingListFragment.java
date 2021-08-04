@@ -1,17 +1,21 @@
 package com.example.mealplanner.fragments;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -49,7 +53,7 @@ import java.util.List;
  * This fragment allows the user to select a range of dates and generates a shopping list
  * from that range of dates
  */
-public class CreateShoppingListFragment extends Fragment {
+public class CreateShoppingListFragment extends DialogFragment {
 
     public interface CreateShoppingListFragmentListener {
         void closeCreateShoppingListFragment();
@@ -85,8 +89,12 @@ public class CreateShoppingListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_shopping_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_shopping_list, container, false);
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        }
+        return view;
     }
 
     @Override

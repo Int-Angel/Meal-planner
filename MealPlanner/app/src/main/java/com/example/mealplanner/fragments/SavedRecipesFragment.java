@@ -147,20 +147,7 @@ public class SavedRecipesFragment extends Fragment {
      * Updates the saved recipes list
      */
     public void updateRecipeList() {
-        recipes.clear();
-        recipes.addAll(SavedRecipesManager.getInstance().getRecipes());
-        progressBar.setVisibility(View.GONE);
-        animation_progress.setVisibility(View.GONE);
-
-        if (recipes.size() == 0) {
-            tvNoSavedRecipes.setVisibility(View.VISIBLE);
-            animationView.setVisibility(View.VISIBLE);
-        } else {
-            tvNoSavedRecipes.setVisibility(View.GONE);
-            animationView.setVisibility(View.GONE);
-        }
-
-        adapter.notifyDataSetChanged();
+        getCustomRecipes();
     }
 
     /**

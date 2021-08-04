@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -128,7 +129,12 @@ public class MainActivity extends AppCompatActivity {
                 fragment = profileFragment;
                 break;
         }
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.flContainer, fragment)
+                .commit();
 
-        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+
+
     }
 }
