@@ -369,6 +369,7 @@ public class WeekFragment extends Fragment implements AddRecipeFragment.AddRecip
     @Override
     public void addRecipeToPlan(Recipe recipe) {
         tvNoPlan.setVisibility(GONE);
+        animationView.setVisibility(GONE);
         try {
             MealPlan newMeal = MealPlan.createMealPlan(recipe, formatter.parse(formatter.format(calendar.getTime())));
             newMeal.saveInBackground(e -> {
