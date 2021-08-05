@@ -84,6 +84,36 @@
         android:layout_marginTop="100dp"
         />
 
+    <TextView
+        android:id="@+id/tvNoShoppingLists"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:visibility="gone"
+
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="100dp"
+
+        android:textSize="20sp"
+
+        android:text="Create a new shopping list :D"
+        />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+
+        app:lottie_rawRes="@raw/astronaut_light_theme"
+
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        />
+
     <FrameLayout
         android:id="@+id/flContainer"
         android:layout_width="match_parent"

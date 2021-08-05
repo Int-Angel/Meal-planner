@@ -36,6 +36,8 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
      */
     public interface ShoppingListListAdapterListener {
         void openShoppingList(ShoppingList shoppingList);
+
+        void shoppingListRemoved();
     }
 
     private final static String TAG = "ShoppingListListAdapter";
@@ -73,6 +75,8 @@ public class ShoppingListManagerAdapter extends RecyclerView.Adapter<ShoppingLis
         ShoppingList list = shoppingLists.get(position);
         shoppingLists.remove(position);
         notifyItemRemoved(position);
+
+        listener.shoppingListRemoved();
 
         deleteShoppingListItems(list);
     }

@@ -14,7 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SwipeToDeleteCallback;
 import com.example.mealplanner.adapters.ShoppingListManagerAdapter;
@@ -26,6 +28,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +50,8 @@ public class ShoppingListManagerFragment extends Fragment implements
     private RecyclerView rvShoppingList;
     private ProgressBar progress_circular;
     private FloatingActionButton fab;
+    private LottieAnimationView animationView;
+    private TextView tvNoShoppingLists;
 
     public ShoppingListManagerFragment() {
         // Required empty public constructor
@@ -68,11 +73,24 @@ public class ShoppingListManagerFragment extends Fragment implements
         progress_circular = view.findViewById(R.id.progress_circular);
         fab = view.findViewById(R.id.fab);
         rvShoppingList = view.findViewById(R.id.rvShoppingList);
+        animationView = view.findViewById(R.id.animationView);
+        tvNoShoppingLists = view.findViewById(R.id.tvNoShoppingLists);
 
         adapter = new ShoppingListManagerAdapter(getContext(), shoppingLists, new ShoppingListManagerAdapter.ShoppingListListAdapterListener() {
             @Override
             public void openShoppingList(ShoppingList shoppingList) {
                 openShoppingListDetails(shoppingList);
+            }
+
+            @Override
+            public void shoppingListRemoved() {
+                if (shoppingLists.size() == 0) {
+                    tvNoShoppingLists.setVisibility(View.VISIBLE);
+                    animationView.setVisibility(View.VISIBLE);
+                } else {
+                    tvNoShoppingLists.setVisibility(View.GONE);
+                    animationView.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -101,14 +119,8 @@ public class ShoppingListManagerFragment extends Fragment implements
      * Opens the fragment to create a new shopping list
      */
     private void createNewShoppingList() {
-        /*getChildFragmentManager()
-                .beginTransaction()
-                .setCustomAnimations(R.anim.bottom_up, R.anim.bottom_down)
-                .replace(R.id.flContainer, createShoppingListFragment)
-                .commit();*/
-
         createShoppingListFragment
-                .show(getChildFragmentManager(),"hola");
+                .show(getChildFragmentManager(), "create");
     }
 
     /**
@@ -130,12 +142,21 @@ public class ShoppingListManagerFragment extends Fragment implements
                 shoppingLists.clear();
                 shoppingLists.addAll(objects);
                 adapter.notifyDataSetChanged();
+
+                if (shoppingLists.size() == 0) {
+                    tvNoShoppingLists.setVisibility(View.VISIBLE);
+                    animationView.setVisibility(View.VISIBLE);
+                } else {
+                    tvNoShoppingLists.setVisibility(View.GONE);
+                    animationView.setVisibility(View.GONE);
+                }
             }
         });
     }
 
     /**
      * Open the shopping list details to show all it's items
+     *
      * @param shoppingList
      */
     private void openShoppingListDetails(ShoppingList shoppingList) {
