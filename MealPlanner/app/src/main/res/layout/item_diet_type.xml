@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dietContainer"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+
+        android:layout_margin="10dp"
+        app:cardBackgroundColor="@color/card_6"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvDiet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_centerVertical="true"
+                android:gravity="center"
+
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:text="Gluten Free"
+                />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

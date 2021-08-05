@@ -17,4 +17,11 @@
     <color name="cool_blue">#86C7EA</color>
     <color name="cool_green">#4FA64F</color>
     <color name="cool_red">#FF3144</color>
+
+    <color name="card_1">#FFFFFF</color>
+    <color name="card_2">#EF8677</color>
+    <color name="card_3">#A0E77D</color>
+    <color name="card_4">#82B6D9</color>
+    <color name="card_5">#F3DDF2</color>
+    <color name="card_6">#F5D5CB</color>
 </resources>

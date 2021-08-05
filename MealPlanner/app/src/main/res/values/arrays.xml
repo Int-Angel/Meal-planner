@@ -51,4 +51,18 @@
         <item>Thai</item>
         <item>Vietnamese</item>
     </string-array>
+
+    <string-array name="diets_array">
+        <item>All</item>
+        <item>Gluten Free</item>
+        <item>Ketogenic</item>
+        <item>Vegetarian</item>
+        <item>Lacto-Vegetarian</item>
+        <item>Ovo-Vegetarian</item>
+        <item>Vegan</item>
+        <item>Pescetarian</item>
+        <item>Paleo</item>
+        <item>Primal</item>
+        <item>Whole30</item>
+    </string-array>
 </resources>
