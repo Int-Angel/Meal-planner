@@ -178,6 +178,8 @@ public class ShoppingListManagerFragment extends Fragment implements
 
     @Override
     public void shoppingListCreated(ShoppingList shoppingList) {
+        tvNoShoppingLists.setVisibility(View.GONE);
+        animationView.setVisibility(View.GONE);
         closeCreateShoppingListFragment();
         shoppingLists.add(0, shoppingList);
         adapter.notifyItemInserted(0);

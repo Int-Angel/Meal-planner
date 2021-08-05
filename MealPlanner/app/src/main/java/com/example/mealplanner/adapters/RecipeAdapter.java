@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -104,6 +105,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         /**
          * Update de view inside of the view holder with this data
+         *
          * @param recipe
          */
         public void bind(IRecipe recipe) {
@@ -121,7 +123,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
             Glide.with(context)
                     .load(recipe.getImageUrl())
-                    .transform(new CenterCrop(),new RoundedCorners(1000))
+                    .transform(new CenterCrop(), new RoundedCorners(1000))
                     .into(ivRecipeImageItem);
 
             tvRecipeTitleItem.setText(recipe.getTitle());
@@ -138,17 +140,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
          * saves or unsaves a online recipe
          */
         private void copyRecipe() {
-            if(!((OnlineRecipe)bindedRecipe).isSaved()){
+            if (!((OnlineRecipe) bindedRecipe).isSaved()) {
                 SavedRecipesManager.getInstance().saveRecipe((OnlineRecipe) bindedRecipe);
                 ibtnSaveRecipeItem.setSelected(true);
-                ((OnlineRecipe)bindedRecipe).setSaved(true);
+                ((OnlineRecipe) bindedRecipe).setSaved(true);
 
                 animationViewLike.setVisibility(View.VISIBLE);
                 animationViewLike.playAnimation();
-            }else{
+            } else {
                 SavedRecipesManager.getInstance().unSaveRecipeById(bindedRecipe.getId());
                 ibtnSaveRecipeItem.setSelected(false);
-                ((OnlineRecipe)bindedRecipe).setSaved(false);
+                ((OnlineRecipe) bindedRecipe).setSaved(false);
                 animationViewLike.setVisibility(View.GONE);
             }
         }

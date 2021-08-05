@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import com.airbnb.lottie.LottieAnimationView;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.mealplanner.EndlessRecyclerViewScrollListener;
 import com.example.mealplanner.FilteringViewModel;
 import com.example.mealplanner.R;
 import com.example.mealplanner.SavedRecipesManager;
@@ -61,6 +62,7 @@ public class OnlineRecipesFragment extends Fragment {
     private AsyncHttpClient client;
 
     private OnlineRecipesFragmentListener listener;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     public OnlineRecipesFragment() {
         // Required empty public constructor
@@ -94,9 +96,19 @@ public class OnlineRecipesFragment extends Fragment {
         progressBar = view.findViewById(R.id.progress_circular);
         animation_progress = view.findViewById(R.id.animation_progress);
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvRecipes = view.findViewById(R.id.rvRecipes);
         rvRecipes.setAdapter(adapter);
-        rvRecipes.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvRecipes.setLayoutManager(linearLayoutManager);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                Log.i("LoadMore", page + ", " + totalItemsCount);
+                addMoreRecipes(buildSearchUrl(), totalItemsCount);
+            }
+        };
+        rvRecipes.addOnScrollListener(scrollListener);
 
         savedRecipesUri = new HashSet<>();
         savedRecipesUri = SavedRecipesManager.getInstance().getIdSet();
@@ -162,7 +174,30 @@ public class OnlineRecipesFragment extends Fragment {
                     JSONArray results = json.jsonObject.getJSONArray("results");
                     onlineRecipes.clear();
                     onlineRecipes.addAll(OnlineRecipe.fromJsonArray(results));
-                    checkIfRecipesAreAlreadySaved();
+                    checkIfRecipesAreAlreadySaved(onlineRecipes);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Issue creating recipes", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Headers headers, String s, Throwable throwable) {
+                Log.e(TAG, "onFailure", throwable);
+            }
+        });
+    }
+
+    private void addMoreRecipes(String url, int offset) {
+        client.get(url + "&offset=" + offset, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Headers headers, JSON json) {
+                Log.i(TAG, "onSuccess");
+
+                try {
+                    JSONArray results = json.jsonObject.getJSONArray("results");
+                    List<OnlineRecipe> newRecipes = OnlineRecipe.fromJsonArray(results);
+                    onlineRecipes.addAll(newRecipes);
+                    checkIfRecipesAreAlreadySaved(onlineRecipes);
                 } catch (JSONException e) {
                     Log.e(TAG, "Issue creating recipes", e);
                 }
@@ -178,13 +213,10 @@ public class OnlineRecipesFragment extends Fragment {
     /**
      * Checks if the recipes from the list are already saved and changes it's icon
      */
-    private void checkIfRecipesAreAlreadySaved() {
-        for (String s : savedRecipesUri) {
-            Log.i("Check", s);
-        }
-        for (int i = 0; i < onlineRecipes.size(); i++) {
-            String uri = onlineRecipes.get(i).getId();
-            ((OnlineRecipe) onlineRecipes.get(i)).setSaved(savedRecipesUri.contains(uri));
+    private void checkIfRecipesAreAlreadySaved(List<IRecipe> recipes) {
+        for (int i = 0; i < recipes.size(); i++) {
+            String uri = recipes.get(i).getId();
+            ((OnlineRecipe) recipes.get(i)).setSaved(savedRecipesUri.contains(uri));
         }
         progressBar.setVisibility(View.GONE);
         animation_progress.setVisibility(View.GONE);
