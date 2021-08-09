@@ -2,6 +2,8 @@
 ### Description
 Add recipes for each day of the week, get a shopping list to buy, share your week with others, follow or copy other people plan, create your own recipes or get recipes from the web or others plan.
 
+[Video demo](https://drive.google.com/file/d/153LwIxKYKGNYljWcnOQH7iuoCEsWcOUU/view)
+
 ### App Evaluation
 
 - **Category:** Food & Drink
