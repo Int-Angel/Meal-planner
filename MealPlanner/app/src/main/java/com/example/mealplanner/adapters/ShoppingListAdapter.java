@@ -1,11 +1,16 @@
 package com.example.mealplanner.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -76,11 +81,18 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
      */
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        private final static String TARGET_URL = "https://www.target.com/s?searchTerm=";
+
         private ShoppingListItem bindedItem;
 
         private CheckBox cbItemChecked;
         private TextView tvItem;
         private TextView tvItemAmount;
+        private ImageButton btnExpand;
+        private RelativeLayout searchStoreContainer;
+        private Button btnSearchTarget;
+
+        private boolean isExpanded = false;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -88,18 +100,16 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             cbItemChecked = itemView.findViewById(R.id.cbItemChecked);
             tvItem = itemView.findViewById(R.id.tvItem);
             tvItemAmount = itemView.findViewById(R.id.tvItemAmount);
+            btnExpand = itemView.findViewById(R.id.btnExpand);
+            searchStoreContainer = itemView.findViewById(R.id.searchStoreContainer);
+            btnSearchTarget = itemView.findViewById(R.id.btnSearchTarget);
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    listener.editItem(getAdapterPosition(), bindedItem.getAisle(), bindedItem);
-                    return true;
-                }
-            });
+            setUpOnClickListeners();
         }
 
         /**
          * Update de view inside of the view holder with this data
+         *
          * @param item
          */
         public void bind(ShoppingListItem item) {
@@ -118,7 +128,50 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         }
 
         /**
+         * Sets up all the on click listeners
+         */
+        private void setUpOnClickListeners() {
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.editItem(getAdapterPosition(), bindedItem.getAisle(), bindedItem);
+                    return true;
+                }
+            });
+
+            btnExpand.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isExpanded = !isExpanded;
+                    btnExpand.setSelected(isExpanded);
+                    int visibility = isExpanded ? View.VISIBLE : View.GONE;
+                    searchStoreContainer.setVisibility(visibility);
+                }
+            });
+
+            btnSearchTarget.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToUrl(TARGET_URL + bindedItem.getName());
+                }
+            });
+        }
+
+        /**
+         * Opens the url parameter
+         *
+         * @param url
+         */
+        private void goToUrl(String url) {
+            if (!url.startsWith("http://") && !url.startsWith("https://"))
+                url = "http://" + url;
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(intent);
+        }
+
+        /**
          * Updates the isChecked property of an item
+         *
          * @param isChecked
          */
         private void updateItemChecked(boolean isChecked) {

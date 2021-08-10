@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
    >
@@ -44,17 +45,75 @@
         android:text="1 ct"
         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
+    <ImageButton
+        android:id="@+id/btnExpand"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
 
-        android:layout_below="@+id/tvItem"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginEnd="19dp"
+        android:src="@drawable/expand_button"
+        android:background="@android:color/transparent"
 
-        android:background="@color/light_gray"
-        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/tvItemAmount"
+        android:layout_marginTop="-3dp"
         />
+
+    <RelativeLayout
+        android:id="@+id/searchStoreContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvItem"
+
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/tvSearchTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:fontFamily="sans-serif-light"
+            android:layout_marginStart="18dp"
+
+            android:text="Search in:"
+            />
+
+        <LinearLayout
+            android:id="@+id/buttonsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvSearchTitle"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnSearchTarget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Target"
+
+                android:background="@android:color/transparent"
+                android:textColor="@color/blue_1"
+
+                />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+
+            android:layout_below="@+id/buttonsContainer"
+
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="19dp"
+
+            android:background="@color/light_gray"
+            />
+
+    </RelativeLayout>
+
+
 
 </RelativeLayout>
